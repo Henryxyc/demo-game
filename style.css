@@ -247,7 +247,7 @@ body::before {
 }
 .attr-name { color: #8b96ab; font-size: 12px; letter-spacing: 1px; }
 .attr-rank { color: #d4af37; font-weight: 700; font-size: 12.5px; }
-.attr-val { color: #ffe9a8; font-size: 26px; font-weight: 700; white-space: nowrap; }
+.attr-val { color: #ffe9a8; font-size: 26px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .attr-sub { color: #7f8ba0; font-size: 12px; }
 .attr-ability { grid-column: 1 / -1; }
 .attr-ability-name { color: #ffe9a8; font-size: 18px; font-weight: 700; letter-spacing: 1px; }
@@ -276,7 +276,7 @@ body::before {
   background: rgba(42,54,80,.4);
   color: #c9cdd6;
 }
-.log-item.year{ background: rgba(42,54,80,.18); color: #9aa5b8; font-size: 12.5px; }
+.log-item.year{ background: rgba(42,54,80,.18); color: #9aa5b8; font-size: 13px; }
 .log-item.brk { background: rgba(76,175,80,.14); border: 1px solid rgba(76,175,80,.4); color: #a5d6a7; }
 .log-item.ev1 { background: rgba(110,150,220,.12); border: 1px solid rgba(110,150,220,.3); color: #c9d7f0; }
 .log-item.ev2 { background: rgba(180,120,220,.12); border: 1px solid rgba(180,120,220,.35); color: #e0c9f5; }
@@ -727,6 +727,10 @@ body::before {
   font-weight: 700;
   text-align: center;
   letter-spacing: 1px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 100%;
 }
 .grid-card-sub {
   color: #8b96ab;
@@ -910,5 +914,9 @@ body::before {
   0%,100% { box-shadow: 0 0 0 rgba(251,191,36,.4); }
   50% { box-shadow: 0 0 14px rgba(251,191,36,.55); }
 }
+
+/* 异火/斗技行的label颜色提亮 */
+#attr-fires-row .skill-label { color: #ff7a45; }
+#attr-skills-row .skill-label { color: #7ec8e3; }
 
 
