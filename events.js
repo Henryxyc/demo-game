@@ -618,6 +618,703 @@
 					U.printlog('战力+' + c);
 				},
 			fail: null
+		},
+		{
+			id: 'ev_shelter',
+			weight: 1.0,
+			maxCount: 3,
+			name: '避难所搜刮',
+			tier: 1,
+			desc: '在废弃避难所中搜刮物资',
+			minAge: 5,
+			maxAge: 10000,
+			cond: null,
+			ok:
+				function (g, U) {
+					var r = U.combatGain(g.aptitude, g.lvl);
+					var add = Math.floor(r * U.rand(0.3, 0.8));
+					g.combat += add;
+					var lf = U.irand(1, 3); g.lifespan += lf;
+					return '避难所搜刮收获，战力+' + add + '，寿元+' + lf;
+				},
+			fail: null
+		},
+		{
+			id: 'ev_mutbeast',
+			weight: 0.9,
+			maxCount: 5,
+			name: '变异兽搏杀',
+			tier: 1,
+			desc: '遭遇变异兽搏杀',
+			minAge: 8,
+			maxAge: 10000,
+			cond: null,
+			ok:
+				function (g, U) {
+					var r = U.combatGain(g.aptitude, g.lvl);
+					var add = Math.floor(r * U.rand(0.4, 1.0));
+					g.combat += add;
+					return '搏杀变异兽，战力+' + add;
+				},
+			fail:
+				function (g, U) {
+					g.lifespan -= U.irand(1, 3);
+					return '变异兽搏杀受创，寿元受损';
+				}
+		},
+		{
+			id: 'ev_military',
+			weight: 0.7,
+			maxCount: 3,
+			name: '军方救援',
+			tier: 1,
+			desc: '军方救援队到来',
+			minAge: 5,
+			maxAge: 10000,
+			cond: null,
+			ok:
+				function (g, U) {
+					var r = U.combatGain(g.aptitude, g.lvl);
+					var add = Math.floor(r * U.rand(0.5, 1.2));
+					g.combat += add;
+					var lf = U.irand(1, 2); g.lifespan += lf;
+					return '军方救援队支援，获得物资，战力+' + add + '，寿元+' + lf;
+				},
+			fail: null
+		},
+		{
+			id: 'ev_blackmarket',
+			weight: 0.6,
+			maxCount: 3,
+			name: '黑市交易',
+			tier: 1,
+			desc: '在黑市交换变异材料',
+			minAge: 12,
+			maxAge: 10000,
+			cond: null,
+			ok:
+				function (g, U) {
+					var r = U.combatGain(g.aptitude, g.lvl);
+					var add = Math.floor(r * U.rand(0.3, 0.7));
+					g.combat += add;
+					var lf = U.irand(1, 2); g.lifespan += lf;
+					return '黑市交易获得变异材料，战力+' + add + '，寿元+' + lf;
+				},
+			fail: null
+		},
+		{
+			id: 'ev_survivor',
+			weight: 0.8,
+			maxCount: 3,
+			name: '幸存者营地',
+			tier: 1,
+			desc: '在幸存者营地中休整',
+			minAge: 5,
+			maxAge: 10000,
+			cond: null,
+			ok:
+				function (g, U) {
+					var r = U.combatGain(g.aptitude, g.lvl);
+					var add = Math.floor(r * U.rand(0.3, 0.6));
+					g.combat += add;
+					var lf = U.irand(2, 4); g.lifespan += lf;
+					return '幸存者营地休整，恢复状态，战力+' + add + '，寿元+' + lf;
+				},
+			fail: null
+		},
+
+		/* ====== 扩展事件（末日主题追加） ====== */
+
+		/* ---------- tier 4 传说 ---------- */
+		{
+			id: 'ev_prophecy',
+			weight: 0.1,
+			maxCount: 1,
+			name: '进化预言',
+			tier: 4,
+			desc: '传说末日方舟留有进化预言，只有强者能解读',
+			minAge: 30,
+			maxAge: 10000,
+			cond: function (g, U) { return g.lvl >= 70; },
+			ok: function (g, U, log) {
+				var r = U.combatGain(g.aptitude, g.lvl);
+				var add = Math.floor(r * U.rand(2.0, 3.5));
+				g.combat += add;
+				var lf = U.irand(8, 14); g.lifespan += lf;
+				U.gainLevels(g, U.irand(1, 3), log);
+				return '解读进化预言，洞悉进化之理，战力+' + add + '，寿元+' + lf + '，实力大幅精进';
+			},
+			fail: function (g, U) {
+				var lf = U.irand(4, 8); g.lifespan -= lf;
+				return '预言反噬神识，寿元-' + lf;
+			}
+		},
+		{
+			id: 'ev_inherit',
+			weight: 0.2,
+			maxCount: 1,
+			name: '异能传承',
+			tier: 4,
+			desc: '末日前辈的异能传承降临于你',
+			minAge: 20,
+			maxAge: 10000,
+			cond: function (g, U) { return g.lvl >= 50; },
+			ok: function (g, U, log) {
+				var up = null;
+				if (g.aptitude < 10) {
+					up = g.aptitude + U.irand(1, 2);
+					if (up > 10) up = 10;
+					g.aptitude = up;
+				}
+				var r = U.combatGain(g.aptitude, g.lvl);
+				var add = Math.floor(r * U.rand(1.5, 2.5));
+				g.combat += add;
+				var lf = U.irand(6, 10); g.lifespan += lf;
+				U.gainLevels(g, U.irand(1, 2), log);
+				return '承接异能传承' + (up ? '，天赋提升至 ' + U.DATA.tierName(up) + '！' : '') + '，战力+' + add + '，寿元+' + lf;
+			},
+			fail: function (g, U) {
+				var lf = U.irand(3, 6); g.lifespan -= lf;
+				return '传承失控，寿元-' + lf;
+			}
+		},
+		{
+			id: 'ev_ark',
+			weight: 0.08,
+			maxCount: 1,
+			name: '末日方舟',
+			tier: 4,
+			desc: '传说中末日方舟的入口在你面前开启',
+			minAge: 40,
+			maxAge: 10000,
+			cond: function (g, U) { return g.lvl >= 85 || g.combat >= 50000; },
+			ok: function (g, U, log) {
+				var r = U.combatGain(g.aptitude, g.lvl);
+				var add = Math.floor(r * U.rand(3.0, 5.0));
+				g.combat += add;
+				var lf = U.irand(10, 18); g.lifespan += lf;
+				U.gainLevels(g, U.irand(2, 4), log);
+				return '登上末日方舟，获得前文明传承，战力+' + add + '，寿元+' + lf + '，实力飞跃';
+			},
+			fail: function (g, U) {
+				g.dead = true;
+				return '实力不足，被方舟结界吞噬，不幸陨落';
+			}
+		},
+
+		/* ---------- tier 3 稀有 ---------- */
+		{
+			id: 'ev_serumlab',
+			weight: 0.8,
+			maxCount: 2,
+			name: '血清研究所',
+			tier: 3,
+			desc: '潜入末日血清研究所，搜寻进化血清',
+			minAge: 15,
+			maxAge: 10000,
+			cond: function (g, U) { return g.lvl >= 35; },
+			ok: function (g, U, log) {
+				var r = U.combatGain(g.aptitude, g.lvl);
+				var add = Math.floor(r * U.rand(1.0, 2.0));
+				g.combat += add;
+				var lf = U.irand(4, 8); g.lifespan += lf;
+				U.gainLevels(g, U.irand(1, 2), log);
+				return '获得高纯度进化血清，战力+' + add + '，寿元+' + lf;
+			},
+			fail: function (g, U) {
+				var lf = U.irand(3, 6); g.lifespan -= lf;
+				return '血清注射失败，副作用反噬，寿元-' + lf;
+			}
+		},
+		{
+			id: 'ev_beastking',
+			weight: 0.7,
+			maxCount: 2,
+			name: '变异兽王',
+			tier: 3,
+			desc: '一头变异兽王在附近出没，你决定挑战它',
+			minAge: 20,
+			maxAge: 10000,
+			cond: function (g, U) { return g.lvl >= 40; },
+			ok: function (g, U, log) {
+				var r = U.combatGain(g.aptitude, g.lvl);
+				var add = Math.floor(r * U.rand(1.2, 2.2));
+				g.combat += add;
+				var lf = U.irand(3, 7); g.lifespan += lf;
+				U.gainLevels(g, 1, log);
+				return '击杀变异兽王，汲取其基因之力，战力+' + add + '，寿元+' + lf;
+			},
+			fail: function (g, U) {
+				var lf = U.irand(4, 8); g.lifespan -= lf;
+				return '被变异兽王重创，寿元-' + lf;
+			}
+		},
+		{
+			id: 'ev_secondmut',
+			weight: 0.6,
+			maxCount: 2,
+			name: '二次变异体',
+			tier: 3,
+			desc: '遭遇罕见的二次变异体，它体内蕴含进化因子',
+			minAge: 18,
+			maxAge: 10000,
+			cond: function (g, U) { return g.lvl >= 38; },
+			ok: function (g, U, log) {
+				var r = U.combatGain(g.aptitude, g.lvl);
+				var add = Math.floor(r * U.rand(1.0, 1.8));
+				g.combat += add;
+				var lf = U.irand(3, 6); g.lifespan += lf;
+				U.gainLevels(g, 1, log);
+				return '击杀二次变异体，吸收其变异因子，战力+' + add + '，寿元+' + lf;
+			},
+			fail: function (g, U) {
+				var lf = U.irand(3, 7); g.lifespan -= lf;
+				return '被二次变异体感染，寿元-' + lf;
+			}
+		},
+		{
+			id: 'ev_duelist',
+			weight: 1.0,
+			maxCount: 3,
+			name: '异能者对决',
+			tier: 3,
+			desc: '一位异能者向你发起生死对决',
+			minAge: 15,
+			maxAge: 10000,
+			cond: function (g, U) { return g.lvl >= 35; },
+			ok: function (g, U, log) {
+				var r = U.combatGain(g.aptitude, g.lvl);
+				var add = Math.floor(r * U.rand(0.8, 1.6));
+				g.combat += add;
+				var lf = U.irand(2, 5); g.lifespan += lf;
+				U.gainLevels(g, 1, log);
+				return '击败异能者，夺取其异能精粹，战力+' + add + '，寿元+' + lf;
+			},
+			fail: function (g, U) {
+				var lf = U.irand(3, 6); g.lifespan -= lf;
+				return '对决落败，寿元-' + lf;
+			}
+		},
+		{
+			id: 'ev_warlordboss',
+			weight: 0.9,
+			maxCount: 2,
+			name: '军阀头目',
+			tier: 3,
+			desc: '军阀头目率队来袭，你决定正面迎战',
+			minAge: 18,
+			maxAge: 10000,
+			cond: function (g, U) { return g.lvl >= 38; },
+			ok: function (g, U, log) {
+				var r = U.combatGain(g.aptitude, g.lvl);
+				var add = Math.floor(r * U.rand(1.0, 1.8));
+				g.combat += add;
+				var lf = U.irand(2, 6); g.lifespan += lf;
+				U.gainLevels(g, U.irand(1, 2), log);
+				return '斩杀军阀头目，缴获大量军用物资，战力+' + add + '，寿元+' + lf;
+			},
+			fail: function (g, U) {
+				var lf = U.irand(4, 8); g.lifespan -= lf;
+				return '被军阀头目重创，寿元-' + lf;
+			}
+		},
+		{
+			id: 'ev_genememory',
+			weight: 0.8,
+			maxCount: 2,
+			name: '基因记忆觉醒',
+			tier: 3,
+			desc: '体内沉睡的前文明基因记忆开始觉醒',
+			minAge: 16,
+			maxAge: 10000,
+			cond: function (g, U) { return g.lvl >= 36; },
+			ok: function (g, U, log) {
+				var up = null;
+				if (g.aptitude < 10) {
+					up = g.aptitude + 1;
+					g.aptitude = up;
+				}
+				var r = U.combatGain(g.aptitude, g.lvl);
+				var add = Math.floor(r * U.rand(0.8, 1.5));
+				g.combat += add;
+				var lf = U.irand(3, 7); g.lifespan += lf;
+				U.gainLevels(g, 1, log);
+				return '基因记忆觉醒' + (up ? '，天赋提升至 ' + U.DATA.tierName(up) + '！' : '') + '，战力+' + add + '，寿元+' + lf;
+			},
+			fail: function (g, U) {
+				var lf = U.irand(2, 5); g.lifespan -= lf;
+				return '记忆冲击神识，寿元-' + lf;
+			}
+		},
+
+		/* ---------- tier 2 中级 ---------- */
+		{
+			id: 'ev_generecomb',
+			weight: 3,
+			maxCount: 3,
+			name: '基因重组实验',
+			tier: 2,
+			desc: '发现前文明遗留的基因重组装置',
+			minAge: 12,
+			maxAge: 10000,
+			cond: function (g, U) { return g.lvl >= 25; },
+			ok: function (g, U, log) {
+				var r = U.combatGain(g.aptitude, g.lvl);
+				var add = Math.floor(r * U.rand(0.5, 1.2));
+				g.combat += add;
+				var lf = U.irand(2, 5); g.lifespan += lf;
+				U.gainLevels(g, 1, log);
+				return '基因重组成功，战力+' + add + '，寿元+' + lf;
+			},
+			fail: function (g, U) {
+				var lf = U.irand(2, 4); g.lifespan -= lf;
+				return '基因重组失败，反噬自身，寿元-' + lf;
+			}
+		},
+		{
+			id: 'ev_mutstorm',
+			weight: 4,
+			maxCount: 5,
+			name: '异变风暴',
+			tier: 2,
+			desc: '异变风暴席卷而来，蕴含变异能量',
+			minAge: 10,
+			maxAge: 10000,
+			cond: function (g, U) { return g.lvl >= 22; },
+			ok: function (g, U) {
+				var r = U.combatGain(g.aptitude, g.lvl);
+				var add = Math.floor(r * U.rand(0.4, 1.0));
+				g.combat += add;
+				var lf = U.irand(1, 4); g.lifespan += lf;
+				return '在异变风暴中吸收能量，战力+' + add + '，寿元+' + lf;
+			},
+			fail: function (g, U) {
+				var lf = U.irand(2, 5); g.lifespan -= lf;
+				return '被异变风暴所伤，寿元-' + lf;
+			}
+		},
+		{
+			id: 'ev_radzone',
+			weight: 4,
+			maxCount: 5,
+			name: '辐射区探索',
+			tier: 2,
+			desc: '潜入辐射区搜寻变异材料',
+			minAge: 12,
+			maxAge: 10000,
+			cond: function (g, U) { return g.lvl >= 25; },
+			ok: function (g, U) {
+				var r = U.combatGain(g.aptitude, g.lvl);
+				var add = Math.floor(r * U.rand(0.5, 1.0));
+				g.combat += add;
+				var lf = U.irand(1, 3); g.lifespan += lf;
+				return '辐射区探索收获颇丰，战力+' + add + '，寿元+' + lf;
+			},
+			fail: function (g, U) {
+				var lf = U.irand(2, 4); g.lifespan -= lf;
+				return '遭受辐射伤害，寿元-' + lf;
+			}
+		},
+		{
+			id: 'ev_evolvmut',
+			weight: 3,
+			maxCount: 3,
+			name: '进化因子突变',
+			tier: 2,
+			desc: '体内进化因子发生良性突变',
+			minAge: 12,
+			maxAge: 10000,
+			cond: function (g, U) { return g.lvl >= 28; },
+			ok: function (g, U, log) {
+				var r = U.combatGain(g.aptitude, g.lvl);
+				var add = Math.floor(r * U.rand(0.5, 1.1));
+				g.combat += add;
+				var lf = U.irand(2, 4); g.lifespan += lf;
+				U.gainLevels(g, 1, log);
+				return '进化因子突变，战力+' + add + '，寿元+' + lf + '，实力精进';
+			},
+			fail: function (g, U) {
+				var lf = U.irand(1, 3); g.lifespan -= lf;
+				return '突变失控，寿元-' + lf;
+			}
+		},
+		{
+			id: 'ev_campbuild',
+			weight: 5,
+			maxCount: 5,
+			name: '营地建设',
+			tier: 2,
+			desc: '协助幸存者营地建设防御工事',
+			minAge: 10,
+			maxAge: 10000,
+			cond: function (g, U) { return g.lvl >= 20; },
+			ok: function (g, U) {
+				var r = U.combatGain(g.aptitude, g.lvl);
+				var add = Math.floor(r * U.rand(0.3, 0.8));
+				g.combat += add;
+				var lf = U.irand(2, 5); g.lifespan += lf;
+				return '营地建设获得酬谢，战力+' + add + '，寿元+' + lf;
+			},
+			fail: function (g, U) {
+				var lf = U.irand(1, 3); g.lifespan -= lf;
+				return '营地建设中受伤，寿元-' + lf;
+			}
+		},
+		{
+			id: 'ev_convoy',
+			weight: 5,
+			maxCount: 5,
+			name: '商队护送',
+			tier: 2,
+			desc: '护送商队穿越危险区域',
+			minAge: 12,
+			maxAge: 10000,
+			cond: function (g, U) { return g.lvl >= 22; },
+			ok: function (g, U) {
+				var r = U.combatGain(g.aptitude, g.lvl);
+				var add = Math.floor(r * U.rand(0.4, 0.9));
+				g.combat += add;
+				var lf = U.irand(1, 4); g.lifespan += lf;
+				return '商队护送成功，获得丰厚报酬，战力+' + add + '，寿元+' + lf;
+			},
+			fail: function (g, U) {
+				var lf = U.irand(2, 4); g.lifespan -= lf;
+				return '商队遇袭，仓皇护送受伤，寿元-' + lf;
+			}
+		},
+		{
+			id: 'ev_refugee',
+			weight: 5,
+			maxCount: 5,
+			name: '难民救援',
+			tier: 2,
+			desc: '一群难民遭遇变异体围攻，你出手相救',
+			minAge: 10,
+			maxAge: 10000,
+			cond: function (g, U) { return g.lvl >= 20; },
+			ok: function (g, U) {
+				var r = U.combatGain(g.aptitude, g.lvl);
+				var add = Math.floor(r * U.rand(0.3, 0.7));
+				g.combat += add;
+				var lf = U.irand(1, 4); g.lifespan += lf;
+				return '救下难民，获得感恩回馈，战力+' + add + '，寿元+' + lf;
+			},
+			fail: function (g, U) {
+				var lf = U.irand(1, 3); g.lifespan -= lf;
+				return '救援中受创，寿元-' + lf;
+			}
+		},
+		{
+			id: 'ev_campalliance',
+			weight: 4,
+			maxCount: 3,
+			name: '营地联盟',
+			tier: 2,
+			desc: '多个幸存者营地结成联盟，共抗变异潮',
+			minAge: 12,
+			maxAge: 10000,
+			cond: function (g, U) { return g.lvl >= 25; },
+			ok: function (g, U) {
+				var r = U.combatGain(g.aptitude, g.lvl);
+				var add = Math.floor(r * U.rand(0.4, 0.9));
+				g.combat += add;
+				var lf = U.irand(2, 5); g.lifespan += lf;
+				return '营地联盟共享资源，战力+' + add + '，寿元+' + lf;
+			},
+			fail: function (g, U) {
+				var lf = U.irand(1, 3); g.lifespan -= lf;
+				return '联盟破裂，冲突中受伤，寿元-' + lf;
+			}
+		},
+
+		/* ---------- tier 1 普通 ---------- */
+		{
+			id: 'ev_shelterbuild',
+			weight: 10,
+			maxCount: 10,
+			name: '避难所建设',
+			tier: 1,
+			desc: '参与地下避难所的扩建工程',
+			minAge: 8,
+			maxAge: 10000,
+			cond: null,
+			ok: function (g, U) {
+				var r = U.combatGain(g.aptitude, g.lvl);
+				var add = Math.floor(r * U.rand(0.3, 0.7));
+				g.combat += add;
+				var lf = U.irand(1, 3); g.lifespan += lf;
+				return '参与避难所建设获得酬劳，战力+' + add + '，寿元+' + lf;
+			},
+			fail: null
+		},
+		{
+			id: 'ev_survivorcouncil',
+			weight: 8,
+			maxCount: 5,
+			name: '幸存者大会',
+			tier: 1,
+			desc: '参加幸存者大会，交流生存经验',
+			minAge: 10,
+			maxAge: 10000,
+			cond: null,
+			ok: function (g, U) {
+				var r = U.combatGain(g.aptitude, g.lvl);
+				var add = Math.floor(r * U.rand(0.2, 0.5));
+				g.combat += add;
+				var lf = U.irand(1, 2); g.lifespan += lf;
+				return '幸存者大会交流心得，战力+' + add + '，寿元+' + lf;
+			},
+			fail: null
+		},
+		{
+			id: 'ev_warlordbattle',
+			weight: 8,
+			maxCount: 5,
+			name: '军阀大战',
+			tier: 1,
+			desc: '卷入两方军阀混战',
+			minAge: 12,
+			maxAge: 10000,
+			cond: function (g, U) { return g.lvl >= 15; },
+			ok: function (g, U) {
+				var r = U.combatGain(g.aptitude, g.lvl);
+				var add = Math.floor(r * U.rand(0.4, 0.8));
+				g.combat += add;
+				return '军阀大战中渔翁得利，战力+' + add;
+			},
+			fail: function (g, U) {
+				var lf = U.irand(1, 3); g.lifespan -= lf;
+				return '军阀大战中被波及受伤，寿元-' + lf;
+			}
+		},
+		{
+			id: 'ev_mutnest',
+			weight: 9,
+			maxCount: 5,
+			name: '变异体巢穴',
+			tier: 1,
+			desc: '清剿一处变异体巢穴',
+			minAge: 10,
+			maxAge: 10000,
+			cond: function (g, U) { return g.lvl >= 15; },
+			ok: function (g, U) {
+				var r = U.combatGain(g.aptitude, g.lvl);
+				var add = Math.floor(r * U.rand(0.4, 0.9));
+				g.combat += add;
+				var lf = U.irand(1, 2); g.lifespan += lf;
+				return '清剿变异体巢穴，战力+' + add + '，寿元+' + lf;
+			},
+			fail: function (g, U) {
+				var lf = U.irand(1, 3); g.lifespan -= lf;
+				return '巢穴中有强敌，仓皇撤退，寿元-' + lf;
+			}
+		},
+		{
+			id: 'ev_deepdeadzone',
+			weight: 7,
+			maxCount: 3,
+			name: '死疫禁区深处',
+			tier: 1,
+			desc: '深入死疫禁区外围搜寻物资',
+			minAge: 15,
+			maxAge: 10000,
+			cond: function (g, U) { return g.lvl >= 18; },
+			ok: function (g, U) {
+				var r = U.combatGain(g.aptitude, g.lvl);
+				var add = Math.floor(r * U.rand(0.5, 1.0));
+				g.combat += add;
+				var lf = U.irand(1, 3); g.lifespan += lf;
+				return '死疫禁区外围收获稀有材料，战力+' + add + '，寿元+' + lf;
+			},
+			fail: function (g, U) {
+				var lf = U.irand(2, 4); g.lifespan -= lf;
+				return '死疫禁区感染疫毒，寿元-' + lf;
+			}
+		},
+		{
+			id: 'ev_undershelter',
+			weight: 10,
+			maxCount: 10,
+			name: '地下避难所',
+			tier: 1,
+			desc: '在地下避难所中休整并搜寻物资',
+			minAge: 5,
+			maxAge: 10000,
+			cond: null,
+			ok: function (g, U) {
+				var r = U.combatGain(g.aptitude, g.lvl);
+				var add = Math.floor(r * U.rand(0.3, 0.6));
+				g.combat += add;
+				var lf = U.irand(1, 3); g.lifespan += lf;
+				return '地下避难所休整补给，战力+' + add + '，寿元+' + lf;
+			},
+			fail: null
+		},
+		{
+			id: 'ev_abandonedlab',
+			weight: 8,
+			maxCount: 5,
+			name: '废弃实验室',
+			tier: 1,
+			desc: '潜入废弃实验室搜刮研究资料',
+			minAge: 10,
+			maxAge: 10000,
+			cond: function (g, U) { return g.lvl >= 12; },
+			ok: function (g, U) {
+				var r = U.combatGain(g.aptitude, g.lvl);
+				var add = Math.floor(r * U.rand(0.3, 0.7));
+				g.combat += add;
+				var lf = U.irand(1, 2); g.lifespan += lf;
+				return '实验室搜得研究资料，战力+' + add + '，寿元+' + lf;
+			},
+			fail: function (g, U) {
+				var lf = U.irand(1, 2); g.lifespan -= lf;
+				return '实验室残余毒气伤身，寿元-' + lf;
+			}
+		},
+		{
+			id: 'ev_raddeep',
+			weight: 8,
+			maxCount: 5,
+			name: '辐射区深处',
+			tier: 1,
+			desc: '深入辐射区深处搜寻高纯度变异材料',
+			minAge: 12,
+			maxAge: 10000,
+			cond: function (g, U) { return g.lvl >= 15; },
+			ok: function (g, U) {
+				var r = U.combatGain(g.aptitude, g.lvl);
+				var add = Math.floor(r * U.rand(0.4, 0.8));
+				g.combat += add;
+				var lf = U.irand(1, 2); g.lifespan += lf;
+				return '辐射区深处收获高纯材料，战力+' + add + '，寿元+' + lf;
+			},
+			fail: function (g, U) {
+				var lf = U.irand(1, 3); g.lifespan -= lf;
+				return '辐射过量为患，寿元-' + lf;
+			}
+		},
+		{
+			id: 'ev_mutforest',
+			weight: 9,
+			maxCount: 5,
+			name: '异变森林',
+			tier: 1,
+			desc: '穿越异变森林，猎杀变异生物',
+			minAge: 8,
+			maxAge: 10000,
+			cond: function (g, U) { return g.lvl >= 12; },
+			ok: function (g, U) {
+				var r = U.combatGain(g.aptitude, g.lvl);
+				var add = Math.floor(r * U.rand(0.3, 0.7));
+				g.combat += add;
+				var lf = U.irand(1, 2); g.lifespan += lf;
+				return '异变森林猎杀变异生物，战力+' + add + '，寿元+' + lf;
+			},
+			fail: function (g, U) {
+				var lf = U.irand(1, 2); g.lifespan -= lf;
+				return '异变森林遇险受伤，寿元-' + lf;
+			}
 		}
 	];
 

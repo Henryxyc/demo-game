@@ -1,0 +1,4 @@
+.trae/
+rank-server/node_modules/
+rank-server/rank-data.json
+*.log

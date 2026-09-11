@@ -13,7 +13,7 @@ html, body {
   min-height: 100%;
 }
 #app {
-  max-width: 480px;
+  max-width: 720px;
   margin: 0 auto;
   min-height: 100vh;
   background: linear-gradient(180deg, #1a2233 0%, #141b26 40%, #0f1420 100%);
@@ -23,7 +23,7 @@ body::before {
   content: '';
   position: fixed;
   top: 0; left: 50%;
-  width: 480px; max-width: 100%;
+  width: 720px; max-width: 100%;
   height: 100%;
   transform: translateX(-50%);
   background:
@@ -340,6 +340,12 @@ body::before {
 }
 .settle-essence { font-size: 12.5px; color: #ffc59a; line-height: 1.6; text-align: center; }
 .settle-essence.warn { color: #ff8a8a; font-weight: 700; }
+.settle-talents { font-size: 12px; color: #c9b06a; text-align: center; line-height: 1.5; padding: 4px 0; }
+.settle-rank-row { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 8px 0; }
+.settle-rank-label { font-size: 12px; color: #8b96ab; white-space: nowrap; }
+.settle-name-input { width: 120px; padding: 4px 8px; border: 1px solid #334; border-radius: 6px; background: #1a1d28; color: #e8e4d8; font-size: 13px; text-align: center; outline: none; }
+.settle-name-input:focus { border-color: #c9a13b; }
+.settle-rank-hint { font-size: 11px; color: #4ade80; white-space: nowrap; min-width: 80px; }
 .settle-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 2px; }
 .settle-btns .btn-big { padding: 11px 6px; font-size: 15px; border-radius: 10px; }
 
@@ -671,3 +677,238 @@ body::before {
 .hc-essence { background: linear-gradient(90deg, #ff4d4f, #ff9800, #ffeb3b, #4caf50, #00bcd4, #3f51b5, #9c27b0); color: #3a2c0a; }   /* 基因源质：七彩胶囊 */
 #attr-skill { position: relative; justify-content: center; padding: 8px 10px; border: 1px solid #3a4a66; border-radius: 10px; background: rgba(26,34,51,.5); }   /* 对局内：居中 + 一圈框 */
 #attr-essence { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: #ff9e6b; font-size: 11px; white-space: nowrap; }   /* 行末源质来源提示 */
+
+/* ============================================================
+ * 合集首页（主题网格）
+ * --card-accent 由每个主题的 accent 字段内联设置，决定卡片主色
+ * ============================================================ */
+#view-grid { justify-content: flex-start; padding-top: 24px; gap: 16px; }
+.grid-hero { text-align: center; margin-bottom: 6px; }
+.grid-title {
+  margin: 0;
+  font-size: 32px;
+  letter-spacing: 4px;
+  background: linear-gradient(180deg, #ffe9a8, #d4af37 60%, #9a7b1e);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: 0 0 24px rgba(212,175,55,.25);
+}
+.grid-sub { color: #9aa5b8; font-size: 13px; margin-top: 6px; letter-spacing: 1px; }
+.grid-cards {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  width: 100%;
+}
+.grid-card {
+  background: linear-gradient(180deg, #232c40, #1c2436);
+  border: 1px solid var(--card-accent, #d4af37);
+  border-radius: 14px;
+  padding: 16px 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  box-shadow: 0 2px 10px rgba(0,0,0,.25);
+  transition: transform .12s, filter .12s;
+}
+.grid-card:active { transform: scale(.95); filter: brightness(1.2); }
+.grid-card-icon {
+  font-size: 26px;
+  color: var(--card-accent, #d4af37);
+  line-height: 1;
+  text-shadow: 0 0 12px color-mix(in srgb, var(--card-accent, #d4af37) 40%, transparent);
+}
+.grid-card-name {
+  color: #e8e4d8;
+  font-size: 14px;
+  font-weight: 700;
+  text-align: center;
+  letter-spacing: 1px;
+}
+.grid-card-sub {
+  color: #8b96ab;
+  font-size: 11px;
+  text-align: center;
+  line-height: 1.4;
+}
+.grid-card-tags { display: flex; flex-wrap: wrap; gap: 4px; justify-content: center; margin-top: 4px; }
+.grid-card-tags span {
+  background: rgba(255,255,255,.08);
+  color: #b8c2d4;
+  font-size: 9px;
+  padding: 2px 6px;
+  border-radius: 6px;
+  white-space: nowrap;
+}
+/* 返回合集按钮（主题首页左上角） */
+#btn-home-back {
+  position: absolute;
+  left: 12px; top: 14px;
+}
+
+/* ---------- 主题首页文案动态化 ---------- */
+.home-title.dynamic {
+  background: linear-gradient(180deg,
+    color-mix(in srgb, var(--card-accent, #ffe9a8) 70%, #fff),
+    var(--card-accent, #d4af37) 60%,
+    color-mix(in srgb, var(--card-accent, #9a7b1e) 60%, #5a4a1e));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* ============================================================
+ * 天赐词条弹窗
+ * 品质色：绿#22c55e / 蓝#3b82f6 / 紫#a855f7 / 金#fbbf24
+ * ============================================================ */
+/* ============ 天赐词条弹窗（玻璃拟态·参考图设计） ============ */
+.talent-box {
+  background: linear-gradient(180deg, #0f1729 0%, #131c30 100%);
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 18px;
+  width: 100%;
+  max-width: 400px;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  padding: 18px 16px 16px;
+  gap: 12px;
+  box-shadow: 0 20px 60px rgba(0,0,0,.6), 0 0 1px rgba(255,255,255,.05);
+  backdrop-filter: blur(20px);
+}
+.talent-head { text-align: center; padding: 2px 0 6px; }
+.talent-title {
+  font-size: 21px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  background: linear-gradient(180deg, #ffe9a8 0%, #d4af37 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: 0 0 20px rgba(212,175,55,.25);
+}
+.talent-count {
+  font-size: 13px;
+  color: #60a5fa;
+  font-weight: 600;
+  margin-left: 2px;
+}
+.talent-sub {
+  font-size: 11px;
+  color: #64748b;
+  margin-top: 6px;
+  line-height: 1.5;
+}
+.talent-sub b { color: #94a3b8; font-weight: 600; }
+.talent-list {
+  overflow-y: auto;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  padding: 2px 4px 8px 0;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,.12) transparent;
+  max-height: 50vh;
+}
+.talent-list::-webkit-scrollbar { width: 4px; }
+.talent-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,.12); border-radius: 4px; }
+.talent-card {
+  position: relative;
+  background: linear-gradient(135deg, rgba(255,255,255,.045) 0%, rgba(255,255,255,.02) 100%);
+  border: 1px solid rgba(255,255,255,.07);
+  border-radius: 12px;
+  padding: 11px 12px 11px 14px;
+  cursor: pointer;
+  transition: transform .12s, border-color .15s, background .15s, box-shadow .15s;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  overflow: hidden;
+}
+.talent-card::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 8px; bottom: 8px;
+  width: 3px;
+  border-radius: 0 3px 3px 0;
+  background: var(--rarity);
+  box-shadow: 0 0 8px var(--rarity);
+}
+.talent-card:active { transform: scale(.98); }
+.talent-card:hover {
+  border-color: rgba(255,255,255,.12);
+  background: linear-gradient(135deg, rgba(255,255,255,.06) 0%, rgba(255,255,255,.025) 100%);
+}
+.talent-card.selected {
+  border-color: color-mix(in srgb, var(--rarity) 55%, transparent);
+  background: linear-gradient(135deg,
+    color-mix(in srgb, var(--rarity) 14%, rgba(255,255,255,.03)) 0%,
+    color-mix(in srgb, var(--rarity) 6%, rgba(255,255,255,.02)) 100%);
+  box-shadow: 0 0 14px color-mix(in srgb, var(--rarity) 30%, transparent),
+              inset 0 0 0 1px color-mix(in srgb, var(--rarity) 20%, transparent);
+}
+.talent-card.selected::before { width: 4px; }
+.talent-dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: var(--rarity);
+  box-shadow: 0 0 8px var(--rarity), 0 0 2px var(--rarity);
+  flex-shrink: 0;
+}
+.talent-info { flex: 1; min-width: 0; }
+.talent-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: #e8e4d8;
+  letter-spacing: .5px;
+}
+.talent-desc {
+  font-size: 11px;
+  color: #8b96ab;
+  margin-top: 2px;
+  line-height: 1.4;
+}
+.talent-pick {
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255,255,255,.15);
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 700;
+  color: transparent;
+  background: transparent;
+  transition: all .15s;
+}
+.talent-card.selected .talent-pick {
+  background: var(--rarity);
+  border-color: var(--rarity);
+  color: #fff;
+  box-shadow: 0 0 8px color-mix(in srgb, var(--rarity) 50%, transparent);
+}
+.talent-confirm {
+  width: 100%;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  border-radius: 12px;
+  padding: 12px;
+}
+.talent-confirm:disabled {
+  opacity: .35;
+  cursor: not-allowed;
+  background: #3a3525;
+  color: #9a9276;
+}
+.talent-confirm:not(:disabled) {
+  animation: talentPulse 1.5s ease-in-out infinite;
+}
+@keyframes talentPulse {
+  0%,100% { box-shadow: 0 0 0 rgba(251,191,36,.4); }
+  50% { box-shadow: 0 0 14px rgba(251,191,36,.55); }
+}
+
+
