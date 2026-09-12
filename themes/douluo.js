@@ -280,9 +280,9 @@
         if (inc) { g.innate = Math.min(10, g.innate + inc); g.aptitude = Math.max(g.aptitude, g.innate); }
         var r = U.combatGain(g.aptitude, g.lvl);
         g.combat += Math.floor(r * U.rand(1.5, 2.5));
-        return '武魂二次觉醒！先天魂力提升 ' + inc + ' 级，魂力大幅增长，寿元+' + lf;
+        return '沉寂多年的武魂在战斗中骤然轰鸣，血脉深处传来远古的回响——二次觉醒！先天魂力提升' + inc + '级，体内魂力如江河决堤般暴涨，寿元+' + lf + '！';
       },
-      fail: function (g, U, log) { return '武魂二次觉醒失败，武魂震荡，略有损伤'; }
+      fail: function (g, U, log) { return '武魂在二次觉醒的边缘剧烈震荡，最终归于沉寂，精神力反噬留下暗伤，需静养数月方能恢复。'; }
     },
     { id: 'duo_twin', weight: 0.08, maxCount: 1, name: '双生武魂觉醒', tier: 4, desc: '隐藏的第二武魂苏醒',
       minAge: 10, maxAge: 60,
@@ -291,9 +291,9 @@
         g.lifespan += U.irand(5, 10);
         var r = U.combatGain(g.aptitude, g.lvl);
         g.combat += Math.floor(r * U.rand(3, 5));
-        return '双生武魂觉醒！第二武魂苏醒，战力暴增，寿元延长！';
+        return '如同唐三觉醒蓝银皇与昊天锤的双生武魂传说，隐藏的第二武魂终于苏醒！两道武魂光辉交相辉映，战力暴增，寿元大幅延长！';
       },
-      fail: function (g, U, log) { return '第二武魂未能觉醒，精神力不足'; }
+      fail: function (g, U, log) { return '第二武魂在觉醒边缘挣扎，精神力终究不够充沛，未能突破那最后一层桎梏，武魂之力消散于无形。'; }
     },
     { id: 'duo_godring', weight: 0.1, maxCount: 1, name: '神赐魂环', tier: 4, desc: '神力降下金色魂环',
       minAge: 30, maxAge: 10000,
@@ -302,9 +302,9 @@
         var lf = U.irand(8, 15); g.lifespan += lf;
         var r = U.combatGain(g.aptitude, g.lvl);
         g.combat += Math.floor(r * U.rand(4, 7));
-        return '神赐魂环降临！金色魂环加持，魂力暴涨，寿元+' + lf;
+        return '苍穹裂开一道金色神光，神赐魂环自天际降临！金色魂环悬浮于头顶，蕴含的神力如潮水般涌入经脉，魂力暴涨，寿元+' + lf + '！';
       },
-      fail: function (g, U, log) { return '神赐魂环消散，未能承受神力'; }
+      fail: function (g, U, log) { return '金色魂环缓缓升起，神力却如烈焰灼烧经脉——肉身终究无法承受如此浩瀚的神力，魂环化作光点消散于天际，只留下阵阵灼痛。'; }
     },
     { id: 'dl_godtest', weight: 0.015, maxCount: 1, name: '神考邀请', tier: 4, desc: '神界降下神考邀请',
       minAge: 30, maxAge: 10000,
@@ -317,7 +317,7 @@
         var r = U.combatGain(g.aptitude, g.lvl);
         g.combat += Math.floor(r * 2);
         var lf = U.irand(10, 20); g.lifespan += lf;
-        return '神考降临！获得' + g.inheritGod + '传承神考资格，通过九考可继承神位！寿元+' + lf;
+        return '神界的大门向你敞开！' + g.inheritGod + '降下九考召唤，金色神谕悬浮面前——通过九重试炼即可继承神位，寿元+' + lf + '。命运的齿轮开始转动……';
       },
       fail: null
     },
@@ -329,7 +329,7 @@
         var r = U.combatGain(g.aptitude, g.lvl);
         g.combat += Math.floor(r * 3);
         var lf = U.irand(15, 25); g.lifespan += lf;
-        return '信仰之力凝结成神格！可自创神位，百级成神！魂力暴涨，寿元+' + lf;
+        return '亿万信徒的信仰之力汇聚成河，在你体内凝结成璀璨神格！自古以来只有初代神能做到的事——自创神位，百级成神！魂力暴涨，寿元+' + lf + '！';
       },
       fail: null
     },
@@ -341,9 +341,9 @@
       ok: function (g, U, log) {
         var r = U.combatGain(g.aptitude, g.lvl);
         g.combat += Math.floor(r * U.rand(1.5, 3));
-        return '猎杀魂兽爆出魂骨！融合后魂力大增';
+        return '魂兽倒下的瞬间，一道璀璨光芒从其体内迸射而出——竟是万年魂骨！骨骼碎片化为流光融入你的身体，力量如潮水般涌来，魂力大增！';
       },
-      fail: function (g, U, log) { return '魂兽未掉落魂骨，仅获魂力微增'; }
+      fail: function (g, U, log) { return '魂兽轰然倒地，魂环缓缓升起，却没有魂骨的光芒——这头魂兽的骨骼品质终究不够，仅获得些许魂力感悟。'; }
     },
     { id: 'duo_herb', weight: 0.2, maxCount: 3, name: '仙草机缘', tier: 3, desc: '发现珍稀仙草',
       minAge: 8, maxAge: 10000,
@@ -351,9 +351,9 @@
       ok: function (g, U, log) {
         var lf = U.irand(3, 7); g.lifespan += lf;
         g.combat += U.irand(500, 3000);
-        return '采得珍稀仙草！寿元+' + lf + '，魂力增长';
+        return '幽谷深处，一株通体散发柔光的仙草静静生长——正是传说中的珍稀仙品！服下后药力游走全身，经脉中的杂质被逐一清除，寿元+' + lf + '，魂力增长。';
       },
-      fail: function (g, U, log) { return '仙草已被采摘，扑了个空'; }
+      fail: function (g, U, log) { return '你循着地图上的标记赶到仙草生长之处，却只见一片残根——仙草早已被他人捷足先登，只留下淡淡的药香。'; }
     },
     { id: 'duo_mutation', weight: 0.18, maxCount: 2, name: '武魂良性变异', tier: 3, desc: '武魂发生良性变异',
       minAge: 10, maxAge: 10000,
@@ -362,11 +362,11 @@
         if (g.innate < 10) { g.innate += 1; g.aptitude = Math.max(g.aptitude, g.innate); }
         var r = U.combatGain(g.aptitude, g.lvl);
         g.combat += Math.floor(r * U.rand(1, 2));
-        return '武魂良性变异！先天魂力提升 1 级';
+        return '修炼中武魂突然发生异变——蓝银草化为金色藤蔓，铁锤燃起赤焰！良性变异使先天魂力突破瓶颈，提升1级！';
       },
       fail: function (g, U, log) {
         g.lifespan -= U.irand(1, 3);
-        return '武魂恶性变异！先天魂力未提升，寿元受损';
+        return '武魂在变异中失控，黑色的腐蚀纹路从手臂蔓延至全身——恶性变异！先天魂力未能提升，经脉受损，寿元受损。';
       }
     },
     { id: 'duo_soulbeast', weight: 0.22, maxCount: 5, name: '万年魂兽来袭', tier: 3, desc: '遭遇万年魂兽',
@@ -375,11 +375,11 @@
       ok: function (g, U, log) {
         var r = U.combatGain(g.aptitude, g.lvl);
         g.combat += Math.floor(r * U.rand(1.2, 2.5));
-        return '击杀万年魂兽！获得高品质魂环，魂力大增';
+        return '万年魂兽从密林深处咆哮而出，大地震颤！你拼尽全力与其搏斗，终于将其斩杀——黑色魂环缓缓落下，蕴含的万年修为涌入体内，魂力大增！';
       },
       fail: function (g, U, log) {
         g.lifespan -= U.irand(3, 8);
-        return '万年魂兽反噬！重伤逃脱，寿元受损';
+        return '万年魂兽的一掌拍碎了你的防御，你被震飞数十丈，五脏六腑移位——拼着重伤勉强逃出一命，寿元大损。';
       }
     },
 
@@ -388,15 +388,15 @@
       minAge: 6, maxAge: 10000, cond: null,
       ok: function (g, U, log) {
         var gain = U.evCombat(g, 0.03, 0.10, 200);
-        return '宗门历练收获颇丰，魂力+' + gain;
+        return '宗门长老的指导下，你日夜苦修战技与魂力运转——从基础拳法到魂技释放，每一招每一式都在实战中打磨纯熟，魂力+' + gain + '。';
       },
-      fail: function (g, U, log) { return '历练途中遭遇瓶颈，收获平平'; }
+      fail: function (g, U, log) { return '修炼数日后，你陷入了瓶颈——无论怎样尝试，魂力都像撞上了一堵无形的墙，进展缓慢。长老摇头道：时机未到，切勿急躁。'; }
     },
     { id: 'duo_mediate', weight: 0.7, maxCount: 10, name: '冥想修炼', tier: 2, desc: '静坐冥想吸收天地魂力',
       minAge: 6, maxAge: 10000, cond: null,
       ok: function (g, U, log) {
         var gain = U.evCombat(g, 0.02, 0.08, 150);
-        return '冥想入定，魂力稳步增长+' + gain;
+        return '盘膝而坐，意识沉入丹田——你感受到天地间的魂力如涓涓细流汇入体内，经脉中每一个魂力节点都在缓缓壮大，魂力稳步增长+' + gain + '。';
       },
       fail: null
     },
@@ -405,11 +405,11 @@
       cond: function (g, U) { return g.lvl >= 10; },
       ok: function (g, U, log) {
         var gain = U.evCombat(g, 0.04, 0.12, 300);
-        return '成功猎杀魂兽，吸收魂环，魂力+' + gain;
+        return '星斗大森林的瘴气中，你锁定了一头千年魂兽——经过数个时辰的缠斗，你找到破绽将其斩杀！魂环化为光环套在你身上，魂力+' + gain + '。';
       },
       fail: function (g, U, log) {
         g.lifespan -= U.irand(1, 4);
-        return '猎杀失败，被魂兽击伤，寿元受损';
+        return '你低估了魂兽的实力——它在濒死前爆发的魂力冲击波将你掀翻在地，你拖着伤重的身体狼狈逃出森林，寿元受损。';
       }
     },
     { id: 'duo_dan', weight: 0.5, maxCount: 5, name: '丹药辅助', tier: 2, desc: '服用修炼丹药',
@@ -417,9 +417,9 @@
       ok: function (g, U, log) {
         var lf = U.irand(1, 4); g.lifespan += lf;
         g.combat += U.irand(200, 1500);
-        return '丹药见效！寿元+' + lf + '，魂力增长';
+        return '丹药入口即化，温热的药力沿着经脉扩散至四肢百骸——杂质被排出体外，经脉更加通透，寿元+' + lf + '，魂力增长。';
       },
-      fail: function (g, U, log) { return '丹药药力过猛，略有不适'; }
+      fail: function (g, U, log) { return '丹药的药力远超你的身体所能承受，经脉中传来阵阵灼痛——你不得不运功压制药力，数日后才勉强恢复，略有不适。'; }
     },
     { id: 'duo_seagod', weight: 0.5, maxCount: 2, name: '海神岛历练', tier: 2, desc: '在海神岛接受海神九考',
       minAge: 30, maxAge: 10000,
@@ -429,11 +429,11 @@
         var add = Math.floor(r * U.rand(1.5, 3));
         g.combat += add;
         var lf = U.irand(3, 8); g.lifespan += lf;
-        return '海神岛历练，通过海神考验！魂力+' + add + '，寿元+' + lf;
+        return '海神岛的潮汐中蕴含着上古神力，你以肉身对抗巨浪、穿越珊瑚迷阵——海神的考验如约通过，你感受到海神之力的认可，魂力+' + add + '，寿元+' + lf + '！';
       },
       fail: function (g, U, log) {
         g.lifespan -= U.irand(2, 5);
-        return '海神考验失败，魂力反噬，寿元受损';
+        return '海神岛的第七重潮汐如同一堵百丈高墙迎面拍下，你的魂力防御瞬间崩碎——被巨浪拍飞至礁石之上，海神之力的反噬令你经脉俱损，寿元受损。';
       }
     },
     { id: 'duo_slaughter', weight: 0.4, maxCount: 2, name: '杀戮之都', tier: 2, desc: '在杀戮之都中磨练杀气',
@@ -444,11 +444,11 @@
         var add = Math.floor(r * U.rand(1.0, 2.5));
         g.combat += add;
         var lf = U.irand(2, 5); g.lifespan += lf;
-        return '杀戮之都修炼，杀气凝聚！魂力+' + add + '，寿元+' + lf;
+        return '杀戮之都的角斗场中尸骨累累，你与对手以命相搏——在生死之间磨练出的杀气如同实质的利刃，魂力+' + add + '，寿元+' + lf + '。';
       },
       fail: function (g, U, log) {
         g.lifespan -= U.irand(1, 3);
-        return '杀戮之都险些陨落，寿元受损';
+        return '杀戮之都的地下城暗藏杀机，你被三名魂斗罗级杀手围攻——拼死杀出一条血路，却已身中剧毒，险些陨落，寿元受损。';
       }
     },
     { id: 'duo_icefire', weight: 0.3, maxCount: 1, name: '冰火两仪眼', tier: 2, desc: '在冰火两仪眼修炼',
@@ -459,7 +459,7 @@
         var add = Math.floor(r * U.rand(2, 4));
         g.combat += add;
         var lf = U.irand(5, 10); g.lifespan += lf;
-        return '冰火两仪眼修炼，仙药淬体！魂力+' + add + '，寿元+' + lf;
+        return '冰火两仪眼中，你同时引导冰火之力淬炼肉身——极寒与极热在体内交融碰撞，如同在阴阳之间行走，每一步都在重塑你的经脉与骨骼，魂力+' + add + '，寿元+' + lf + '！';
       },
       fail: null
     },
@@ -473,7 +473,7 @@
         var add = Math.floor(r * U.rand(0.3, 0.8));
         g.combat += add;
         var lf = U.irand(1, 3); g.lifespan += lf;
-        return '史莱克学院修行，魂力+' + add + '，寿元+' + lf;
+        return '史莱克学院的校训「不敢惹事是庸才」刻在石碑上——在大师的指导下你的修炼突飞猛进，魂力+' + add + '，寿元+' + lf + '。';
       },
       fail: null
     },
@@ -484,11 +484,11 @@
         var r = U.combatGain(g.aptitude, g.lvl);
         var add = Math.floor(r * U.rand(0.4, 1.0));
         g.combat += add;
-        return '大斗兽场磨练，魂技精进，魂力+' + add;
+        return '大斗兽场的铁笼中回荡着嘶吼——你在实战中将魂技运用得越来越娴熟，出手速度与精准度都有了质的提升，魂力+' + add + '。';
       },
       fail: function (g, U, log) {
         g.lifespan -= U.irand(1, 3);
-        return '大斗兽场受创，寿元受损';
+        return '大斗兽场的对手比预想中强得多——你的魂技被看穿，一记重击将你打趴在地，你被迫认输，带着满身伤痕黯然离场，寿元受损。';
       }
     },
     { id: 'duo_xingdou', weight: 0.8, maxCount: 5, name: '星斗大森林', tier: 1, desc: '在星斗大森林中猎杀魂兽',
@@ -499,7 +499,7 @@
         var add = Math.floor(r * U.rand(0.5, 1.2));
         g.combat += add;
         var lf = U.irand(1, 2); g.lifespan += lf;
-        return '星斗大森林猎杀魂兽，魂力+' + add + '，寿元+' + lf;
+        return '星斗大森林的古木参天，你追踪一头千年的鬼藤蛛——在林间展开追逐后将其猎杀，魂环浮现，魂力+' + add + '，寿元+' + lf + '。';
       },
       fail: null
     },
@@ -511,7 +511,7 @@
         var add = Math.floor(r * U.rand(0.3, 0.7));
         g.combat += add;
         var lf = U.irand(1, 3); g.lifespan += lf;
-        return '落日森林寻得仙草，魂力+' + add + '，寿元+' + lf;
+        return '落日森林的晚霞映红了整片林海——你在一处幽谷中发现了一株珍稀草药，采摘后药力入体，魂力+' + add + '，寿元+' + lf + '。';
       },
       fail: null
     },
@@ -522,7 +522,7 @@
         var r = U.combatGain(g.aptitude, g.lvl);
         var add = Math.floor(r * U.rand(0.3, 0.6));
         g.combat += add;
-        return '高级魂师大赛夺冠，魂力+' + add;
+        return '高级魂师大赛的赛场座无虚席——你与队友配合默契，在决赛中以一套华丽的连招锁定了胜局，夺冠之后对武魂的理解更深一层，魂力+' + add + '。';
       },
       fail: null
     },
@@ -536,9 +536,9 @@
         var r = U.combatGain(g.aptitude, g.lvl);
         var add = Math.floor(r * U.rand(3, 6));
         g.combat += add;
-        return '唐门暗器传承！习得佛怒唐莲、暗器百解，魂力+' + add + '，寿元+' + lf;
+        return '唐门遗迹深处的暗器秘典缓缓展开，佛怒唐莲的制作图谱映入眼帘——这件足以毁天灭地的终极暗器终于重见天日！暗器百解尽收心中，魂力+' + add + '，寿元+' + lf + '！';
       },
-      fail: function (g, U, log) { g.lifespan -= U.irand(3, 6); return '唐门机关反噬，险些陨落，寿元受损'; }
+      fail: function (g, U, log) { g.lifespan -= U.irand(3, 6); return '唐门上古机关轰然启动，无数淬毒暗器从四面射来！你拼死突围，终究被数枚暗器击中——唐门机关反噬，险些陨落。'; }
     },
     { id: 'duo_seagod9', weight: 0.1, maxCount: 1, name: '海神九考', tier: 4, desc: '海神岛九考之试炼',
       minAge: 30, maxAge: 10000,
@@ -549,9 +549,9 @@
         var r = U.combatGain(g.aptitude, g.lvl);
         var add = Math.floor(r * U.rand(4, 7));
         g.combat += add;
-        return '通过海神九考！获海神三叉戟认可，魂力+' + add + '，寿元+' + lf;
+        return '九重试炼，九死一生！你终于站在海神殿的最高处，海神三叉戟破水而出，金色光芒笼罩全身——海神九考全数通过！三叉戟化为魂环融入体内，魂力+' + add + '，寿元+' + lf + '！';
       },
-      fail: function (g, U, log) { g.lifespan -= U.irand(5, 10); return '海神九考未通过，神力反噬，寿元大损'; }
+      fail: function (g, U, log) { g.lifespan -= U.irand(5, 10); return '第七考的巨浪将你拍入海底，海神之光无情地灼烧灵魂——神力反噬如万千刀刃切割经脉，你呕出一口鲜血被冲上沙滩，寿元大损。'; }
     },
     { id: 'duo_xiuluo', weight: 0.08, maxCount: 1, name: '修罗神传承', tier: 4, desc: '修罗神力降临',
       minAge: 40, maxAge: 10000,
@@ -562,9 +562,9 @@
         var r = U.combatGain(g.aptitude, g.lvl);
         var add = Math.floor(r * U.rand(5, 8));
         g.combat += add;
-        return '修罗神传承降临！杀戮之心觉醒，魂力+' + add + '，寿元+' + lf;
+        return '血红色的修罗神力自九天倾泻而下，杀戮之心在胸腔中猛然跳动——你感受到无穷无尽的杀伐之意！修罗神传承降临，万剑臣服，魂力+' + add + '，寿元+' + lf + '！';
       },
-      fail: function (g, U, log) { g.lifespan -= U.irand(8, 15); return '修罗神力过强，肉身难以承受，寿元大损'; }
+      fail: function (g, U, log) { g.lifespan -= U.irand(8, 15); return '修罗神力如岩浆灌顶，你的皮肤龟裂出血，骨骼在神力的碾压下发出碎裂之声——肉身终究承受不住这极致的杀伐之气，寿元大损。'; }
     },
 
     /* ---------- tier 3 稀有 (新增) ---------- */
@@ -575,9 +575,9 @@
         var r = U.combatGain(g.aptitude, g.lvl);
         var add = Math.floor(r * U.rand(1.5, 3));
         g.combat += add;
-        return '击退泰坦巨猿！获得万年魂骨，魂力+' + add;
+        return '大地在颤抖，泰坦巨猿从天斗大森林深处现身——十丈高的身躯如同一座移动的山岳！你以巧破力，击退巨猿的同时获得其掉落的万年魂骨，魂力+' + add + '！';
       },
-      fail: function (g, U, log) { g.lifespan -= U.irand(3, 7); return '泰坦巨猿之力远超想象，险些丧命，寿元受损'; }
+      fail: function (g, U, log) { g.lifespan -= U.irand(3, 7); return '泰坦巨猿的重拳如同陨石坠落，大地被砸出数丈深坑——你的防御在它面前形同虚设，仓皇逃出后已是满身疮痍，寿元受损。'; }
     },
     { id: 'duo_youxiang', weight: 0.16, maxCount: 2, name: '幽香绮罗仙品', tier: 3, desc: '落日森林遇幽香绮罗仙品',
       minAge: 12, maxAge: 10000,
@@ -588,7 +588,7 @@
         var add = Math.floor(r * U.rand(1, 2));
         g.combat += add;
         if (g.innate < 10) { g.innate += 1; g.aptitude = Math.max(g.aptitude, g.innate); }
-        return '幽香绮罗仙品！先天魂力+1，魂力+' + add + '，寿元+' + lf;
+        return '一株散发着紫色幽香的仙草在月光下摇曳——幽香绮罗仙品！它能解百毒、洗髓伐骨，服下后先天魂力突破瓶颈+1，魂力+' + add + '，寿元+' + lf + '！';
       },
       fail: null
     },
@@ -600,9 +600,9 @@
         var r = U.combatGain(g.aptitude, g.lvl);
         var add = Math.floor(r * U.rand(2, 3.5));
         g.combat += add;
-        return '冰火两仪眼采得仙草！仙药淬体，魂力+' + add + '，寿元+' + lf;
+        return '在冰火两仪眼的极热与极寒交汇之处，一株吸收了天地精华的仙草傲然绽放——左半金红、右半冰蓝！服下后仙药之力淬炼肉身，魂力+' + add + '，寿元+' + lf + '！';
       },
-      fail: function (g, U, log) { g.lifespan -= U.irand(2, 5); return '仙草药力冲突，反受其害，寿元受损'; }
+      fail: function (g, U, log) { g.lifespan -= U.irand(2, 5); return '仙草的冰火两股药力在体内剧烈冲突，左半身结冰、右半身燃烧！你咬牙压制了半个时辰才勉强稳住，但经脉已受重创，寿元受损。'; }
     },
     { id: 'duo_iceemperor', weight: 0.14, maxCount: 1, name: '极北之地·冰帝', tier: 3, desc: '极北之地遇冰帝',
       minAge: 30, maxAge: 10000,
@@ -612,9 +612,9 @@
         var r = U.combatGain(g.aptitude, g.lvl);
         var add = Math.floor(r * U.rand(2, 4));
         g.combat += add;
-        return '冰帝指点！极寒之力淬体，魂力+' + add + '，寿元+' + lf;
+        return '极北之地的万年冰原上，冰碧帝皇蝎的庞大身影浮现——冰帝！它审视你片刻后释放出极寒之力，那足以冻裂空间的冰冷淬炼了你的每一寸经脉，魂力+' + add + '，寿元+' + lf + '！';
       },
-      fail: function (g, U, log) { g.lifespan -= U.irand(4, 8); return '极寒侵蚀肉身，险些冻毙，寿元受损'; }
+      fail: function (g, U, log) { g.lifespan -= U.irand(4, 8); return '极北之地的寒潮如利刃般刺入骨髓，你来不及闪避便被冻在了冰原之上——冰霜侵蚀肉身，险些冻毙，被路人救出时四肢已失去知觉，寿元受损。'; }
     },
     { id: 'duo_zilan', weight: 0.15, maxCount: 1, name: '海神岛·紫兰花', tier: 3, desc: '海神岛采紫兰花',
       minAge: 25, maxAge: 10000,
@@ -624,7 +624,7 @@
         var r = U.combatGain(g.aptitude, g.lvl);
         var add = Math.floor(r * U.rand(1.5, 3));
         g.combat += add;
-        return '海神岛采得紫兰花！海神之力加持，魂力+' + add + '，寿元+' + lf;
+        return '海神岛的紫兰花只在月圆之夜绽放，花瓣上流转着海神的祝福——你趁夜色潜入采摘成功，海神之力加持全身，魂力+' + add + '，寿元+' + lf + '！';
       },
       fail: null
     },
@@ -636,9 +636,9 @@
         var r = U.combatGain(g.aptitude, g.lvl);
         var add = Math.floor(r * U.rand(2.5, 4));
         g.combat += add;
-        return '杀神领域觉醒！杀气凝形，魂力+' + add + '，寿元+' + lf;
+        return '杀戮之都的血色天空下，你踏过一千具尸体走到了尽头——杀神领域觉醒！血红色的杀气在周身凝结成实质，所有敌人在这领域中战力骤降，魂力+' + add + '，寿元+' + lf + '！';
       },
-      fail: function (g, U, log) { g.lifespan -= U.irand(4, 8); return '杀气失控，反噬其主，寿元受损'; }
+      fail: function (g, U, log) { g.lifespan -= U.irand(4, 8); return '杀气如同脱缰的猛兽反噬其主，你的眼前浮现出无数死在你手下的亡魂——心魔入侵，杀气失控，你被迫退出杀戮之都，寿元受损。'; }
     },
     { id: 'duo_tiandou_coup', weight: 0.12, maxCount: 1, name: '天斗宫变', tier: 3, desc: '天斗帝国宫变事件',
       minAge: 25, maxAge: 10000,
@@ -648,9 +648,9 @@
         var r = U.combatGain(g.aptitude, g.lvl);
         var add = Math.floor(r * U.rand(2, 3.5));
         g.combat += add;
-        return '天斗宫变中建功立业！获皇室赏赐，魂力+' + add + '，寿元+' + lf;
+        return '天斗皇宫内火光冲天，叛军与禁卫军混战之际，你挺身而出力挽狂澜——宫变平定后，皇帝亲自赏赐，魂力+' + add + '，寿元+' + lf + '！';
       },
-      fail: function (g, U, log) { g.lifespan -= U.irand(3, 7); return '卷入宫变漩涡，险些获罪，寿元受损'; }
+      fail: function (g, U, log) { g.lifespan -= U.irand(3, 7); return '天斗宫变中你被叛军裹挟，虽未参与叛乱，但嫌疑难洗——在天牢中被关押数月才获释放，身心俱疲，寿元受损。'; }
     },
 
     /* ---------- tier 2 中级 (新增) ---------- */
@@ -662,7 +662,7 @@
         var add = Math.floor(r * U.rand(1, 2));
         g.combat += add;
         var lf = U.irand(2, 5); g.lifespan += lf;
-        return '史莱克七怪集训！彼此切磋精进，魂力+' + add + '，寿元+' + lf;
+        return '史莱克七怪齐聚训练场——戴沐白的白虎烈光波、朱竹清的幽冥斩、奥斯卡的食神之力……在与伙伴们的切磋中，你的武魂与魂技不断精进，魂力+' + add + '，寿元+' + lf + '！';
       },
       fail: null
     },
@@ -673,16 +673,16 @@
         var r = U.combatGain(g.aptitude, g.lvl);
         var add = Math.floor(r * U.rand(0.8, 1.8));
         g.combat += add;
-        return '索托城大斗兽场连胜！魂力+' + add;
+        return '索托城大斗兽场的欢呼声震耳欲聋——你在擂台上以华丽的魂技连续击败三名对手，连胜的荣耀令全场沸腾，魂力+' + add + '！';
       },
-      fail: function (g, U, log) { g.lifespan -= U.irand(1, 3); return '斗兽场败北，重伤离场，寿元受损'; }
+      fail: function (g, U, log) { g.lifespan -= U.irand(1, 3); return '大斗兽场的对手竟是一名魂王级别的老将——你的魂技被轻易化解，一记重击将你轰出擂台，观众的欢呼变成了嘘声，你重伤离场，寿元受损。'; }
     },
     { id: 'duo_yuexuan', weight: 0.5, maxCount: 5, name: '月轩冥想', tier: 2, desc: '月轩中静心冥想',
       minAge: 10, maxAge: 10000,
       cond: null,
       ok: function (g, U, log) {
         var gain = U.evCombat(g, 0.03, 0.09, 180);
-        return '月轩冥想入定，魂力+' + gain;
+        return '月轩的丝竹声中，你缓缓进入冥想——这里的环境能让人心如止水，魂力在寂静中缓慢而坚定地增长，魂力+' + gain + '。';
       },
       fail: null
     },
@@ -693,7 +693,7 @@
         var r = U.combatGain(g.aptitude, g.lvl);
         var add = Math.floor(r * U.rand(0.8, 1.5));
         g.combat += add;
-        return '天斗皇家学院进修！名师指点，魂力+' + add;
+        return '天斗皇家学院的演武场上，你跟随帝国最顶尖的魂师学习——名师的指点让你对魂力的运用有了全新的理解，魂力+' + add + '。';
       },
       fail: null
     },
@@ -705,9 +705,9 @@
         var add = Math.floor(r * U.rand(1.2, 2.2));
         g.combat += add;
         var lf = U.irand(1, 4); g.lifespan += lf;
-        return '武魂殿大比夺魁！名震大陆，魂力+' + add + '，寿元+' + lf;
+        return '武魂殿大比的决赛场上，比比东亲自主持——你以压倒性的实力碾压对手，武魂殿大比夺魁，名震大陆！魂力+' + add + '，寿元+' + lf + '。';
       },
-      fail: function (g, U, log) { return '武魂殿大比失利，铩羽而归'; }
+      fail: function (g, U, log) { return '武魂殿大比上，你被对手的领域技完全压制——苦战三回合后败下阵来，台下武魂殿弟子的嘲笑声令你刻骨铭心，铩羽而归。'; }
     },
     { id: 'duo_longgu', weight: 0.35, maxCount: 2, name: '龙谷探险', tier: 2, desc: '深入龙谷探险',
       minAge: 20, maxAge: 10000,
@@ -717,9 +717,9 @@
         var add = Math.floor(r * U.rand(1.5, 2.5));
         g.combat += add;
         var lf = U.irand(2, 6); g.lifespan += lf;
-        return '龙谷探险得龙血草！魂力+' + add + '，寿元+' + lf;
+        return '龙谷中弥漫着远古龙族的气息，你在崖壁间找到了一株浸透龙血的灵草——龙血草入体，全身血脉沸腾翻涌，魂力+' + add + '，寿元+' + lf + '！';
       },
-      fail: function (g, U, log) { g.lifespan -= U.irand(2, 5); return '龙谷遇险，重伤逃出，寿元受损'; }
+      fail: function (g, U, log) { g.lifespan -= U.irand(2, 5); return '龙谷深处一头沉睡的龙族后裔被你惊醒，它的怒吼震碎了半个山谷——你被气浪掀飞撞上岩壁，重伤逃出，寿元受损。'; }
     },
     { id: 'duo_deepforest', weight: 0.45, maxCount: 4, name: '魂兽森林深处', tier: 2, desc: '深入魂兽森林核心区',
       minAge: 18, maxAge: 10000,
@@ -728,9 +728,9 @@
         var r = U.combatGain(g.aptitude, g.lvl);
         var add = Math.floor(r * U.rand(1, 2));
         g.combat += add;
-        return '魂兽森林深处猎得千年魂兽！魂力+' + add;
+        return '穿过层层瘴气与荆棘，你深入星斗大森林的核心区域——与一头千年凤尾鸡冠蛇缠斗半个时辰，终于将其猎杀，魂力+' + add + '！';
       },
-      fail: function (g, U, log) { g.lifespan -= U.irand(2, 5); return '深处魂兽凶猛，狼狈逃出，寿元受损'; }
+      fail: function (g, U, log) { g.lifespan -= U.irand(2, 5); return '森林深处的黑暗中，一双血红的巨眼锁定了你——那是一头万年魂兽！你甚至来不及看清它的模样便已负伤，拼死逃出，寿元受损。'; }
     },
     { id: 'duo_canalcaravan', weight: 0.5, maxCount: 5, name: '运河商队', tier: 2, desc: '随运河商队历练',
       minAge: 12, maxAge: 10000,
@@ -740,7 +740,7 @@
         var add = Math.floor(r * U.rand(0.5, 1.2));
         g.combat += add;
         var lf = U.irand(1, 3); g.lifespan += lf;
-        return '随运河商队历练，见闻长进，魂力+' + add + '，寿元+' + lf;
+        return '跟随运河商队南下，一路上你见识了各地魂师的修炼方法与战斗技巧——在与商队护卫的交流中获益匪浅，见闻长进，魂力+' + add + '，寿元+' + lf + '。';
       },
       fail: null
     },
@@ -752,7 +752,7 @@
         var add = Math.floor(r * U.rand(1.5, 3));
         g.combat += add;
         var lf = U.irand(3, 7); g.lifespan += lf;
-        return '阿房宫密室古修传承！魂力+' + add + '，寿元+' + lf;
+        return '阿房宫废墟之下的密室尘封千年，你在石壁上发现了上古魂师的修炼心得——字字珠玑，句句点破修炼瓶颈，魂力+' + add + '，寿元+' + lf + '！';
       },
       fail: null
     },
@@ -763,7 +763,7 @@
         var r = U.combatGain(g.aptitude, g.lvl);
         var add = Math.floor(r * U.rand(1, 2));
         g.combat += add;
-        return '研习唐门绝学，玄天功入门！魂力+' + add;
+        return '唐门秘典中的玄天功心法晦涩难懂，你参悟七七四十九天终于入门——内力运转路线与魂力完美融合，魂力+' + add + '！';
       },
       fail: null
     },
@@ -777,7 +777,7 @@
         var add = Math.floor(r * U.rand(0.3, 0.7));
         g.combat += add;
         var lf = U.irand(1, 2); g.lifespan += lf;
-        return '诺丁学院启蒙修习，魂力+' + add + '，寿元+' + lf;
+        return '诺丁学院虽然简陋，却是你踏入魂师世界的第一步——在老师的教导下，你学会了最基础的魂力运转方式，魂力+' + add + '，寿元+' + lf + '。';
       },
       fail: null
     },
@@ -788,7 +788,7 @@
         var r = U.combatGain(g.aptitude, g.lvl);
         var add = Math.floor(r * U.rand(0.2, 0.5));
         g.combat += add;
-        return '圣魂村中静修，魂力+' + add;
+        return '圣魂村的老槐树下，你每日吐纳修炼——虽然这里没有名师指点，但山野之间的天地魂力纯净平和，修炼反而别有心得，魂力+' + add + '。';
       },
       fail: null
     },
@@ -799,7 +799,7 @@
         var r = U.combatGain(g.aptitude, g.lvl);
         var add = Math.floor(r * U.rand(0.3, 0.6));
         g.combat += add;
-        return '手工锻造锤炼武魂，魂力+' + add;
+        return '炉火映红了你的面庞，铁锤在手中翻飞——每一锤都蕴含着对武魂的感悟，锻造不仅是锤炼金属，更是锤炼意志，魂力+' + add + '。';
       },
       fail: null
     },
@@ -810,7 +810,7 @@
         var r = U.combatGain(g.aptitude, g.lvl);
         var add = Math.floor(r * U.rand(0.5, 1));
         g.combat += add;
-        return '魂师公会注册成功！获魂师徽章，魂力+' + add;
+        return '魂师公会的大厅中，你在登记册上写下自己的名字——一枚闪亮的魂师徽章挂在胸前，从此你便是官方认证的正式魂师了，魂力+' + add + '。';
       },
       fail: null
     },
@@ -821,9 +821,9 @@
         var r = U.combatGain(g.aptitude, g.lvl);
         var add = Math.floor(r * U.rand(0.4, 0.9));
         g.combat += add;
-        return '成功吸收魂环！魂技精进，魂力+' + add;
+        return '你盘膝而坐，引导魂环之力缓缓融入经脉——古老的魂兽之力与你的武魂产生共鸣，新魂技觉醒，魂力+' + add + '。';
       },
-      fail: function (g, U, log) { g.lifespan -= U.irand(1, 2); return '魂环吸收失败，反噬受伤，寿元受损'; }
+      fail: function (g, U, log) { g.lifespan -= U.irand(1, 2); return '魂环的力量过于霸道，你试图强行吸收却引发了反噬——魂力逆冲经脉，你呕出一口鲜血，被迫中断吸收，寿元受损。'; }
     },
     { id: 'duo_wuhunworship', weight: 0.7, maxCount: 3, name: '武魂殿礼拜', tier: 1, desc: '在武魂殿礼拜祈祷',
       minAge: 6, maxAge: 10000,
@@ -833,7 +833,7 @@
         var add = Math.floor(r * U.rand(0.2, 0.5));
         g.combat += add;
         var lf = U.irand(1, 2); g.lifespan += lf;
-        return '武魂殿礼拜，神恩加持，魂力+' + add + '，寿元+' + lf;
+        return '武魂殿的金色穹顶下，你闭目祈祷——供奉的武魂神像似乎回应了你的虔诚，一缕温暖的神恩洒落，魂力+' + add + '，寿元+' + lf + '。';
       },
       fail: null
     },
@@ -844,7 +844,7 @@
         var r = U.combatGain(g.aptitude, g.lvl);
         var add = Math.floor(r * U.rand(0.3, 0.6));
         g.combat += add;
-        return '天斗城巡游，见闻增长，魂力+' + add;
+        return '天斗城的街巷间人来人往，你混迹于街头武者的切磋场中——观摩各路魂师的招式后若有所悟，见闻增长，魂力+' + add + '。';
       },
       fail: null
     },
@@ -855,7 +855,7 @@
         var r = U.combatGain(g.aptitude, g.lvl);
         var add = Math.floor(r * U.rand(0.4, 0.8));
         g.combat += add;
-        return '魂兽森林外围猎得低阶魂兽，魂力+' + add;
+        return '魂兽森林外围，一头十年期的风铃鹿正在觅食——你用一个简单的魂技将其拿下，简单但扎实的猎杀让你的战斗经验更上一层，魂力+' + add + '。';
       },
       fail: null
     },
@@ -866,9 +866,9 @@
         var r = U.combatGain(g.aptitude, g.lvl);
         var add = Math.floor(r * U.rand(0.4, 0.9));
         g.combat += add;
-        return '星罗城比武夺魁！魂力+' + add;
+        return '星罗城的比武台上人声鼎沸——你在擂台上以凌厉的攻势一路过关斩将，最终以一记决定性魂技锁定胜局，魂力+' + add + '！';
       },
-      fail: function (g, U, log) { return '星罗城比武失利，铩羽而归'; }
+      fail: function (g, U, log) { return '星罗城的比武对手出人意料地强大——你的魂技被轻描淡写地化解，三招之内便被击落擂台，在众人的议论声中黯然离去。'; }
     },
     { id: 'duo_sunsetouter', weight: 0.85, maxCount: 4, name: '落日森林外围', tier: 1, desc: '落日森林外围采药',
       minAge: 8, maxAge: 10000,
@@ -878,7 +878,7 @@
         var add = Math.floor(r * U.rand(0.3, 0.6));
         g.combat += add;
         var lf = U.irand(1, 2); g.lifespan += lf;
-        return '落日森林外围采得凡品仙草，魂力+' + add + '，寿元+' + lf;
+        return '落日森林外围的一处溪流边，你发现了一株品相普通的灵草——虽非顶级仙品，但聊胜于无，服下后魂力+' + add + '，寿元+' + lf + '。';
       },
       fail: null
     }
@@ -919,9 +919,9 @@
     awakenSkill: function (peak, tierName, add) { return '修为达到' + peak + '级，觉醒' + tierName + '色魂环魂技，魂力+' + add; },
     levelUp: function (from, to, cg, lg) { return '等级' + from + '→' + to + '级，魂力+' + cg + (lg ? '，寿元+' + lg : '') + '！'; },
     peakLevelUp: function () { return '等级抵达巅峰后，有所领悟，魂力+10000！'; },
-    refineSuccess: function (age) { return '第' + age + '岁，寿元将尽，成功融合魂骨，晋升为神祇！'; },
+    refineSuccess: function (age, name) { return '第' + age + '岁，寿元将尽，成功领悟神力，蜕变为神祇，神位：' + (name || '神祇') + '！'; },
     refineFail: function (age, boost) { return '第' + age + '岁，魂骨融合失败，但武魂有所提升，魂力+' + boost; },
-    forcedAscend: function (age) { return '第' + age + '岁，寿元将尽，强行成神，成为神祇！'; },
+    forcedAscend: function (age, name) { return '第' + age + '岁，寿元将尽，强行突破，蜕变为神祇，神位：' + (name || '神祇') + '！'; },
     forcedFail: function (age) { return '第' + age + '岁，强行成神失败，魂飞魄散'; },
 
     settleGodTitle: '✨ 神祇降临 ✨',
@@ -983,7 +983,7 @@
     /* purple (1) */
     { id:'dl_t24', name:'神考资格', rarity:'purple', desc:'魂力+20%，开局获得神考邀请(随机)', apply:function(g){ g.combat = Math.floor(g.combat * 1.2); g.godTest = true; var gods = ['海神','修罗神','天使之神','罗刹神','食神','九彩神女']; g.inheritGod = gods[Math.floor(Math.random() * gods.length)]; } },
     /* gold (1) */
-    { id:'dl_t25', name:'修罗神血脉', rarity:'gold', desc:'天赋+2，魂力+40%，寿元+15，开局获得修罗神神考', apply:function(g){ g.innate = Math.min(10, g.innate + 2); g.aptitude = Math.max(g.aptitude, g.innate); g.combat = Math.floor(g.combat * 1.4); g.lifespan += 15; g.godTest = true; g.inheritGod = '修罗神'; } }
+    { id:'dl_t25', name:'修罗神血脉', rarity:'gold', desc:'天赋+2，魂力+40%，寿元+15，开局获得修罗神神考', apply:function(g){ g.innate = Math.min(10, g.innate + 2); g.aptitude = Math.max(g.aptitude, g.innate); g.combat = Math.floor(g.combat * 1.4); g.lifespan += 15; g.godTest = true; g.inheritGod = '修罗神'; } },
     { id:'dl_t26', name:'天赐神力', rarity:'gold', desc:'幸运加持，魂环品质提升，成神+6%', apply:function(g){ g.ascendBonus = (g.ascendBonus || 0) + 0.06; g.luckBonus = (g.luckBonus || 0) + 1; g.combat = Math.floor(g.combat * 1.3); } },
     { id:'dl_t27', name:'命运之轮', rarity:'gold', desc:'每次突破概率+10%，成神+5%', apply:function(g){ g.ascendBonus = (g.ascendBonus || 0) + 0.05; g.breakBonus = (g.breakBonus || 0) + 0.10; g.lifespan += 15; } },
     { id:'dl_t28', name:'武魂真身', rarity:'gold', desc:'开局武魂进化真身，魂力+50%，成神+7%', apply:function(g){ g.combat = Math.floor(g.combat * 1.5); g.ascendBonus = (g.ascendBonus || 0) + 0.07; g.lifespan += 10; } },
@@ -1131,10 +1131,10 @@
           var rate1 = (0.06 + (g.ascendBonus || 0)) - (g.pathAttempts - 1) * 0.012;
           if (Math.random() < rate1) {
             g.ascendMode = 'godTest';
-            log.push({ cls: 'god', text: '第' + g.age + '岁，通过' + g.inheritGod + '九考！继承神位，飞升神界！' });
+            g.godName = g.inheritGod;
+            log.push({ cls: 'god', text: '第' + g.age + '岁，通过' + g.inheritGod + '九考！继承神位，飞升神界！神位：' + g.godName + '！' });
             g.ascended = true; g.lvl = 100;
             g.combat = helpers.godCombat(g.combat, 8); g.lifespan = 99999;
-            g.godName = g.inheritGod;
             return true;
           }
           log.push({ cls: 'ev3', text: '第' + g.age + '岁，' + g.inheritGod + '神考未通过，明年再试！' });
@@ -1146,10 +1146,10 @@
           var rate2 = (0.04 + (g.ascendBonus || 0)) - (g.pathAttempts - 1) * 0.01;
           if (Math.random() < rate2) {
             g.ascendMode = 'selfGod';
-            log.push({ cls: 'god', text: '第' + g.age + '岁，信仰之力推举突破百级！自创神位，成就初代神！' });
+            g.godName = generateGodName(g);
+            log.push({ cls: 'god', text: '第' + g.age + '岁，信仰之力推举突破百级！自创神位，成就初代神！神位：' + g.godName + '！' });
             g.ascended = true; g.lvl = 100;
             g.combat = helpers.godCombat(g.combat, 10); g.lifespan = 99999;
-            g.godName = generateGodName(g);
             return true;
           }
           log.push({ cls: 'ev3', text: '第' + g.age + '岁，信仰之力不足，自创神位失败！' });

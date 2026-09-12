@@ -203,7 +203,14 @@
     function printlog(text) {
       if (!_curEv) return;
       _curEv.printed = true;
-      if (_curEv.log) _curEv.log.push({ cls: 'ev' + _curEv.ev.tier, text: '第' + _curEv.g.age + '岁，遇到' + _curEv.ev.name + '，结果' + text });
+      if (_curEv.log) _curEv.log.push({ cls: 'ev' + _curEv.ev.tier, text: (function(){ var _pfx = ['','','']; var _t = _curEv.ev.tier || 2;
+        if (_t >= 4) { _pfx = ['✨ ', '⚡ ', '🌟 ']; }
+        else if (_t >= 3) { _pfx = ['💫 ', '🔥 ', '⚔️ ']; }
+        else if (_t >= 2) { _pfx = ['📖 ', '🎯 ', '🔮 ']; }
+        else { _pfx = ['📜 ', '🗺️ ', '🏠 ']; }
+        var _i = Math.floor(Math.random() * 3);
+        return '第' + _curEv.g.age + '岁，' + _pfx[_i] + _curEv.ev.name + '——' + text;
+      })() });
     }
 
     /* 双生异能觉醒：按天赋 7-10 档异能权重（INNATE_WEIGHTS：7=4 / 8=3 / 9=2 / 10=1）抽取，
@@ -352,7 +359,10 @@
         var refineSuccessRate = combatRatio * ((0.12 + (g.ascendBonus || 0)) - (g.refineAttempts - 1) * 0.015);
         if (g.combat >= es.needCombat && Math.random() < refineSuccessRate) {
           g.ascendMode = 'refine';
-          log.push({ cls: 'god', text: theme.terms.refineSuccess(g.age) });
+          /* 生成飞升名号 */
+          var _lbl = theme.terms.ascend || '神';
+          var _nm = g.emperorName || g.godName || g.immortalName || _lbl;
+          log.push({ cls: 'god', text: theme.terms.refineSuccess(g.age, _nm) });
           g.ascended = true; g.lvl = theme.terms.godLevel;
           g.combat = godCombat(g.combat, rate); g.lifespan = 99999;
           return true;
@@ -367,7 +377,10 @@
       var lifeDanger = (g.lifespan - g.age) <= 20;
       if (lifeDanger && Math.random() < forcedChance(g.combat, g)) {
         g.ascendMode = 'forced';
-        log.push({ cls: 'god', text: theme.terms.forcedAscend(g.age) });
+        /* 生成飞升名号 */
+        var _lbl2 = theme.terms.ascend || '神';
+        var _nm2 = g.emperorName || g.godName || g.immortalName || _lbl2;
+        log.push({ cls: 'god', text: theme.terms.forcedAscend(g.age, _nm2) });
         g.ascended = true; g.lvl = theme.terms.godLevel;
         var dRate = theme.FORCED_BONUS_MIN + Math.random() * (theme.FORCED_BONUS_MAX - theme.FORCED_BONUS_MIN);
         g.combat = godCombat(g.combat, dRate); g.lifespan = 99999;
@@ -477,28 +490,22 @@
         if (g.lvl % 10 === 0 && g.lvl < peakLv) awakenSkill(g, log);
       }
 
-      /* 达到巅峰等级且主题定义了成帝/成神：立即触发进化（保底成功） */
+      /* 达到巅峰等级：立即尝试飞升，失败则游戏结束 */
       if (g.lvl >= peakLv && !g.ascended && theme.ascend) {
         var ascended = tryAscend(g, log);
         if (!ascended && !g.dead) {
           g.ascended = true; g.lvl = theme.terms.godLevel || 100;
           g.combat = godCombat(g.combat, 1.0); g.lifespan = 99999;
-          log.push({ cls: 'god', text: theme.terms.ascend + '降临！' });
+          /* 生成飞升名号 */
+          var godLabel = theme.terms.ascend || '神';
+          if (theme.generateName) { g._godName = theme.generateName(g); }
+          else if (g.emperorName) { g._godName = g.emperorName; }
+          else if (g.godName) { g._godName = g.godName; }
+          else if (g.immortalName) { g._godName = g.immortalName; }
+          else { g._godName = godLabel; }
+          log.push({ cls: 'god', text: '成功晋入' + godLabel + '阶别，飞升' + godLabel + '，' + (godLabel === '斗帝' ? '帝名' : godLabel === '仙帝' ? '仙帝名' : '神位') + '：' + g._godName + '！' });
         }
-        if (g.ascended) return log;
-      }
-      /* 99 级 每年修炼连击：100%→50%→25%→25%… 每中一次 +99，
-       * 任一次判定失败即停止，只累加并展示最终总战力 */
-      if (g.lvl >= peakLv && !g.ascended && (g.lifespan - g.age) > 10) {
-        var limGain = 0, limStep = 0;
-        while (true) {
-          var lp = limStep === 0 ? 1 : (limStep === 1 ? 0.5 : 0.25);
-          if (Math.random() < lp) { limGain += 99; limStep++; }
-          else break;
-          if (limStep >= 500) break;   /* 极端兜底防死循环 */
-        }
-        g.combat += limGain;
-        log[0] = { cls: 'year', text: theme.terms.yearCombat(g.age, limGain) };
+        return log;
       }
 
       /* 90级+ 每年有概率尝试进化；剩余寿命<=20年时必定尝试 */

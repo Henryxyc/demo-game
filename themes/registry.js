@@ -1,16 +1,16 @@
 /* ============================================================
- * 模拟器合集 · 主题注册表
- * 各主题包（doomsday/douluo/doupo/wanmei）通过全局 THEMES 对象注册自身，
- * 本文件提供 listThemes()/getTheme(id)/默认主题等查询接口，供 game.js 使用。
- * 加载顺序：各主题包 → registry.js → sim.js → game.js
+ * 妯℃嫙鍣ㄥ悎闆?路 涓婚娉ㄥ唽琛?
+ * 鍚勪富棰樺寘锛坉oomsday/douluo/doupo/wanmei锛夐€氳繃鍏ㄥ眬 THEMES 瀵硅薄娉ㄥ唽鑷韩锛?
+ * 鏈枃浠舵彁渚?listThemes()/getTheme(id)/榛樿涓婚绛夋煡璇㈡帴鍙ｏ紝渚?game.js 浣跨敤銆?
+ * 鍔犺浇椤哄簭锛氬悇涓婚鍖?鈫?registry.js 鈫?sim.js 鈫?game.js
  * ============================================================ */
 (function (root) {
   var THEMES = root.THEMES = root.THEMES || {};
 
-  /* 默认主题 id（首次进入/无选择时使用） */
+  /* 榛樿涓婚 id锛堥娆¤繘鍏?鏃犻€夋嫨鏃朵娇鐢級 */
   var DEFAULT_ID = 'doomsday';
 
-  /* 当前选中的主题 id（持久化在 localStorage: 'sim_collection_current'） */
+  /* 褰撳墠閫変腑鐨勪富棰?id锛堟寔涔呭寲鍦?localStorage: 'sim_collection_current'锛?*/
   var KEY_CURRENT = 'sim_collection_current';
   var _currentId = null;
 
@@ -31,10 +31,10 @@
     return _currentId;
   }
 
-  /* 列出所有主题元数据（卡片网格用，不含完整数据） */
+  /* 鍒楀嚭鎵€鏈変富棰樺厓鏁版嵁锛堝崱鐗囩綉鏍肩敤锛屼笉鍚畬鏁存暟鎹級 */
   function listThemes() {
     var out = [], k;
-    var order = ['doomsday', 'douluo', 'doupo', 'wanmei'];   /* 合集首页展示顺序 */
+    var order = ['doomsday', 'douluo', 'doupo', 'wanmei'];   /* 鍚堥泦棣栭〉灞曠ず椤哄簭 */
     for (var i = 0; i < order.length; i++) {
       var t = THEMES[order[i]];
       if (t) out.push({
@@ -47,7 +47,7 @@
         tags: t.tags
       });
     }
-    /* 兜底：补全未在 order 中的主题 */
+    /* 鍏滃簳锛氳ˉ鍏ㄦ湭鍦?order 涓殑涓婚 */
     for (k in THEMES) {
       if (order.indexOf(k) < 0) out.push({
         id: THEMES[k].id, name: THEMES[k].name, subtitle: THEMES[k].subtitle,
@@ -57,14 +57,14 @@
     return out;
   }
 
-  /* 获取完整主题对象 */
+  /* 鑾峰彇瀹屾暣涓婚瀵硅薄 */
   function getTheme(id) {
     if (!id) id = getCurrentId();
     return THEMES[id] || THEMES[DEFAULT_ID];
   }
-  /* 获取当前主题（完整对象） */
+  /* 鑾峰彇褰撳墠涓婚锛堝畬鏁村璞★級 */
   function getCurrent() { return getTheme(getCurrentId()); }
-  /* 切换当前主题 */
+  /* 鍒囨崲褰撳墠涓婚 */
   function setCurrent(id) {
     if (!THEMES[id]) return null;
     saveCurrentId(id);
