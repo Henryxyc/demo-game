@@ -1,4 +1,5 @@
-﻿import { kv } from '@vercel/kv';
+﻿import { Redis } from '@upstash/redis';
+const redis = new Redis({ url: process.env.KV_REST_API_URL, token: process.env.KV_REST_API_TOKEN });
 
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -17,7 +18,7 @@ export default async function handler(req, res) {
     }
 
     const key = `board:${theme}_${board}`;
-    const entries = await kv.get(key) || [];
+    const entries = JSON.parse(await redis.get(key) || '[]');
     const top = entries.slice(0, limit);
 
     // 我的排名

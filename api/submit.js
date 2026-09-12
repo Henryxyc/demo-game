@@ -1,4 +1,5 @@
-﻿import { kv } from '@vercel/kv';
+﻿import { Redis } from '@upstash/redis';
+const redis = new Redis({ url: process.env.KV_REST_API_URL, token: process.env.KV_REST_API_TOKEN });
 
 const MAX_PER_BOARD = 200;
 
@@ -22,7 +23,7 @@ export default async function handler(req, res) {
     const numScore = Number(score);
 
     // 获取现有排行榜
-    let entries = await kv.get(key) || [];
+    let entries = JSON.parse(await redis.get(key) || '[]');
 
     // 查找该玩家是否已有记录
     const existing = entries.findIndex(e => e.pid === pid);
@@ -54,7 +55,7 @@ export default async function handler(req, res) {
       if (entries[i].pid === pid) { rank = i + 1; break; }
     }
 
-    await kv.set(key, entries);
+    await redis.set(key, JSON.stringify(entries));
 
     return res.status(200).json({ ok: true, rank, total: entries.length });
   } catch (e) {
