@@ -1,4 +1,9 @@
-.trae/
+﻿.trae/
 rank-server/node_modules/
 rank-server/rank-data.json
 *.log
+
+# Vercel
+.vercel/
+.next/
+node_modules/

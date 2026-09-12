@@ -1,4 +1,4 @@
-/* ============================================================
+﻿/* ============================================================
  * 主题包 · 斗破苍穹模拟器（doupo）
  * 修炼体系：斗之气→斗者→斗师→大斗师→斗灵→斗王→斗皇→斗宗→斗尊→斗帝
  * 斗气天赋 1-10（F~EX），斗技（天地玄黄），异火收服系统，焚决
@@ -35,11 +35,11 @@
     3: ['烈焰掌', '寒霜功', '雷霆决', '念动力', '引力功', '石化功', '水罩术', '风翼功', '木元功', '磁暴功', '感知术', '骨坚功'],
     4: ['火莲诀', '冰锥连击', '连锁雷', '念力壁', '摄物功', '岩拳术', '水龙卷', '暴风击', '荆棘墙', '钢臂功', '声波功', '活化术'],
     5: ['八极崩', '大劈棺', '紫云翼', '风雷翅', '紫幽雁', '火恐爪', '金狼啸', '土御阵', '水御盾', '风紧缚', '木王甲', '玄重尺'],
-    6: ['焰分噬浪尺', '大衍玄光尺', '大劈棺·极', '陨星掌', '梵毒斑', '风刹罡斩', '紫晶封印', '九霄罡风', '大须弥锤', '金刚琉璃', '九凤涅槃火', '裂风龙爪'],
-    7: ['大天造化术', '五印玄决', '帝印决', '琉璃莲心', '三千雷动', '大须弥锤·大成', '九凤涅槃火·真', '阳春白雪', '五色火凤', '骨翼·骨灵冷火', '九龙雷罡火', '生灵之焱', '海心焰'],
-    8: ['帝印决·大成', '大天造化术·大成', '黄泉天怒', '五印玄决·圆满', '大寂灭指', '九幽风炎', '三千焱炎火·炼化', '陨落心炎·炼化', '八荒破灭焱', '九幽金祖火', '红莲业火·真', '空间撕裂'],
-    9: ['佛怒火莲', '大寂灭指·大成', '黄泉天怒·大成', '焚决·进化', '青莲地心火·真意', '净莲妖火·初悟', '金帝焚天炎·真意', '生灵之焱·真意', '骨灵冷火·真意', '帝炎·初悟', '虚无吞炎·初悟'],
-    10: ['帝炎·真意', '虚无吞炎·真意', '焚决·大成', '大寂灭指·圆满', '黄泉天怒·圆满', '净莲妖火·大成', '斗帝之火', '万物化火', '太虚破', '帝品丹雷·御火', '金帝焚天炎·大成', '八荒破灭焱·真意']
+    6: ['焰分噬浪尺', '大衍玄光尺', '大劈棺·极', '陨星掌', '梵毒斑', '风刹罡斩', '紫晶封印', '九霄罡风', '大须弥锤', '金刚琉璃', '烈火焚天', '裂风龙爪'],
+    7: ['大天造化术', '五印玄决', '帝印决', '琉璃莲心', '三千雷动', '大须弥锤·大成', '烈火焚天·大成', '阳春白雪', '五色火凤', '冰魂寒骨掌', '九龙雷罡', '万物归元', '海心掌'],
+    8: ['帝印决·大成', '大天造化术·大成', '黄泉天怒', '五印玄决·圆满', '大寂灭指', '九幽冥风', '三千焱炎·炼化', '陨落心炎·炼化', '八荒破灭', '九幽金祖', '红莲业火·真意', '空间撕裂'],
+    9: ['佛怒火莲', '大寂灭指·大成', '黄泉天怒·大成', '焚决·进化', '青莲地心·真意', '净莲妖火·初悟', '金帝焚天·真意', '生灵之焱·真意', '骨灵冷火·真意', '帝印决·初悟', '大天造化·初悟'],
+    10: ['帝印决·真意', '大天造化·真意', '焚决·大成', '大寂灭指·圆满', '黄泉天怒·圆满', '净莲妖火·大成', '斗帝之火', '万物化火', '太虚破', '帝品丹雷·御火', '金帝焚天·大成', '八荒破灭·真意']
   };
 
   var INNATE_WEIGHTS = [0, 33.0, 25.0, 11.0, 9.0, 7.0, 5.0, 4.0, 3.0, 2.0, 1.0];
@@ -60,7 +60,7 @@
     { id: 'fire_10', name: '九幽风炎',   rank: 10, difficulty: 0.52, boost: 20000 },
     { id: 'fire_11', name: '骨灵冷火',   rank: 11, difficulty: 0.46, boost: 16000 },
     { id: 'fire_12', name: '九龙雷罡火', rank: 12, difficulty: 0.42, boost: 13000 },
-    { id: 'fire_13', name: '龟灵地火',   rank: 13, difficulty: 0.38, boost: 10000 },
+    { id: 'fire_13', name: '归灵地火',   rank: 13, difficulty: 0.38, boost: 10000 },
     { id: 'fire_14', name: '陨落心炎',   rank: 14, difficulty: 0.34, boost: 8000 },
     { id: 'fire_15', name: '海心焰',     rank: 15, difficulty: 0.30, boost: 6000 },
     { id: 'fire_16', name: '火云水炎',   rank: 16, difficulty: 0.26, boost: 4500 },
@@ -89,9 +89,9 @@
   var SKILL_TIER = [
     { name: '黄', combatLo: 0, combatHi: 299, addLo: 10, addHi: 20 },
     { name: '玄', combatLo: 300, combatHi: 2499, addLo: 30, addHi: 60 },
-    { name: '地', combatLo: 2500, combatHi: 9999, addLo: 100, addHi: 300, minRing: 3 },
-    { name: '天', combatLo: 10000, combatHi: 72499, addLo: 500, addHi: 1500, minRing: 4 },
-    { name: '帝', combatLo: 72500, combatHi: Infinity, addLo: 3000, addHi: 10000, minRing: 5 }
+    { name: '地', combatLo: 2500, combatHi: 9999, addLo: 100, addHi: 300 },
+    { name: '天', combatLo: 10000, combatHi: 72499, addLo: 500, addHi: 1500 },
+    { name: '帝', combatLo: 72500, combatHi: Infinity, addLo: 3000, addHi: 10000 }
   ];
 
   /* ---------- 斗技名称池（按档位分组，取自原著） ---------- */
@@ -118,13 +118,13 @@
   function titleOf(lvl) {
     lvl = Math.max(1, Math.min(99, Math.floor(lvl) || 1));
     if (lvl >= 99) return '斗帝';
-    if (lvl >= 94) return '斗圣' + (lvl - 93) + '星';
+    if (lvl >= 94) return (lvl - 93) + '星斗圣';
     if (lvl >= 91) return '半圣(' + ['初级','中级','高级'][lvl - 91] + ')';
     var idx = Math.floor((lvl - 1) / 10);
     var DP_BASE = ['斗之气','斗者','斗师','大斗师','斗灵','斗王','斗皇','斗宗','斗尊'];
     var mod = lvl % 10;
     if (mod === 0) return DP_BASE[idx] + '巅峰';
-    return DP_BASE[idx] + mod + (idx === 0 ? '段' : '星');
+    return mod + (idx === 0 ? '段' : '星') + DP_BASE[idx];
   }
   function tierName(n) {
     n = Math.max(1, Math.min(10, Math.floor(n) || 1));
@@ -199,6 +199,7 @@
     if (fenjue) base += 0.3;
     var combatFactor = Math.min(0.2, (g.combat || 0) / 100000 * 0.05);
     base += combatFactor;
+    base += (g.fireBonus || 0);   /* 金词条：异火亲和加成 */
     base = Math.max(0.05, Math.min(0.95, base));
 
     if (Math.random() < base) {
@@ -966,39 +967,40 @@
   };
 
   var TALENTS = [
-    /* green */
-    { id:'dp_t1', name:'斗气温养', rarity:'green', desc:'初始斗气+50', apply:function(g){ g.combat += 50; } },
-    { id:'dp_t2', name:'强体丹', rarity:'green', desc:'寿元+5', apply:function(g){ g.lifespan += 5; } },
-    { id:'dp_t3', name:'功法亲和', rarity:'green', desc:'斗气+10%', apply:function(g){ g.combat = Math.floor(g.combat * 1.1); } },
-    { id:'dp_t4', name:'药老指点', rarity:'green', desc:'寿元+3，斗气+20', apply:function(g){ g.lifespan += 3; g.combat += 20; } },
+    /* ====== 绿词条：小幅增益 ====== */
+    { id:'dp_t1', name:'斗气温养', rarity:'green', desc:'初始斗气+80', apply:function(g){ g.combat += 80; } },
+    { id:'dp_t2', name:'强体丹', rarity:'green', desc:'寿元+8', apply:function(g){ g.lifespan += 8; } },
+    { id:'dp_t3', name:'功法亲和', rarity:'green', desc:'斗气+12%', apply:function(g){ g.combat = Math.floor(g.combat * 1.12); } },
+    { id:'dp_t4', name:'药老指点', rarity:'green', desc:'寿元+5，斗气+30', apply:function(g){ g.lifespan += 5; g.combat += 30; } },
     { id:'dp_t5', name:'斗气凝练', rarity:'green', desc:'初始等级+1', apply:function(g){ g.lvl += 1; } },
-    /* blue */
-    { id:'dp_t6', name:'斗气精通', rarity:'blue', desc:'斗气+20%', apply:function(g){ g.combat = Math.floor(g.combat * 1.2); } },
-    { id:'dp_t7', name:'延寿丹', rarity:'blue', desc:'寿元+15', apply:function(g){ g.lifespan += 15; } },
-    { id:'dp_t8', name:'血脉觉醒', rarity:'blue', desc:'初始等级+2', apply:function(g){ g.lvl += 2; } },
-    { id:'dp_t9', name:'斗气天赋', rarity:'blue', desc:'斗气+200', apply:function(g){ g.combat += 200; } },
-    { id:'dp_t10', name:'灵药辅助', rarity:'blue', desc:'寿元+10，斗气+50', apply:function(g){ g.lifespan += 10; g.combat += 50; } },
-    /* purple */
-    { id:'dp_t11', name:'血脉变异', rarity:'purple', desc:'天赋+1', apply:function(g){ g.innate = Math.min(10, g.innate + 1); g.aptitude = Math.max(g.aptitude, g.innate); } },
-    { id:'dp_t12', name:'斗气暴增', rarity:'purple', desc:'斗气+40%', apply:function(g){ g.combat = Math.floor(g.combat * 1.4); } },
-    { id:'dp_t13', name:'六品丹药', rarity:'purple', desc:'寿元+25', apply:function(g){ g.lifespan += 25; } },
-    /* gold */
-    { id:'dp_t14', name:'帝炎血脉', rarity:'gold', desc:'天赋+2，斗气+30%，开局获得3块陀舍古帝玉', apply:function(g){ g.innate = Math.min(10, g.innate + 2); g.aptitude = Math.max(g.aptitude, g.innate); g.combat = Math.floor(g.combat * 1.3); g.guyu = (g.guyu || 0) + 3; } },
-    { id:'dp_t15', name:'斗帝传承', rarity:'gold', desc:'天赋+1，斗气+50%，寿元+20，开局预悟本源魂气', apply:function(g){ g.innate = Math.min(10, g.innate + 1); g.aptitude = Math.max(g.aptitude, g.innate); g.combat = Math.floor(g.combat * 1.5); g.lifespan += 20; g.soulOriginReady = true; } },
-    /* green（新增） */
-    { id:'dp_t16', name:'斗气温养2', rarity:'green', desc:'斗气+5%，寿元+3', apply:function(g){ g.combat = Math.floor(g.combat * 1.05); g.lifespan += 3; } },
-    { id:'dp_t17', name:'药老指点2', rarity:'green', desc:'寿元+5，斗气+40', apply:function(g){ g.lifespan += 5; g.combat += 40; } },
-    { id:'dp_t18', name:'斗气凝练2', rarity:'green', desc:'等级+1，斗气+5%', apply:function(g){ g.lvl += 1; g.combat = Math.floor(g.combat * 1.05); } },
-    { id:'dp_t19', name:'修炼勤奋', rarity:'green', desc:'斗气+15%', apply:function(g){ g.combat = Math.floor(g.combat * 1.15); } },
-    /* blue（新增） */
-    { id:'dp_t20', name:'斗气共鸣', rarity:'blue', desc:'斗气+15%，寿元+8', apply:function(g){ g.combat = Math.floor(g.combat * 1.15); g.lifespan += 8; } },
-    { id:'dp_t21', name:'异火抗性', rarity:'blue', desc:'寿元+5，斗气+10%', apply:function(g){ g.lifespan += 5; g.combat = Math.floor(g.combat * 1.1); } },
-    { id:'dp_t22', name:'炼药天赋', rarity:'blue', desc:'斗气+100，寿元+8', apply:function(g){ g.combat += 100; g.lifespan += 8; } },
-    { id:'dp_t23', name:'焚决残页', rarity:'blue', desc:'斗气+10%，等级+1', apply:function(g){ g.combat = Math.floor(g.combat * 1.1); g.lvl += 1; } },
-    /* purple（新增） */
-    { id:'dp_t24', name:'异火亲和', rarity:'purple', desc:'斗气+25%，寿元+15', apply:function(g){ g.combat = Math.floor(g.combat * 1.25); g.lifespan += 15; } },
-    /* gold（新增） */
-    { id:'dp_t25', name:'帝炎传承', rarity:'gold', desc:'天赋+2，斗气+40%，寿元+30', apply:function(g){ g.innate = Math.min(10, g.innate + 2); g.aptitude = Math.max(g.aptitude, g.innate); g.combat = Math.floor(g.combat * 1.4); g.lifespan += 30; } }
+    { id:'dp_t16', name:'勤修苦练', rarity:'green', desc:'斗气+8%，寿元+5', apply:function(g){ g.combat = Math.floor(g.combat * 1.08); g.lifespan += 5; } },
+    { id:'dp_t17', name:'根基扎实', rarity:'green', desc:'等级+1，斗气+5%', apply:function(g){ g.lvl += 1; g.combat = Math.floor(g.combat * 1.05); } },
+
+    /* ====== 蓝词条：中等增益 + 小特殊效果 ====== */
+    { id:'dp_t6', name:'斗气精通', rarity:'blue', desc:'斗气+25%', apply:function(g){ g.combat = Math.floor(g.combat * 1.25); } },
+    { id:'dp_t7', name:'延寿灵丹', rarity:'blue', desc:'寿元+20', apply:function(g){ g.lifespan += 20; } },
+    { id:'dp_t8', name:'血脉觉醒', rarity:'blue', desc:'初始等级+3', apply:function(g){ g.lvl += 3; } },
+    { id:'dp_t9', name:'斗气天赋', rarity:'blue', desc:'斗气+300，寿元+10', apply:function(g){ g.combat += 300; g.lifespan += 10; } },
+    { id:'dp_t10', name:'灵药辅助', rarity:'blue', desc:'寿元+12，斗气+15%', apply:function(g){ g.lifespan += 12; g.combat = Math.floor(g.combat * 1.15); } },
+    { id:'dp_t20', name:'异火感应', rarity:'blue', desc:'异火收服概率+8%', apply:function(g){ g.fireBonus = (g.fireBonus || 0) + 0.08; } },
+    { id:'dp_t21', name:'焚决残页', rarity:'blue', desc:'斗气+15%，等级+1', apply:function(g){ g.combat = Math.floor(g.combat * 1.15); g.lvl += 1; } },
+
+    /* ====== 紫词条：显著增益 + 机制加成 ====== */
+    { id:'dp_t11', name:'血脉变异', rarity:'purple', desc:'天赋+1，斗气+20%', apply:function(g){ g.innate = Math.min(10, g.innate + 1); g.aptitude = Math.max(g.aptitude, g.innate); g.combat = Math.floor(g.combat * 1.2); } },
+    { id:'dp_t12', name:'斗气暴增', rarity:'purple', desc:'斗气+50%，寿元+15', apply:function(g){ g.combat = Math.floor(g.combat * 1.5); g.lifespan += 15; } },
+    { id:'dp_t13', name:'六品丹药', rarity:'purple', desc:'寿元+30，斗气+25%', apply:function(g){ g.lifespan += 30; g.combat = Math.floor(g.combat * 1.25); } },
+    { id:'dp_t24', name:'异火亲和', rarity:'purple', desc:'异火收服概率+15%，斗气+20%', apply:function(g){ g.fireBonus = (g.fireBonus || 0) + 0.15; g.combat = Math.floor(g.combat * 1.2); } },
+
+    /* ====== 金词条：改变命运，大幅提升飞升概率 ====== */
+    { id:'dp_t14', name:'帝炎血脉', rarity:'gold', desc:'天赋+2，成帝概率+5%，开局获3块陀舍古帝玉', apply:function(g){ g.innate = Math.min(10, g.innate + 2); g.aptitude = Math.max(g.aptitude, g.innate); g.ascendBonus = (g.ascendBonus || 0) + 0.05; g.guyu = (g.guyu || 0) + 3; } },
+    { id:'dp_t15', name:'斗帝传承', rarity:'gold', desc:'天赋+1，成帝概率+5%，开局预悟本源魂气', apply:function(g){ g.innate = Math.min(10, g.innate + 1); g.aptitude = Math.max(g.aptitude, g.innate); g.ascendBonus = (g.ascendBonus || 0) + 0.05; g.soulOriginReady = true; } },
+    { id:'dp_t25', name:'焚决觉醒', rarity:'gold', desc:'开局获得焚决，可收服多种异火，成帝概率+8%', apply:function(g){ g.fenjue = true; g.ascendBonus = (g.ascendBonus || 0) + 0.08; g.lifespan += 15; } },
+    { id:'dp_t26', name:'异火之体', rarity:'gold', desc:'异火收服概率+25%，斗气+30%，成帝概率+3%', apply:function(g){ g.fireBonus = (g.fireBonus || 0) + 0.25; g.combat = Math.floor(g.combat * 1.3); g.ascendBonus = (g.ascendBonus || 0) + 0.03; } },
+    { id:'dp_t27', name:'药帝传人', rarity:'gold', desc:'开局炼药六品，成帝概率+6%，寿元+25', apply:function(g){ g.alchemist = 6; g.ascendBonus = (g.ascendBonus || 0) + 0.06; g.lifespan += 25; } },
+    { id:'dp_t28', name:'古帝转世', rarity:'gold', desc:'天赋+2，开局获5块陀舍古帝玉，成帝概率+10%', apply:function(g){ g.innate = Math.min(10, g.innate + 2); g.aptitude = Math.max(g.aptitude, g.innate); g.guyu = (g.guyu || 0) + 5; g.ascendBonus = (g.ascendBonus || 0) + 0.10; } },
+    { id:'dp_t29', name:'天命之子', rarity:'gold', desc:'幸运加持，异火收服+15%，成帝+5%', apply:function(g){ g.fireBonus = (g.fireBonus || 0) + 0.15; g.ascendBonus = (g.ascendBonus || 0) + 0.05; g.luckBonus = (g.luckBonus || 0) + 1; } },
+    { id:'dp_t30', name:'药老附体', rarity:'gold', desc:'开局炼药八品，成帝概率+8%，寿元+20', apply:function(g){ g.alchemist = 8; g.ascendBonus = (g.ascendBonus || 0) + 0.08; g.lifespan += 20; } },
+    { id:'dp_t31', name:'异火天降', rarity:'gold', desc:'开局随机获得一种异火，成帝+5%', apply:function(g){ var fires = typeof FIRES!=='undefined'?FIRES:[]; if(fires.length){ var f=fires[Math.floor(Math.random()*fires.length)]; if(!g.fires)g.fires=[]; g.fires.push({id:f.id,name:f.name,rank:f.rank}); g.combat+=f.boost; } g.ascendBonus = (g.ascendBonus || 0) + 0.05; } },
   ];
 
   /* ---------- 主题对象 ---------- */
@@ -1107,7 +1109,7 @@
         /* 路径1：陀舍古帝传承 - 需集齐8块陀舍古帝玉 + 修为≥90，成功率10%（递减） */
         if (g.guyu && g.guyu >= 8 && g.lvl >= 90) {
           g.pathAttempts = (g.pathAttempts || 0) + 1;
-          var rate1 = 0.10 - (g.pathAttempts - 1) * 0.02;
+          var rate1 = (0.10 + (g.ascendBonus || 0)) - (g.pathAttempts - 1) * 0.02;
           if (Math.random() < rate1) {
             g.ascendMode = 'tuoshe';
             log.push({ cls: 'god', text: '第' + g.age + '岁，集齐陀舍古帝玉，开启古帝洞府！获得陀舍古帝本源传承，突破斗帝！' });
@@ -1123,7 +1125,7 @@
         var soulOriginLvlReq = g.soulOriginReady ? 90 : 95;
         if (g.soulOrigin && g.lvl >= soulOriginLvlReq) {
           g.pathAttempts = (g.pathAttempts || 0) + 1;
-          var rate2 = 0.08 - (g.pathAttempts - 1) * 0.015;
+          var rate2 = (0.08 + (g.ascendBonus || 0)) - (g.pathAttempts - 1) * 0.015;
           if (Math.random() < rate2) {
             g.ascendMode = 'selfAscend';
             log.push({ cls: 'god', text: '第' + g.age + '岁，悟透本源魂气，以己身证道！突破斗帝！' });
@@ -1138,7 +1140,7 @@
         /* 路径3：持有焚决+多种异火+修为≥99 → 帝炎融合成帝，成功率10%（递减） */
         if (g.fenjue && g.fires && g.fires.length >= 15 && g.lvl >= 99) {
           g.pathAttempts = (g.pathAttempts || 0) + 1;
-          var rate3 = 0.10 - (g.pathAttempts - 1) * 0.02;
+          var rate3 = (0.10 + (g.ascendBonus || 0)) - (g.pathAttempts - 1) * 0.02;
           if (Math.random() < rate3) {
             g.ascendMode = 'diyan';
             log.push({ cls: 'god', text: '第' + g.age + '岁，焚决大成，融合诸天异火成就帝炎！突破斗帝！' });

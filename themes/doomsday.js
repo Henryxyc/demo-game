@@ -1,4 +1,4 @@
-/* ============================================================
+﻿/* ============================================================
  * 主题包 · 末日模拟器（doomsday）
  * 封装现有 data.js / ability.js / events.js 内容 + 术语映射 terms
  * 作为其他主题（斗罗/斗破/完美）的结构范本。回归要求：玩法/文案不变。
@@ -113,8 +113,8 @@
     { id:'dm_t12', name:'进化催化', rarity:'purple', desc:'战力+40%', apply:function(g){ g.combat = Math.floor(g.combat * 1.4); } },
     { id:'dm_t13', name:'生命力', rarity:'purple', desc:'寿元+25', apply:function(g){ g.lifespan += 25; } },
     /* gold */
-    { id:'dm_t14', name:'完美基因', rarity:'gold', desc:'天赋+2，战力+30%，源质炼化门槛降低', apply:function(g){ g.innate = Math.min(10, g.innate + 2); g.aptitude = Math.max(g.aptitude, g.innate); g.combat = Math.floor(g.combat * 1.3); g.refineBoost = true; } },
-    { id:'dm_t15', name:'超进化血脉', rarity:'gold', desc:'天赋+1，战力+50%，寿元+20，强行进化概率提升', apply:function(g){ g.innate = Math.min(10, g.innate + 1); g.aptitude = Math.max(g.aptitude, g.innate); g.combat = Math.floor(g.combat * 1.5); g.lifespan += 20; g.forcedBoost = true; } },
+    { id:'dm_t14', name:'完美基因', rarity:'gold', desc:'天赋+2，进化概率+8%，源质炼化门槛降低', apply:function(g){ g.innate = Math.min(10, g.innate + 2); g.aptitude = Math.max(g.aptitude, g.innate); g.ascendBonus = (g.ascendBonus || 0) + 0.08; g.refineBoost = true; } },
+    { id:'dm_t15', name:'超进化血脉', rarity:'gold', desc:'天赋+1，进化概率+10%，寿元+25', apply:function(g){ g.innate = Math.min(10, g.innate + 1); g.aptitude = Math.max(g.aptitude, g.innate); g.ascendBonus = (g.ascendBonus || 0) + 0.10; g.lifespan += 25; } },
 
     /* ====== 扩展词条（末日主题追加） ====== */
     /* green */
@@ -130,7 +130,10 @@
     /* purple */
     { id:'dm_t24', name:'基因图谱', rarity:'purple', desc:'天赋+1，战力+25%', apply:function(g){ g.innate = Math.min(10, g.innate + 1); g.aptitude = Math.max(g.aptitude, g.innate); g.combat = Math.floor(g.combat * 1.25); } },
     /* gold */
-    { id:'dm_t25', name:'末日方舟', rarity:'gold', desc:'天赋+1，战力+40%，寿元+30', apply:function(g){ g.innate = Math.min(10, g.innate + 1); g.aptitude = Math.max(g.aptitude, g.innate); g.combat = Math.floor(g.combat * 1.4); g.lifespan += 30; } }
+    { id:'dm_t25', name:'末日方舟', rarity:'gold', desc:'天赋+1，进化概率+6%，寿元+35', apply:function(g){ g.innate = Math.min(10, g.innate + 1); g.aptitude = Math.max(g.aptitude, g.innate); g.ascendBonus = (g.ascendBonus || 0) + 0.06; g.lifespan += 35; } },
+    { id:'dm_t26', name:'天选之人', rarity:'gold', desc:'幸运加持，源质概率+25%，进化+7%', apply:function(g){ g.ascendBonus = (g.ascendBonus || 0) + 0.07; g.luckBonus = (g.luckBonus || 0) + 1; g.combat = Math.floor(g.combat * 1.25); } },
+    { id:'dm_t27', name:'末日预言', rarity:'gold', desc:'预知未来，每次事件获双倍收益，进化+6%', apply:function(g){ g.ascendBonus = (g.ascendBonus || 0) + 0.06; g.eventBonus = (g.eventBonus || 0) + 1; g.lifespan += 10; } },
+    { id:'dm_t28', name:'异能觉醒', rarity:'gold', desc:'异能进化S级，战力+60%，进化+8%', apply:function(g){ g.combat = Math.floor(g.combat * 1.6); g.ascendBonus = (g.ascendBonus || 0) + 0.08; g.innate = Math.min(10, g.innate + 1); g.aptitude = Math.max(g.aptitude, g.innate); } },
   ];
 
   /* ---------- 变异者称号（titleOf） ---------- */

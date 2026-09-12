@@ -1,4 +1,4 @@
-/* ============================================================
+﻿/* ============================================================
  * 模拟器合集 · 引擎核心（纯逻辑，浏览器 + Node 通用，UMD）
  * 逐年修炼 · 突破概率表（连破规则）· 随机事件 · 源质/强行进化超生命体
  *
@@ -349,7 +349,7 @@
         g.refineAttempts = (g.refineAttempts || 0) + 1;
         /* 炼化成功率 = 战力达标比例 × 12%（每尝试递减，首次12%→末次约6%） */
         var combatRatio = Math.min(1, g.combat / es.needCombat);
-        var refineSuccessRate = combatRatio * (0.12 - (g.refineAttempts - 1) * 0.015);
+        var refineSuccessRate = combatRatio * ((0.12 + (g.ascendBonus || 0)) - (g.refineAttempts - 1) * 0.015);
         if (g.combat >= es.needCombat && Math.random() < refineSuccessRate) {
           g.ascendMode = 'refine';
           log.push({ cls: 'god', text: theme.terms.refineSuccess(g.age) });
@@ -477,6 +477,16 @@
         if (g.lvl % 10 === 0 && g.lvl < peakLv) awakenSkill(g, log);
       }
 
+      /* 达到巅峰等级且主题定义了成帝/成神：立即触发进化（保底成功） */
+      if (g.lvl >= peakLv && !g.ascended && theme.ascend) {
+        var ascended = tryAscend(g, log);
+        if (!ascended && !g.dead) {
+          g.ascended = true; g.lvl = theme.terms.godLevel || 100;
+          g.combat = godCombat(g.combat, 1.0); g.lifespan = 99999;
+          log.push({ cls: 'god', text: theme.terms.ascend + '降临！' });
+        }
+        if (g.ascended) return log;
+      }
       /* 99 级 每年修炼连击：100%→50%→25%→25%… 每中一次 +99，
        * 任一次判定失败即停止，只累加并展示最终总战力 */
       if (g.lvl >= peakLv && !g.ascended && (g.lifespan - g.age) > 10) {

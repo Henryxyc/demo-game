@@ -1,11 +1,11 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta name="theme-color" content="#141b26">
   <title>模拟器合集</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css?v=3.7">
 </head>
 <body>
   <div id="ach-toast" class="ach-toast" hidden></div>
@@ -83,7 +83,7 @@
         </div>
       </div>
       <!-- 技能行（非斗破主题显示） -->
-      <div class="skill-line" id="attr-skill"><span class="skill-label">技能</span><span id="attr-skill-chips"></span></div>
+      <div class="skill-line" id="attr-skill"><span class="skill-label">技能</span><span class="skill-data" id="attr-skill-chips"></span></div>
 
       <!-- 斗破专属：炼药/精神力卡片行（跟等级一样的卡片样式） -->
       <div class="attr-grid" id="attr-doupo-cards" hidden>
@@ -98,20 +98,22 @@
       </div>
 
       <!-- 斗破专属：异火（单独一行，靠左，展示排行） -->
-      <div class="skill-line" id="attr-fires-row" hidden style="justify-content:flex-start;padding:8px 10px;">
-        <span class="skill-label" style="color:#ff7a45;">异火（排行）</span><b id="attr-fires" style="color:#ff7a45;">无</b>
+      <div class="skill-line" id="attr-talent-row" hidden><span class="skill-label" style="color:#c084fc;">词条</span><span class="skill-data" id="attr-talent-chips" style="color:#fbbf24;"></span></div>
+
+      <div class="skill-line" id="attr-fires-row" hidden>
+        <span class="skill-label" style="color:#ff7a45;">异火（排行）</span><span class="skill-data" id="attr-fires" style="color:#ff7a45;">无</span>
       </div>
 
       <!-- 斗破/完美专属：斗技或功法（单独一行，靠左，显示具体名称） -->
-      <div class="skill-line" id="attr-skills-row" hidden style="justify-content:flex-start;padding:8px 10px;">
-        <span class="skill-label" style="color:#7ec8e3;">斗技</span><b id="attr-skills-name" style="color:#7ec8e3;">无</b>
+      <div class="skill-line" id="attr-skills-row" hidden>
+        <span class="skill-label" style="color:#7ec8e3;">斗技</span><span class="skill-data" id="attr-skills-name" style="color:#7ec8e3;">无</span>
       </div>
 
       <!-- 飞升帝名/神位/仙帝名 -->
-      <div class="skill-line" id="attr-bone-row" hidden style="justify-content:flex-start;padding:4px 10px;">
-        <span class="skill-label" style="color:#fbbf24;">魂骨</span>
-        <span id="attr-bone-chips" style="font-size:12px;color:#e8e4d8;word-break:break-all;"></span>
+      <div class="skill-line" id="attr-bone-row">
+        <span class="skill-label" style="color:#fbbf24;">魂骨</span><span class="skill-data" id="attr-bone-chips" style="color:#e8e4d8;word-break:break-all;"></span>
       </div>
+
       <div class="skill-line" id="attr-emperor-row" hidden style="justify-content:center;padding:6px 10px;margin-top:4px;">
         <b id="attr-emperor" style="color:#ffd98a;font-size:14px;"></b>
       </div>
@@ -197,8 +199,9 @@
           <div class="set-tip">开启后不再自动修炼，在游戏页点击日志区手动修炼一年</div>
         </div>
         <div class="set-card">
-          <div class="speed-label"><span>⏱ 每年速度</span><b id="speed-val">0.3s</b></div>
-          <input type="range" class="speed-range" id="speed-range" min="0.1" max="1" step="0.1" value="0.3">
+          <div class="speed-label"><span>⏱ 每年速度</span><b id="speed-val">0.2s</b></div>
+          <input type="range" class="speed-range" id="speed-range" min="0.05" max="1" step="0.05" value="0.2">
+          <button class="btn btn-skip" id="btn-skip">⏩ 跳过</button>
         </div>
       </div>
     </section>
@@ -265,7 +268,7 @@
         <div class="talent-sub">从候选词条中选择 <b>2</b> 个 · <span style="color:#4ade80">绿70%</span> · <span style="color:#60a5fa">蓝25%</span> · <span style="color:#c084fc">紫4%</span> · <span style="color:#fbbf24">金1%</span></div>
       </div>
       <div class="talent-list" id="talent-list"></div>
-      <button class="btn btn-primary talent-confirm" id="btn-talent-confirm" disabled>请先选择 2 个词条</button>
+      <div class="talent-btns"><button class="btn btn-refresh" id="btn-talent-refresh">🔄 换一批</button><button class="btn btn-primary talent-confirm" id="btn-talent-confirm" disabled>请先选择 2 个词条</button></div>
     </div>
   </div>
 
@@ -302,15 +305,15 @@
     </div>
   </div>
 
-  <script src="data.js?v=2"></script>
-  <script src="ability.js?v=2"></script>
-  <script src="events.js?v=2"></script>
-  <script src="themes/doomsday.js?v=2"></script>
-  <script src="themes/douluo.js?v=2"></script>
-  <script src="themes/doupo.js?v=2"></script>
-  <script src="themes/wanmei.js?v=2"></script>
-  <script src="themes/registry.js?v=2"></script>
-  <script src="sim.js?v=2"></script>
-  <script src="game.js?v=2"></script>
+  <script src="data.js?v=3.7"></script>
+  <script src="ability.js?v=3.7"></script>
+  <script src="events.js?v=3.7"></script>
+  <script src="themes/doomsday.js?v=3.7"></script>
+  <script src="themes/douluo.js?v=3.7"></script>
+  <script src="themes/doupo.js?v=3.7"></script>
+  <script src="themes/wanmei.js?v=3.7"></script>
+  <script src="themes/registry.js?v=3.7"></script>
+  <script src="sim.js?v=3.7"></script>
+  <script src="game.js?v=3.7"></script>
 </body>
 </html>

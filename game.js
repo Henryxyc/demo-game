@@ -1,4 +1,4 @@
-/* ============================================================
+﻿/* ============================================================
  * 模拟器合集 · UI 逻辑（手机优先，兼容电脑）
  * 多主题架构：ThemeRegistry 管理主题，engine = Sim.createEngine(theme) 绑定当前主题。
  *   - 主题切换时重新加载该主题的存档（玩家等级/排行榜/成就/保底/高光，按 theme.id 前缀隔离）
@@ -69,7 +69,7 @@
 
   /* ---------- 玩家身份 & 全服排行榜 API ---------- */
   var RANK_API = (location.port === '8765' || location.port === '8000')
-    ? 'http://localhost:3456' : (location.origin.replace(/:\d+$/, '') + ':3456');
+    ? 'http://localhost:3456' : '';
   function getPid() {
     var pid = localStorage.getItem('sim_pid');
     if (!pid) { pid = 'p_' + Math.random().toString(36).slice(2, 10) + Date.now().toString(36); localStorage.setItem('sim_pid', pid); }
@@ -234,7 +234,7 @@
       lines.push('魂骨：' + boneStrs.join(' · '));
     }
     /* 天赐词条 */
-    if (rec.talents && rec.talents.length) lines.push('天赐词条：' + rec.talents.join('·'));
+    if (rec.talents && rec.talents.length) lines.push('天赐词条：' + rec.talents.map(function(t){return typeof t==='string'?t:t.name}).join('·'));
     /* 主题专属字段：斗破异火列表 */
     if (rec.fires && rec.fires.length) {
       var fnames = [];
@@ -525,7 +525,7 @@
     }
     /* 天赐词条 chips */
     if (rec.talents && rec.talents.length) {
-      for (var ti = 0; ti < rec.talents.length; ti++) chips.push({ bg: '#5a3c8a', fg: '#fbbf24', d: '✨' + rec.talents[ti] });
+      for (var ti = 0; ti < rec.talents.length; ti++) { var tn = typeof rec.talents[ti]==='string'?rec.talents[ti]:rec.talents[ti].name; chips.push({ bg: '#5a3c8a', fg: '#fbbf24', d: '✨' + tn }); }
     }
     ctx.font = 'bold 22px ' + F;
     var maxW = W - pad * 2, cw = 0, cur = [], lines = [];
@@ -656,7 +656,7 @@
   /* ---------- 全局状态 ---------- */
   var G = null;
   var timer = null;
-  var TICK_MS = 300;
+  var TICK_MS = 200;
   var FAST_MS = 60;
   var settleReason = '';
   var fullLog = [];
@@ -667,10 +667,12 @@
     /* 斗破斗技阶 */
     '黄': '#f5c542', '玄': '#a855f7', '地': '#3b82f6', '天': '#ef4444', '帝': '#fbbf24',
     /* 斗罗魂环色 */
-    '白': '#e0e0e0', '紫': '#a855f7', '黑': '#555555', '红': '#ef4444',
+    '白': '#e0e0e0', '紫': '#a855f7', '黑': '#62a8e6', '红': '#ef4444',
     /* 末日异能档 */
     'F': '#9ca3af', 'E': '#6b7280', 'D': '#3b82f6', 'C': '#22c55e', 'B': '#a855f7',
-    'A': '#f59e0b', 'S': '#ef4444', 'SS': '#ec4899', 'SSS': '#f97316', 'EX': '#fbbf24'
+    'A': '#f59e0b', 'S': '#ef4444', 'SS': '#ec4899', 'SSS': '#f97316', 'EX': '#fbbf24',
+    /* 完美世界骨文品阶 */
+    '凡': '#9ca3af', '灵': '#3b82f6', '真': '#a855f7', '神': '#f59e0b', '仙': '#ef4444'
   };
   /* 异火排行颜色（排行越低越强，颜色越红） */
   function fireRankColor(rank) {
@@ -943,19 +945,42 @@
     $('talent-mask').hidden = false;
   }
 
-  function confirmTalents() {
+  
+  /* ---------- 🔄 词条刷新 ---------- */
+  function talentRefresh() {
+    var candidates = generateTalents(8, _pendingGuardHit);
+    showTalentModal(candidates, _pendingGuardHit);
+    blip(330, 0.06, 'sine', 0.08);
+  }
+function confirmTalents() {
     $('talent-mask').hidden = true;
     var guardHit = _pendingGuardHit;
     var picked = _selectedTalents.map(function(i){ return _talentCandidates[i]; });
     G = engine.createGame(player.lv, guardHit ? { force10: true } : undefined);
     /* 应用词条效果 */
     if (picked.length) {
-      G.talents = picked.map(function(t){ return t.name; });
+      G.talents = picked.map(function(t){ return { name: t.name, rarity: t.rarity }; });
       picked.forEach(function(t){ if (t.apply) t.apply(G); });
     }
-    var talentLog = picked.length ? '✨ 天赐词条：' + G.talents.join('、') + '！' : '';
+    var talentLog = picked.length ? '✨ 天赐词条：' + G.talents.map(function(t){return t.name}).join('、') + '！' : '';
     $('game-title').textContent = G.ability + '【' + theme.terms.abilityTalent + '：' + theme.tierName(G.innate) + '】';
     renderAttrs();
+    /* 展示词条 */
+    var tRow = $('attr-talent-row');
+    var tChips = $('attr-talent-chips');
+    if (G.talents && G.talents.length) {
+      if (tRow) tRow.hidden = false;
+      if (tChips) {
+        var th = '';
+        for (var ti = 0; ti < G.talents.length; ti++) {
+          if (ti > 0) th += ' · ';
+          var tc = {green:'#22c55e',blue:'#3b82f6',purple:'#a855f7',gold:'#fbbf24'}[G.talents[ti].rarity]||'#fbbf24'; th += '<span style="color:'+tc+'"'+'>✨'+esc(G.talents[ti].name)+'</span>';
+        }
+        tChips.innerHTML = th;
+      }
+    } else {
+      if (tRow) tRow.hidden = true;
+    }
     pendingLogs = [];
     $('log-box').innerHTML = '';
     var first = [];
@@ -987,7 +1012,7 @@
   function loadSpeed() {
     try {
       var v = parseFloat(localStorage.getItem(GKEY_SPEED));
-      if (isFinite(v) && v >= 0.1 && v <= 1) {
+      if (isFinite(v) && v >= 0.05 && v <= 1) {
         TICK_MS = Math.round(v * 1000);
         var r = $('speed-range'); if (r) r.value = v;
         var s = $('speed-val'); if (s) s.textContent = v.toFixed(1) + 's';
@@ -1022,7 +1047,43 @@
   }
 
   /* ---------- 渲染 ---------- */
-  function renderAttrs() {
+  
+  /* ---------- ⏩ 跳过功能：批量推进年份 ---------- */
+  var _skipRunning = false;
+  function skipAhead() {
+    if (_skipRunning || !G || G.dead || G.ascended || MANUAL) return;
+    _skipRunning = true;
+    stopPlay();
+    var btn = $('btn-skip');
+    if (btn) { btn.textContent = '⏳ 推进中...'; btn.disabled = true; }
+    var batch = 0;
+    function skipBatch() {
+      if (!G || G.dead || G.ascended || batch >= 200) {
+        _skipRunning = false;
+        if (btn) { btn.textContent = '⏩ 跳过'; btn.disabled = false; }
+        renderAttrs();
+        if (G && (G.dead || G.ascended)) { finishGame(G.dead ? 'dead' : 'god'); }
+        else { startPlay(); }
+        return;
+      }
+      for (var i = 0; i < 10; i++) {
+        if (!G || G.dead || G.ascended) break;
+        var log = engine.rollYear(G);
+        for (var j = 0; j < log.length; j++) fullLog.push(log[j]);
+        var hasRare = false;
+        for (var k = 0; k < log.length; k++) {
+          if (log[k].cls === 'rare' || log[k].cls === 'brk' || log[k].cls === 'dead' || log[k].cls === 'god' || log[k].cls === 'ev3') hasRare = true;
+        }
+        batch++;
+        if (hasRare || G.dead || G.ascended) break;
+      }
+      renderAttrs();
+      checkAch();
+      requestAnimationFrame(skipBatch);
+    }
+    skipBatch();
+  }
+function renderAttrs() {
     var lvEl = $('attr-lvl');
     if (lvEl) lvEl.textContent = theme.titleOf(G.lvl) + '（' + G.lvl + '）';
     var atn = $('attr-talent-name'); if (atn) atn.textContent = theme.terms.abilityTalent;
@@ -1136,7 +1197,7 @@
       }
       /* 修改标签为"功法" */
       var wmLabel = skillsRow && skillsRow.querySelector('.skill-label');
-      if (wmLabel) wmLabel.textContent = '功法';
+      if (wmLabel) wmLabel.textContent = '宝术';
       if (skillsRow) skillsRow.hidden = false;
     } else {
       if (dpCards) dpCards.hidden = true;
@@ -1144,12 +1205,12 @@
       if (skillsRow) skillsRow.hidden = true;
     }
 
-    /* 斗罗魂骨展示 */
+    /* 斗罗魂骨展示（始终显示标题，有数据时展示内容） */
     var boneRow = $('attr-bone-row');
     var boneChips = $('attr-bone-chips');
-    if (theme.id === 'douluo' && G && G.soulBones && G.soulBones.length) {
+    if (theme.id === 'douluo') {
       if (boneRow) boneRow.hidden = false;
-      if (boneChips) {
+      if (boneChips && G && G.soulBones && G.soulBones.length) {
         var bhtml = '';
         for (var bii = 0; bii < G.soulBones.length; bii++) {
           var sb = G.soulBones[bii];
@@ -1158,6 +1219,8 @@
           bhtml += '<span style="color:' + bc + '">' + esc(sb.beast) + esc(sb.part) + '（' + esc(sb.skill) + '）</span>';
         }
         boneChips.innerHTML = bhtml;
+      } else if (boneChips) {
+        boneChips.innerHTML = '<span style="color:#666">暂无</span>';
       }
     } else {
       if (boneRow) boneRow.hidden = true;
@@ -1302,7 +1365,7 @@
     else { t.textContent = theme.terms.settlePauseTitle; t.className = 'settle-title'; blip(400, 0.2, 'triangle', 0.1); }
 
     $('settle-ability').innerHTML = theme.terms.ability + ' <b>' + esc(G.ability) + '</b> · ' + theme.terms.abilityTalent + ' ' + theme.tierName(G.innate) + ' ';
-    $('settle-lvl').textContent = G.lvl;
+    $('settle-lvl').textContent = G.lvl + '级（' + theme.titleOf(G.lvl) + '）';
     $('settle-combat').textContent = fmt(G.combat);
     $('settle-age').textContent = G.age + ' ' + theme.terms.ageUnit;
     var ageLb = $('settle-age-label'); if (ageLb) ageLb.textContent = G.ascended ? theme.terms.settleAgeLabelAscend : theme.terms.settleAgeLabelDead;
@@ -1351,7 +1414,7 @@
         }
         shc.innerHTML = wsh;
         var skl3 = $('settle-skill');
-        if (skl3) { var sll3 = skl3.querySelector('.skill-label'); if (sll3) sll3.textContent = '功法'; }
+        if (skl3) { var sll3 = skl3.querySelector('.skill-label'); if (sll3) sll3.textContent = '宝术'; }
       } else {
         shc.innerHTML = skillChipsHtml(G && G.skillSeq, essenceShortName(G));
       }
@@ -1377,7 +1440,7 @@
     var st = $('settle-talents');
     if (st) {
       if (G.talents && G.talents.length) {
-        st.textContent = '✨ 天赐词条：' + G.talents.join('·');
+        st.textContent = '✨ 天赐词条：' + G.talents.map(function(t){return t.name}).join('·');
         st.hidden = false;
       } else { st.hidden = true; }
     }
@@ -1651,6 +1714,8 @@
   function bindEvents() {
     $('btn-start').addEventListener('click', startGame);
     $('btn-talent-confirm').addEventListener('click', function () { blip(660, 0.08, 'triangle', 0.1); confirmTalents(); });
+    $('btn-talent-refresh').addEventListener('click', function () { talentRefresh(); });
+
     $('btn-rank').addEventListener('click', function () { blip(500, 0.06, 'triangle', 0.08); openRank(); });
     $('btn-close-rank').addEventListener('click', function () { show('home'); });
     $('btn-ach').addEventListener('click', openAch);
@@ -1681,6 +1746,7 @@
     });
     $('speed-range').addEventListener('input', setSpeed);
     $('speed-range').addEventListener('change', setSpeed);
+    $('btn-skip').addEventListener('click', function () { blip(600, 0.08, 'triangle', 0.1); skipAhead(); });
     $('btn-settings').addEventListener('click', function () { blip(500, 0.06, 'triangle', 0.08); openSettings('home'); });
     $('btn-about').addEventListener('click', function () { blip(500, 0.06, 'triangle', 0.08); show('about'); });
     $('btn-close-settings').addEventListener('click', function () { blip(400, 0.06, 'triangle', 0.08); closeSettings(); });

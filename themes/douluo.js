@@ -1,4 +1,4 @@
-/* ============================================================
+﻿/* ============================================================
  * 主题包 · 斗罗大陆模拟器（douluo）
  * 修炼体系：武魂觉醒(6岁) → 魂士→魂师→大魂师→魂尊→魂宗→魂王→魂帝→魂圣→魂斗罗→封号斗罗→神祇
  * 先天魂力 1-10 级（F~EX），魂环（白黄紫黑红金），魂骨，双生武魂
@@ -81,7 +81,7 @@
     var DUO_BASE = ['魂士','魂师','大魂师','魂尊','魂宗','魂王','魂帝','魂圣','魂斗罗'];
     var mod = lvl % 10;
     if (mod === 0) return DUO_BASE[idx] + '巅峰';
-    return DUO_BASE[idx] + mod + '级';
+    return DUO_BASE[idx];
   }
   function tierName(n) {
     n = Math.max(1, Math.min(10, Math.floor(n) || 1));
@@ -206,7 +206,7 @@
     ]
   };
   /* 魂环颜色映射 */
-  var RING_COLORS = { '白': '#e0e0e0', '黄': '#f5c542', '紫': '#a855f7', '黑': '#555555', '红': '#ef4444' };
+  var RING_COLORS = { '白': '#e0e0e0', '黄': '#f5c542', '紫': '#a855f7', '黑': '#62a8e6', '红': '#ef4444' };
 
   /* ---------- 魂骨池（按部位分组，每种含来源魂兽、魂骨技） ----------
    * part: 部位名（头骨/躯干骨/左臂骨/右臂骨/左腿骨/右腿骨）
@@ -966,8 +966,8 @@
     { id:'dl_t12', name:'魂力暴增', rarity:'purple', desc:'魂力+40%', apply:function(g){ g.combat = Math.floor(g.combat * 1.4); } },
     { id:'dl_t13', name:'万年魂环', rarity:'purple', desc:'寿元+25', apply:function(g){ g.lifespan += 25; } },
     /* gold */
-    { id:'dl_t14', name:'海神传承', rarity:'gold', desc:'天赋+2，魂力+30%，开局获得神考邀请(海神)', apply:function(g){ g.innate = Math.min(10, g.innate + 2); g.aptitude = Math.max(g.aptitude, g.innate); g.combat = Math.floor(g.combat * 1.3); g.godTest = true; g.inheritGod = '海神'; } },
-    { id:'dl_t15', name:'神祇眷顾', rarity:'gold', desc:'天赋+1，魂力+50%，寿元+20，开局获得信仰之力', apply:function(g){ g.innate = Math.min(10, g.innate + 1); g.aptitude = Math.max(g.aptitude, g.innate); g.combat = Math.floor(g.combat * 1.5); g.lifespan += 20; g.faith = true; } },
+    { id:'dl_t14', name:'海神传承', rarity:'gold', desc:'天赋+2，成神概率+8%，开局获海神九考资格', apply:function(g){ g.innate = Math.min(10, g.innate + 2); g.aptitude = Math.max(g.aptitude, g.innate); g.ascendBonus = (g.ascendBonus || 0) + 0.08; g.godTest = true; g.inheritGod = '海神'; } },
+    { id:'dl_t15', name:'神祇眷顾', rarity:'gold', desc:'天赋+1，成神概率+10%，开局获信仰之力', apply:function(g){ g.innate = Math.min(10, g.innate + 1); g.aptitude = Math.max(g.aptitude, g.innate); g.ascendBonus = (g.ascendBonus || 0) + 0.10; g.faith = true; } },
 
     /* ---------- 新增词条 dl_t16..dl_t25（含多属性组合） ---------- */
     /* green (4) */
@@ -984,6 +984,9 @@
     { id:'dl_t24', name:'神考资格', rarity:'purple', desc:'魂力+20%，开局获得神考邀请(随机)', apply:function(g){ g.combat = Math.floor(g.combat * 1.2); g.godTest = true; var gods = ['海神','修罗神','天使之神','罗刹神','食神','九彩神女']; g.inheritGod = gods[Math.floor(Math.random() * gods.length)]; } },
     /* gold (1) */
     { id:'dl_t25', name:'修罗神血脉', rarity:'gold', desc:'天赋+2，魂力+40%，寿元+15，开局获得修罗神神考', apply:function(g){ g.innate = Math.min(10, g.innate + 2); g.aptitude = Math.max(g.aptitude, g.innate); g.combat = Math.floor(g.combat * 1.4); g.lifespan += 15; g.godTest = true; g.inheritGod = '修罗神'; } }
+    { id:'dl_t26', name:'天赐神力', rarity:'gold', desc:'幸运加持，魂环品质提升，成神+6%', apply:function(g){ g.ascendBonus = (g.ascendBonus || 0) + 0.06; g.luckBonus = (g.luckBonus || 0) + 1; g.combat = Math.floor(g.combat * 1.3); } },
+    { id:'dl_t27', name:'命运之轮', rarity:'gold', desc:'每次突破概率+10%，成神+5%', apply:function(g){ g.ascendBonus = (g.ascendBonus || 0) + 0.05; g.breakBonus = (g.breakBonus || 0) + 0.10; g.lifespan += 15; } },
+    { id:'dl_t28', name:'武魂真身', rarity:'gold', desc:'开局武魂进化真身，魂力+50%，成神+7%', apply:function(g){ g.combat = Math.floor(g.combat * 1.5); g.ascendBonus = (g.ascendBonus || 0) + 0.07; g.lifespan += 10; } },
   ];
 
   /* 根据武魂和生平生成自创神位名 */
@@ -1125,7 +1128,7 @@
         /* 路径1：神考继承 - 需获得神考邀请 + 修为≥90，成功率8%（递减） */
         if (g.godTest && g.lvl >= 90) {
           g.pathAttempts = (g.pathAttempts || 0) + 1;
-          var rate1 = 0.06 - (g.pathAttempts - 1) * 0.012;
+          var rate1 = (0.06 + (g.ascendBonus || 0)) - (g.pathAttempts - 1) * 0.012;
           if (Math.random() < rate1) {
             g.ascendMode = 'godTest';
             log.push({ cls: 'god', text: '第' + g.age + '岁，通过' + g.inheritGod + '九考！继承神位，飞升神界！' });
@@ -1140,7 +1143,7 @@
         /* 路径2：信仰自创 - 需信仰之力 + 修为≥95，成功率6%（递减） */
         if (g.faith && g.lvl >= 95) {
           g.pathAttempts = (g.pathAttempts || 0) + 1;
-          var rate2 = 0.04 - (g.pathAttempts - 1) * 0.01;
+          var rate2 = (0.04 + (g.ascendBonus || 0)) - (g.pathAttempts - 1) * 0.01;
           if (Math.random() < rate2) {
             g.ascendMode = 'selfGod';
             log.push({ cls: 'god', text: '第' + g.age + '岁，信仰之力推举突破百级！自创神位，成就初代神！' });

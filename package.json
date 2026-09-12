@@ -1,0 +1,11 @@
+﻿{
+  "name": "doomsday-simulator",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "node rank-server/server.js"
+  },
+  "dependencies": {
+    "@vercel/kv": "^3.0.0"
+  }
+}

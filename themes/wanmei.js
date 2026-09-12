@@ -1,4 +1,4 @@
-/* ============================================================
+﻿/* ============================================================
  * 主题包 · 完美世界模拟器（wanmei）
  * 修炼体系：搬血→洞天→化灵→铭纹→列阵→尊者→神火→真一→天神→至尊→真仙→仙王→仙帝
  * 骨文天赋 1-10（F~EX），宝术，至尊骨/仙种，以身为种，仙气
@@ -786,8 +786,8 @@
     { id:'wm_t12', name:'神力暴增', rarity:'purple', desc:'神力+40%', apply:function(g){ g.combat = Math.floor(g.combat * 1.4); } },
     { id:'wm_t13', name:'仙草滋养', rarity:'purple', desc:'寿元+25', apply:function(g){ g.lifespan += 25; } },
     /* gold */
-    { id:'wm_t14', name:'仙骨传承', rarity:'gold', desc:'天赋+2，神力+30%，开局获得以身为种', apply:function(g){ g.innate = Math.min(10, g.innate + 2); g.aptitude = Math.max(g.aptitude, g.innate); g.combat = Math.floor(g.combat * 1.3); g.selfSeed = true; } },
-    { id:'wm_t15', name:'仙帝血脉', rarity:'gold', desc:'天赋+1，神力+50%，寿元+20，开局获得三道仙气', apply:function(g){ g.innate = Math.min(10, g.innate + 1); g.aptitude = Math.max(g.aptitude, g.innate); g.combat = Math.floor(g.combat * 1.5); g.lifespan += 20; g.xianQi = true; } },
+    { id:'wm_t14', name:'仙骨传承', rarity:'gold', desc:'天赋+2，成仙概率+8%，开局获得以身为种', apply:function(g){ g.innate = Math.min(10, g.innate + 2); g.aptitude = Math.max(g.aptitude, g.innate); g.ascendBonus = (g.ascendBonus || 0) + 0.08; g.selfSeed = true; } },
+    { id:'wm_t15', name:'仙帝血脉', rarity:'gold', desc:'天赋+1，成仙概率+10%，开局获得三道仙气', apply:function(g){ g.innate = Math.min(10, g.innate + 1); g.aptitude = Math.max(g.aptitude, g.innate); g.ascendBonus = (g.ascendBonus || 0) + 0.10; g.xianQi = true; } },
     /* [新增] green */
     { id:'wm_t16', name:'神力温养2', rarity:'green', desc:'神力+100', apply:function(g){ g.combat += 100; } },
     { id:'wm_t17', name:'石村前辈', rarity:'green', desc:'神力+10%，寿元+5', apply:function(g){ g.combat = Math.floor(g.combat * 1.1); g.lifespan += 5; } },
@@ -801,16 +801,19 @@
     /* [新增] purple */
     { id:'wm_t24', name:'仙种亲和', rarity:'purple', desc:'神力+30%，寿元+20，仙种融合率提升', apply:function(g){ g.combat = Math.floor(g.combat * 1.3); g.lifespan += 20; g.essenceAffinity = (g.essenceAffinity || 0) + 1; } },
     /* [新增] gold */
-    { id:'wm_t25', name:'仙帝传承', rarity:'gold', desc:'天赋+1，神力+60%，寿元+30，开局获得以身为种+三道仙气', apply:function(g){ g.innate = Math.min(10, g.innate + 1); g.aptitude = Math.max(g.aptitude, g.innate); g.combat = Math.floor(g.combat * 1.6); g.lifespan += 30; g.selfSeed = true; g.xianQi = true; } }
+    { id:'wm_t25', name:'仙帝传承', rarity:'gold', desc:'天赋+1，成仙概率+12%，开局以身为种+仙气', apply:function(g){ g.innate = Math.min(10, g.innate + 1); g.aptitude = Math.max(g.aptitude, g.innate); g.ascendBonus = (g.ascendBonus || 0) + 0.12; g.selfSeed = true; g.xianQi = true; } },
+    { id:'wm_t26', name:'天命所归', rarity:'gold', desc:'幸运加持，仙种概率+20%，成仙+6%', apply:function(g){ g.ascendBonus = (g.ascendBonus || 0) + 0.06; g.luckBonus = (g.luckBonus || 0) + 1; g.combat = Math.floor(g.combat * 1.2); } },
+    { id:'wm_t27', name:'柳神庇佑', rarity:'gold', desc:'开局获柳神指点，宝术品阶+2，成仙+8%', apply:function(g){ g.ascendBonus = (g.ascendBonus || 0) + 0.08; g.innate = Math.min(10, g.innate + 1); g.aptitude = Math.max(g.aptitude, g.innate); g.lifespan += 20; } },
+    { id:'wm_t28', name:'荒之血脉', rarity:'gold', desc:'开局觉醒荒血脉，神力+40%，成仙+7%', apply:function(g){ g.combat = Math.floor(g.combat * 1.4); g.ascendBonus = (g.ascendBonus || 0) + 0.07; g.lifespan += 15; } },
   ];
 
   /* ---------- 主题对象 ---------- */
   /* 根据角色生平生成仙帝名 */
   function generateImmortalName(g) {
     var ability = g.ability || '';
-    var rings = g.skillSeq || [];
-    var redRings = 0;
-    for (var i = 0; i < rings.length; i++) { if (rings[i] === '红') redRings++; }
+    var highLvl = g.lvl >= 90;
+
+
     /* 根据功法/武魂属性匹配 */
     if (g.selfSeed) {
       /* 以身为种路线：最高称号 */
@@ -822,25 +825,25 @@
     }
     /* 根据功法属性 */
     if (ability.indexOf('冰') >= 0 || ability.indexOf('雪') >= 0) {
-      return redRings >= 3 ? '冰霜仙帝' : '寒冰仙人';
+      return highLvl ? '冰霜仙帝' : '寒冰仙人';
     }
     if (ability.indexOf('火') >= 0 || ability.indexOf('炎') >= 0) {
-      return redRings >= 3 ? '炎帝' : '火灵仙人';
+      return highLvl ? '炎帝' : '火灵仙人';
     }
     if (ability.indexOf('雷') >= 0) {
-      return redRings >= 3 ? '雷帝' : '雷霆仙人';
+      return highLvl ? '雷帝' : '雷霆仙人';
     }
     if (ability.indexOf('风') >= 0) {
-      return redRings >= 3 ? '风帝' : '疾风仙人';
+      return highLvl ? '风帝' : '疾风仙人';
     }
     if (ability.indexOf('石') >= 0 || ability.indexOf('土') >= 0 || ability.indexOf('岩') >= 0) {
-      return redRings >= 3 ? '石帝' : '磐石仙人';
+      return highLvl ? '石帝' : '磐石仙人';
     }
     if (ability.indexOf('金') >= 0 || ability.indexOf('铁') >= 0) {
-      return redRings >= 3 ? '金刚仙帝' : '金身仙人';
+      return highLvl ? '金刚仙帝' : '金身仙人';
     }
     if (ability.indexOf('木') >= 0 || ability.indexOf('藤') >= 0 || ability.indexOf('花') >= 0) {
-      return redRings >= 3 ? '木灵仙帝' : '草木仙人';
+      return highLvl ? '木灵仙帝' : '草木仙人';
     }
     /* 通用 fallback */
     if (g.innate >= 9) return '天命仙帝';
@@ -907,7 +910,7 @@
         /* 路径1：以身为种 - 需以身为种 + 三道仙气 + 修为≥90，成功率7%（递减） */
         if (g.selfSeed && g.xianQi && g.lvl >= 90) {
           g.pathAttempts = (g.pathAttempts || 0) + 1;
-          var rate1 = 0.07 - (g.pathAttempts - 1) * 0.012;
+          var rate1 = (0.07 + (g.ascendBonus || 0)) - (g.pathAttempts - 1) * 0.012;
           if (Math.random() < rate1) {
             g.ascendMode = 'selfSeed';
             log.push({ cls: 'god', text: '第' + g.age + '岁，以身为种大成！开创遮天修炼体系，证道仙帝！' });
@@ -922,7 +925,7 @@
         /* 路径2：红尘仙 - 需红尘仙路 + 修为≥95，成功率6%（递减） */
         if (g.redDust && g.lvl >= 95) {
           g.pathAttempts = (g.pathAttempts || 0) + 1;
-          var rate2 = 0.06 - (g.pathAttempts - 1) * 0.012;
+          var rate2 = (0.06 + (g.ascendBonus || 0)) - (g.pathAttempts - 1) * 0.012;
           if (Math.random() < rate2) {
             g.ascendMode = 'redDust';
             log.push({ cls: 'god', text: '第' + g.age + '岁，红尘九世回归！红尘成仙，证道仙帝！' });
