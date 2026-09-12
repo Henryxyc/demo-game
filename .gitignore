@@ -1,9 +1,20 @@
-﻿.trae/
-rank-server/node_modules/
-rank-server/rank-data.json
-*.log
-
-# Vercel
-.vercel/
-.next/
+# Temp files
+_*.js
+_*.py
+_*.json
+*.bak
+*.py
+*.b64
+test*.txt
+test*.js
+fix*.js
+fix*.py
+build*.js
+build*.py
+boot.py
+gen.ps1
+server.js
+src_backup.js
+events_debug.txt
+DESIGN.md
 node_modules/
