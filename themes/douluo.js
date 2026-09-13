@@ -1026,7 +1026,7 @@
     { id:'dl_t26', name:'天赐神力', rarity:'gold', desc:'幸运加持，魂环品质提升，成神+6%', apply:function(g){ g.ascendBonus = (g.ascendBonus || 0) + 0.06; g.luckBonus = (g.luckBonus || 0) + 1; g.combat = Math.floor(g.combat * 1.3); } },
     { id:'dl_t27', name:'命运之轮', rarity:'gold', desc:'每次突破概率+10%，成神+5%', apply:function(g){ g.ascendBonus = (g.ascendBonus || 0) + 0.05; g.breakBonus = (g.breakBonus || 0) + 0.10; g.lifespan += 15; } },
     { id:'dl_t28', name:'武魂真身', rarity:'gold', desc:'开局武魂进化真身，魂力+50%，成神+7%', apply:function(g){ g.combat = Math.floor(g.combat * 1.5); g.ascendBonus = (g.ascendBonus || 0) + 0.07; g.lifespan += 10; } },
-    { id:'dl_t29', name:'双生武魂', rarity:'gold', desc:'天赋双生武魂，魂环上限+3，天赋+1，成神+8%', apply:function(g){ g.dualWuhun = true; g.innate = Math.min(10, g.innate + 1); g.aptitude = Math.max(g.aptitude, g.innate); g.ascendBonus = (g.ascendBonus || 0) + 0.08; g.maxRings = (g.maxRings || 9) + 3; } },
+    { id:'dl_t29', name:'双生武魂', rarity:'gold', desc:'天赋双生武魂，每个武魂可容9个魂环，共18个魂环上限，天赋+1，成神+8%', apply:function(g){ g.dualWuhun = true; g.innate = Math.min(10, g.innate + 1); g.aptitude = Math.max(g.aptitude, g.innate); g.ascendBonus = (g.ascendBonus || 0) + 0.08; g.maxRings = (g.maxRings || 9) + 9; } },
   ];
 
   /* 根据武魂和生平生成自创神位名 */
@@ -1167,7 +1167,10 @@
         /* 随机选一个魂技 */
         var skills = beast.skills || ['未知魂技'];
         var skill = skills[Math.floor(Math.random() * skills.length)];
-        g.soulRings.push({ name: beast.name, year: beast.year, skill: skill, tier: tierName });
+        var maxR = g.maxRings || 9;
+        if (g.soulRings.length < maxR) {
+          g.soulRings.push({ name: beast.name, year: beast.year, skill: skill, tier: tierName });
+        }
         var desc = beast.name + '（' + beast.year + '，' + skill + '）';
         /* 魂骨掉落判定：千年以上有概率，十万年必定掉落 */
         var boneDrop = false;
