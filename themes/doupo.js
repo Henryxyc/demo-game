@@ -116,7 +116,8 @@
   /* ---------- 斗气称号 ---------- */
   var DP_TITLES = ['', '斗之气', '斗者', '斗师', '大斗师', '斗灵', '斗王', '斗皇', '斗宗', '斗尊', '9星斗圣巅峰'];
   function titleOf(lvl) {
-    lvl = Math.max(1, Math.min(99, Math.floor(lvl) || 1));
+    lvl = Math.max(1, Math.min(100, Math.floor(lvl) || 1));
+    if (lvl >= 100) return '斗帝';
     if (lvl >= 99) return '9星斗圣巅峰';
     if (lvl >= 94) return (lvl - 93) + '星斗圣';
     if (lvl >= 91) return '半圣(' + ['初级','中级','高级'][lvl - 91] + ')';

@@ -1010,7 +1010,8 @@
 
   /* ---------- 变异者称号（titleOf） ---------- */
   function titleOf(lvl) {
-    lvl = Math.max(1, Math.min(99, Math.floor(lvl) || 1));
+    lvl = Math.max(1, Math.min(100, Math.floor(lvl) || 1));
+    if (lvl >= 100) return '超生命体·完全体';
     if (lvl >= 99) return '超生命体';
     if (lvl >= 91) return '准超生命体' + (lvl - 90) + '级';
     var idx = Math.floor((lvl - 1) / 10);

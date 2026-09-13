@@ -82,7 +82,8 @@
   /* ---------- 境界称号 ---------- */
   var WM_TITLES = ['', '搬血', '洞天', '化灵', '铭纹', '列阵', '尊者', '神火', '真一', '天神', '至尊'];
   function titleOf(lvl) {
-    lvl = Math.max(1, Math.min(99, Math.floor(lvl) || 1));
+    lvl = Math.max(1, Math.min(100, Math.floor(lvl) || 1));
+    if (lvl >= 100) return '仙帝';
     if (lvl >= 99) return '仙帝境';
     if (lvl >= 98) return '仙王境';
     if (lvl >= 97) return '至尊境';

@@ -840,7 +840,7 @@
     for (var i = 0; i < n; i++) {
       var roll = Math.random() * 100;
       var rarity;
-      if (roll < 1) rarity = 'gold';
+      if (roll < 11) rarity = 'gold';
       else if (roll < 5) rarity = 'purple';
       else if (roll < 30) rarity = 'blue';
       else rarity = 'green';
@@ -1371,7 +1371,7 @@ function renderAttrs() {
     var ageLb = $('settle-age-label'); if (ageLb) ageLb.textContent = G.ascended ? theme.terms.settleAgeLabelAscend : theme.terms.settleAgeLabelDead;
 
     var gd = $('settle-god');
-    if (G.ascended) { gd.textContent = theme.terms.settleGodDesc; gd.hidden = false; }
+    if (G.ascended) { var _gn = G._godName || G.emperorName || G.godName || G.immortalName || ""; gd.textContent = _gn ? _gn : theme.terms.settleGodDesc; gd.hidden = false; }
     else gd.hidden = true;
 
     $('settle-exp').textContent = '+' + expGain;
@@ -1394,15 +1394,22 @@ function renderAttrs() {
           if (dsi > 0) dsh += ' ';
           dsh += skillTierHtml(G.skillNames[dsi].name, G.skillNames[dsi].rank);
         }
-        if (G.fires && G.fires.length) {
-          dsh += ' · ';
-          for (var dfi = 0; dfi < G.fires.length; dfi++) {
-            if (dfi > 0) dsh += ' ';
-            var df = G.fires[dfi];
-            dsh += fireHtml(df.name || df, df.rank != null ? df.rank : '?');
-          }
-        }
         shc.innerHTML = dsh;
+        /* 异火单独展示 */
+        var sf = $('settle-fire');
+        var sfc = $('settle-fire-chips');
+        if (sf && sfc) {
+          if (G.fires && G.fires.length) {
+            var fsh = '';
+            for (var fi = 0; fi < G.fires.length; fi++) {
+              if (fi > 0) fsh += ' ';
+              var ff = G.fires[fi];
+              fsh += fireHtml(ff.name || ff, ff.rank != null ? ff.rank : '?');
+            }
+            sfc.innerHTML = fsh;
+            sf.hidden = false;
+          } else { sf.hidden = true; }
+        }
         var skl2 = $('settle-skill');
         if (skl2) { var sll2 = skl2.querySelector('.skill-label'); if (sll2) sll2.textContent = '斗技'; }
       } else if (theme.id === 'wanmei' && G.skillNames && G.skillNames.length) {
@@ -1454,7 +1461,8 @@ function renderAttrs() {
           var sbb = G.soulBones[sbi];
           sbStrs.push(sbb.beast + sbb.part + '（' + sbb.skill + '）');
         }
-        stb.textContent = '魂骨：' + sbStrs.join(' · ');
+        var boneChips = sbStrs.join(' ');
+        stb.querySelector('#settle-bone-chips').innerHTML = boneChips;
         stb.hidden = false;
       } else { stb.hidden = true; }
     }

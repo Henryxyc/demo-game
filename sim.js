@@ -347,7 +347,7 @@
        * 钩子返回 true 表示已处理突破（成功或失败），跳过默认 refine/forced 逻辑 */
       if (theme.hooks && theme.hooks.tryAscendPath) {
         var handled = theme.hooks.tryAscendPath(g, log, U, { forcedChance: forcedChance, godCombat: godCombat });
-        if (handled) return true;
+        if (handled) { if (!g._godName) g._godName = g.emperorName || g.godName || g.immortalName || (theme.terms.ascend || ""); return true; }
       }
 
       var es = g.essence.length > 0 ? g.essence[0] : null;   /* 基因源质最多 1 种 */
@@ -364,6 +364,7 @@
           var _nm = g.emperorName || g.godName || g.immortalName || _lbl;
           log.push({ cls: 'god', text: theme.terms.refineSuccess(g.age, _nm) });
           g.ascended = true; g.lvl = theme.terms.godLevel;
+          g._godName = _nm;
           g.combat = godCombat(g.combat, rate); g.lifespan = 99999;
           return true;
         }
@@ -382,6 +383,7 @@
         var _nm2 = g.emperorName || g.godName || g.immortalName || _lbl2;
         log.push({ cls: 'god', text: theme.terms.forcedAscend(g.age, _nm2) });
         g.ascended = true; g.lvl = theme.terms.godLevel;
+        g._godName = _nm2;
         var dRate = theme.FORCED_BONUS_MIN + Math.random() * (theme.FORCED_BONUS_MAX - theme.FORCED_BONUS_MIN);
         g.combat = godCombat(g.combat, dRate); g.lifespan = 99999;
         return true;
@@ -440,6 +442,8 @@
         log.push({ cls: 'rainbow', text: theme.terms.origin(g.age) });
         g.ascendMode = 'origin';
         g.ascended = true; g.lvl = theme.terms.godLevel;
+        var _originLabel = theme.terms.ascend || '超生命体';
+        g._godName = g.emperorName || g.godName || g.immortalName || _originLabel;
         g.combat = godCombat(g.combat, theme.ORIGIN_BONUS);
         g.lifespan = 99999;
         return log;
@@ -510,7 +514,7 @@
 
       /* 90级+ 每年有概率尝试进化；剩余寿命<=20年时必定尝试 */
       if (g.lvl >= 90 && !g.ascended) {
-        var tryAscendChance = (g.lifespan - g.age) <= 20 ? 1.0 : 0.03;
+        var tryAscendChance = (g.lifespan - g.age) <= 20 ? 0.15 : 0.015;
         if (Math.random() < tryAscendChance) {
           var ascended = tryAscend(g, log);
           if (ascended) return log;   /* 成功/失败致死 都结束本局 */
