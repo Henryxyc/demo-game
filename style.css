@@ -346,8 +346,9 @@ body::before {
 .settle-name-input { width: 120px; padding: 4px 8px; border: 1px solid #334; border-radius: 6px; background: #1a1d28; color: #e8e4d8; font-size: 13px; text-align: center; outline: none; }
 .settle-name-input:focus { border-color: #c9a13b; }
 .settle-rank-hint { font-size: 11px; color: #4ade80; white-space: nowrap; min-width: 80px; }
-.settle-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 2px; }
+.settle-btns { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 2px; }
 .settle-btns .btn-big { padding: 11px 6px; font-size: 15px; border-radius: 10px; }
+@media (max-width: 380px) { .settle-btns { grid-template-columns: 1fr 1fr; } .settle-btns .btn-big:last-child { grid-column: 1 / -1; } }
 
 /* ---------- 排行榜（页头 + 三层 tab + 卡片式列表） ---------- */
 .page-view { padding: 0 !important; }
