@@ -2,7 +2,5 @@
   "name": "demo-game",
   "version": "1.0.0",
   "private": true,
-  "dependencies": {
-    "@upstash/redis": "^1.30.0"
-  }
+  "dependencies": {}
 }
