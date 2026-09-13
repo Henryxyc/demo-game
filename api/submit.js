@@ -18,6 +18,10 @@ export default async function handler(req, res) {
       try { val = JSON.parse(val); } catch(e) { return []; }
     }
     if (Array.isArray(val)) return val;
+    if (typeof val === "string") {
+      try { val = JSON.parse(val); } catch(e) { return []; }
+    }
+    if (Array.isArray(val)) return val;
     return [];
   }
 
