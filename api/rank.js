@@ -11,6 +11,16 @@ export default async function handler(req, res) {
     return res.status(500).json({ ok: false, error: "Redis未配置" });
   }
 
+  function parseEntries(raw) {
+    if (!raw) return [];
+    var val = raw.result !== undefined ? raw.result : raw;
+    if (typeof val === "string") {
+      try { val = JSON.parse(val); } catch(e) { return []; }
+    }
+    if (Array.isArray(val)) return val;
+    return [];
+  }
+
   try {
     const { theme, board, pid } = req.query || {};
     const limit = Math.min(parseInt(req.query.limit) || 50, 100);
@@ -22,7 +32,7 @@ export default async function handler(req, res) {
       headers: { Authorization: "Bearer " + UP_TOKEN }
     });
     const d = await r.json();
-    const entries = JSON.parse(d.result || "[]");
+    const entries = parseEntries(d);
     const top = entries.slice(0, limit);
     let myRank = -1, myScore = null;
     for (let i = 0; i < entries.length; i++) {

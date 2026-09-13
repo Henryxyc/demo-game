@@ -11,6 +11,16 @@ export default async function handler(req, res) {
     return res.status(500).json({ ok: false, error: "Redis未配置" });
   }
 
+  function parseEntries(raw) {
+    if (!raw) return [];
+    var val = raw.result !== undefined ? raw.result : raw;
+    if (typeof val === "string") {
+      try { val = JSON.parse(val); } catch(e) { return []; }
+    }
+    if (Array.isArray(val)) return val;
+    return [];
+  }
+
   const MAX_PER_BOARD = 200;
 
   try {
@@ -26,7 +36,7 @@ export default async function handler(req, res) {
       headers: { Authorization: "Bearer " + UP_TOKEN }
     });
     const d = await r.json();
-    let entries = JSON.parse(d.result || "[]");
+    let entries = parseEntries(d);
 
     const existing = entries.findIndex(e => e.pid === pid);
     const entry = { pid, name: trimmedName, score: numScore, ts: Date.now() };
@@ -42,10 +52,11 @@ export default async function handler(req, res) {
       if (entries[i].pid === pid) { rank = i + 1; break; }
     }
 
+    const valStr = JSON.stringify(entries);
     await fetch(UP_URL + "/set/" + encodeURIComponent(key), {
       method: "POST",
       headers: { Authorization: "Bearer " + UP_TOKEN, "Content-Type": "application/json" },
-      body: JSON.stringify(JSON.stringify(entries))
+      body: JSON.stringify(valStr)
     });
 
     return res.status(200).json({ ok: true, rank, total: entries.length });
