@@ -56,11 +56,10 @@ export default async function handler(req, res) {
       if (entries[i].pid === pid) { rank = i + 1; break; }
     }
 
-    const valStr = JSON.stringify(entries);
     await fetch(UP_URL + "/set/" + encodeURIComponent(key), {
       method: "POST",
       headers: { Authorization: "Bearer " + UP_TOKEN, "Content-Type": "application/json" },
-      body: JSON.stringify(valStr)
+      body: JSON.stringify(entries)
     });
 
     return res.status(200).json({ ok: true, rank, total: entries.length });
