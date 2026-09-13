@@ -1370,9 +1370,6 @@ function renderAttrs() {
     $('settle-age').textContent = G.age + ' ' + theme.terms.ageUnit;
     var ageLb = $('settle-age-label'); if (ageLb) ageLb.textContent = G.ascended ? theme.terms.settleAgeLabelAscend : theme.terms.settleAgeLabelDead;
 
-    var gd = $('settle-god');
-    if (G.ascended) { var _gn = G._godName || G.emperorName || G.godName || G.immortalName || ""; gd.textContent = _gn ? _gn : theme.terms.settleGodDesc; gd.hidden = false; }
-    else gd.hidden = true;
 
     $('settle-exp').textContent = '+' + expGain;
     var shc = $('settle-skill-chips');
@@ -1468,13 +1465,13 @@ function renderAttrs() {
     }
 
     /* 多路径成帝/成神/成仙：帝名/神位名/仙帝名 */
+    /* 帝名/神位/仙帝名 展示 */
     var sg = $('settle-god');
     if (sg) {
-      var godTitle = G.emperorName ? ('👑 帝名：' + G.emperorName) :
-                     G.godName ? ('👑 神位：' + G.godName) :
-                     G.immortalName ? ('👑 仙帝名：' + G.immortalName) : '';
-      if (godTitle && G.ascended) {
-        sg.textContent = godTitle;
+      var gn = G._godName || G.emperorName || G.godName || G.immortalName || '';
+      if (gn && G.ascended) {
+        var prefix = '👑 ' + (theme.terms.ascend || '') + '名：';
+        sg.textContent = prefix + gn;
         sg.hidden = false;
       } else { sg.hidden = true; }
     }
