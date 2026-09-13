@@ -841,8 +841,8 @@
       var roll = Math.random() * 100;
       var rarity;
       if (roll < 11) rarity = 'gold';
-      else if (roll < 5) rarity = 'purple';
-      else if (roll < 30) rarity = 'blue';
+      else if (roll < 15) rarity = 'purple';
+      else if (roll < 40) rarity = 'blue';
       else rarity = 'green';
       /* 该品质无词条则降级 */
       while (rarity !== 'green' && !byRarity[rarity].length) {
@@ -1421,7 +1421,11 @@ function renderAttrs() {
         if (skl3) { var sll3 = skl3.querySelector('.skill-label'); if (sll3) sll3.textContent = '宝术'; }
       } else {
         shc.innerHTML = skillChipsHtml(G && G.skillSeq, essenceShortName(G));
+        var sklDef = $('settle-skill');
+        if (sklDef) { var sllDef = sklDef.querySelector('.skill-label'); if (sllDef) sllDef.textContent = '技能'; }
       }
+      /* 非斗破主题：隐藏异火区域 */
+      if (theme.id !== 'doupo') { var sfHide = $('settle-fire'); if (sfHide) sfHide.hidden = true; }
     }
     var sgRow = $('settle-guard-row'), sgp = $('settle-guard');
     if (sgRow) sgRow.hidden = reason === 'pause';
