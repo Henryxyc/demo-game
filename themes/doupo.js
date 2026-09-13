@@ -1270,24 +1270,43 @@
           var fires = g.fires ? g.fires.length : 0;
           var alch = g.alchemist || 0;
           var skills = g.skillNames || [];
-          var天阶数 = 0, 地阶数 = 0;
+          var tianCount = 0, diCount = 0, diTotal = skills.length;
           for (var i = 0; i < skills.length; i++) {
-            if (skills[i].rank === '天') 天阶数++;
-            if (skills[i].rank === '地') 地阶数++;
+            if (skills[i].rank === '天') tianCount++;
+            if (skills[i].rank === '地') diCount++;
           }
-          /* 帝名优先级判断 */
-          if (g.fenjue && fires >= 10) return '炎帝';              /* 焚决+10异火=萧炎经典路线 */
-          if (alch >= 7 && fires >= 5) return '药帝';              /* 炼药宗师+多异火 */
-          if (alch >= 8) return '丹帝';                             /* 炼药至尊 */
-          if (fires >= 8) return '炎帝';                            /* 大量异火 */
-          if (天阶数 >= 3) return '天斗帝';                          /* 多天阶斗技 */
-          if (g.ability && g.ability.indexOf('焚决') >= 0) return '焚帝';  /* 修炼焚决 */
-          if (fires >= 5 && 地阶数 >= 2) return '火帝';             /* 异火+地阶斗技 */
-          if (g.innate >= 9) return '天命斗帝';                      /* 天赋极高 */
-          if (g.age < 80) return '少斗帝';                           /* 年轻成帝 */
-          if (g.combat >= 500000) return '战帝';                     /* 战力极高 */
-          /* 默认 */
-          return '斗帝';
+          var combat = g.combat || 0;
+          var innate = g.innate || 1;
+          var hasFenjue = g.fenjue || (g.ability && g.ability.indexOf('焚决') >= 0);
+          /* ====== 根据角色特征智能选择帝名 ====== */
+          /* 经典路线：焚决+异火大成 */
+          if (hasFenjue && fires >= 10) return '炎帝';
+          if (hasFenjue && fires >= 6) return '吞噬古帝';
+          if (fires >= 10) return '万火之帝';
+          if (fires >= 8) return '焚天古帝';
+          /* 炼药系 */
+          if (alch >= 8 && fires >= 3) return '药帝';
+          if (alch >= 8) return '丹道至尊';
+          if (alch >= 7 && fires >= 5) return '丹帝';
+          /* 战力系 */
+          if (combat >= 800000 && tianCount >= 4) return '破天古帝';
+          if (combat >= 500000) return '武帝';
+          if (tianCount >= 5) return '天机古帝';
+          if (tianCount >= 3) return '天斗帝';
+          /* 异火系 */
+          if (fires >= 5 && diCount >= 2) return '火帝';
+          if (fires >= 5) return '炎天古帝';
+          /* 特殊路线 */
+          if (hasFenjue) return '焚决古帝';
+          if (innate >= 9 && fires >= 3) return '天命古帝';
+          if (innate >= 9) return '天命斗帝';
+          if (g.age < 80 && fires >= 2) return '少幽古帝';
+          if (g.age < 80) return '少斗帝';
+          /* 通用fallback：根据综合实力赋名 */
+          var strongNames = ['太初古帝','混沌古帝','永恒古帝','豪迅古帝','天机古帝','万象古帝'];
+          if (combat >= 200000) return strongNames[Math.floor(Math.random() * 2)];
+          if (innate >= 7) return strongNames[2 + Math.floor(Math.random() * 2)];
+          return strongNames[Math.floor(Math.random() * strongNames.length)];
         }
 
         if ((g.pathAttempts || 0) >= 2) return false;   /* 主题路径最多尝试 2 次 */

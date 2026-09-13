@@ -1026,58 +1026,90 @@
     { id:'dl_t26', name:'天赐神力', rarity:'gold', desc:'幸运加持，魂环品质提升，成神+6%', apply:function(g){ g.ascendBonus = (g.ascendBonus || 0) + 0.06; g.luckBonus = (g.luckBonus || 0) + 1; g.combat = Math.floor(g.combat * 1.3); } },
     { id:'dl_t27', name:'命运之轮', rarity:'gold', desc:'每次突破概率+10%，成神+5%', apply:function(g){ g.ascendBonus = (g.ascendBonus || 0) + 0.05; g.breakBonus = (g.breakBonus || 0) + 0.10; g.lifespan += 15; } },
     { id:'dl_t28', name:'武魂真身', rarity:'gold', desc:'开局武魂进化真身，魂力+50%，成神+7%', apply:function(g){ g.combat = Math.floor(g.combat * 1.5); g.ascendBonus = (g.ascendBonus || 0) + 0.07; g.lifespan += 10; } },
+    { id:'dl_t29', name:'双生武魂', rarity:'gold', desc:'天赋双生武魂，魂环上限+3，天赋+1，成神+8%', apply:function(g){ g.dualWuhun = true; g.innate = Math.min(10, g.innate + 1); g.aptitude = Math.max(g.aptitude, g.innate); g.ascendBonus = (g.ascendBonus || 0) + 0.08; g.maxRings = (g.maxRings || 9) + 3; } },
   ];
 
   /* 根据武魂和生平生成自创神位名 */
-  function generateGodName(g) {
-    var ability = g.ability || '';
+    function generateGodName(g) {
+    var ability = g.ability || "";
     var rings = g.soulRings || [];
     var bones = g.soulBones || [];
-    var redRings = 0;
-    for (var i = 0; i < rings.length; i++) { if (rings[i].tier === '红') redRings++; }
-    /* 根据武魂属性匹配神位 */
-    if (ability.indexOf('蓝银') >= 0 || ability.indexOf('植物') >= 0 || ability.indexOf('藤') >= 0) {
-      return redRings >= 3 ? '生命女神' : '植物之神';
+    var redRings = 0, totalRings = rings.length;
+    for (var i = 0; i < rings.length; i++) { if (rings[i].tier === "红") redRings++; }
+    var boneCount = bones.length;
+    var dualWuhun = g.dualWuhun || false;
+    var talent = g.innate || 1;
+    /* ====== 根据武魂+生平综合生成神位名 ====== */
+    /* 蓝银草/植物系 */
+    if (ability.indexOf("蓝银") >= 0 || ability.indexOf("植物") >= 0 || ability.indexOf("藤") >= 0) {
+      if (redRings >= 4) return "蓝银真神";
+      if (redRings >= 2) return "永恒之森";
+      if (boneCount >= 3) return "草木之神";
+      return "生命女神";
     }
-    if (ability.indexOf('昊天锤') >= 0 || ability.indexOf('锤') >= 0) {
-      return redRings >= 3 ? '战神' : '力之神';
+    /* 昊天锤/锤系 */
+    if (ability.indexOf("昊天锤") >= 0 || ability.indexOf("锤") >= 0) {
+      if (redRings >= 4) return "碎星之神";
+      if (boneCount >= 4) return "天锤战神";
+      if (redRings >= 2) return "力之神";
+      return "弗力古神";
     }
-    if (ability.indexOf('冰') >= 0 || ability.indexOf('雪') >= 0 || ability.indexOf('霜') >= 0) {
-      return redRings >= 3 ? '冰霜女神' : '寒冰之神';
+    /* 冰系 */
+    if (ability.indexOf("冰") >= 0 || ability.indexOf("雪") >= 0 || ability.indexOf("霜") >= 0) {
+      if (redRings >= 4) return "极寒天神";
+      if (redRings >= 2) return "永冻之主";
+      return "冰霜女神";
     }
-    if (ability.indexOf('火') >= 0 || ability.indexOf('凤凰') >= 0 || ability.indexOf('焰') >= 0) {
-      return redRings >= 3 ? '凤凰之神' : '火焰之神';
+    /* 火系/凤凰 */
+    if (ability.indexOf("火") >= 0 || ability.indexOf("凤凰") >= 0 || ability.indexOf("焰") >= 0) {
+      if (redRings >= 4) return "涅槃天凤";
+      if (redRings >= 2) return "焚天之神";
+      return "火焰之神";
     }
-    if (ability.indexOf('猫') >= 0 || ability.indexOf('虎') >= 0 || ability.indexOf('豹') >= 0) {
-      return redRings >= 3 ? '兽神' : '猛兽之神';
+    /* 龙系 */
+    if (ability.indexOf("龙") >= 0) {
+      if (redRings >= 4) return "万龙之主";
+      if (redRings >= 2) return "龙神";
+      return "龙之神";
     }
-    if (ability.indexOf('龙') >= 0) {
-      return redRings >= 3 ? '龙神' : '龙之神';
+    /* 猫/虎/豹 */
+    if (ability.indexOf("猫") >= 0 || ability.indexOf("虎") >= 0 || ability.indexOf("豹") >= 0) {
+      if (redRings >= 3) return "灹兽天神";
+      return "兽神";
     }
-    if (ability.indexOf('蝶') >= 0 || ability.indexOf('花') >= 0) {
-      return redRings >= 3 ? '花神' : '花仙之神';
+    /* 蝶/花 */
+    if (ability.indexOf("蝶") >= 0 || ability.indexOf("花") >= 0) {
+      if (redRings >= 3) return "花神";
+      return "灵花之神";
     }
-    if (ability.indexOf('龟') >= 0 || ability.indexOf('甲') >= 0) {
-      return redRings >= 3 ? '守护神' : '大地之神';
+    /* 龟/甲/防御 */
+    if (ability.indexOf("龟") >= 0 || ability.indexOf("甲") >= 0) {
+      return "守护之神";
     }
-    if (ability.indexOf('鸟') >= 0 || ability.indexOf('鹰') >= 0 || ability.indexOf('鹏') >= 0) {
-      return redRings >= 3 ? '天空之神' : '疾风之神';
+    /* 鸟/鹰/鹏 */
+    if (ability.indexOf("鸟") >= 0 || ability.indexOf("鹰") >= 0 || ability.indexOf("鹏") >= 0) {
+      if (redRings >= 3) return "天空之神";
+      return "疾风之神";
     }
-    if (ability.indexOf('毒') >= 0 || ability.indexOf('蛇') >= 0) {
-      return redRings >= 3 ? '毒神' : '毒素之神';
+    /* 毒/蛇 */
+    if (ability.indexOf("毒") >= 0 || ability.indexOf("蛇") >= 0) {
+      return "毒神";
     }
-    if (ability.indexOf('精神') >= 0 || ability.indexOf('眼') >= 0) {
-      return redRings >= 3 ? '心灵之神' : '智慧之神';
+    /* 精神/眼 */
+    if (ability.indexOf("精神") >= 0 || ability.indexOf("眼") >= 0) {
+      return "心灵之神";
     }
-    /* 通用 fallback：根据魂环/魂骨数量赋予称号 */
-    var fallbackGods = ['海神','修罗神','天使之神','罗刹神','食神','九神女','至高之神','创世神','命运之神','战神','龙神','冰霜女神'];
-    if (bones.length >= 4) return '守护之神';
-    if (redRings >= 2) return fallbackGods[Math.floor(Math.random() * fallbackGods.length)];
-    if (g.age < 60) return '天才之神';
-    return fallbackGods[Math.floor(Math.random() * fallbackGods.length)];
+    /* ====== 通用fallback：根据综合实力赋予称号 ====== */
+    var strongGods = ["万界之主","太初古神","命运主宰","混沌古神","豪迅天神","天机古神","永恒古神","警罗天神"];
+    if (dualWuhun && redRings >= 3) return strongGods[0];
+    if (redRings >= 4) return strongGods[Math.floor(Math.random() * 2)];
+    if (boneCount >= 5) return strongGods[2];
+    if (redRings >= 2) return strongGods[Math.floor(Math.random() * strongGods.length)];
+    if (talent >= 8) return strongGods[4];
+    if (g.age < 60) return "天才之神";
+    return strongGods[Math.floor(Math.random() * strongGods.length)];
   }
-
-  /* ---------- 主题对象 ---------- */
+/* ---------- 主题对象 ---------- */
   var theme = {
     id: 'douluo',
     name: '斗罗大陆模拟器',
@@ -1165,19 +1197,42 @@
       /* ★ 斗罗多路径成神：神考继承 / 信仰自创 */
       tryAscendPath: function (g, log, U, helpers) {
         if ((g.pathAttempts || 0) >= 2) return false;   /* 主题路径最多尝试 2 次 */
-        /* 路径1：神考继承 - 需获得神考邀请 + 修为≥90，成功率8%（递减） */
+        /* 路径1：神考九考系统 */
         if (g.godTest && g.lvl >= 90) {
-          g.pathAttempts = (g.pathAttempts || 0) + 1;
-          var rate1 = (0.06 + (g.ascendBonus || 0)) - (g.pathAttempts - 1) * 0.012;
-          if (Math.random() < rate1) {
-            g.ascendMode = 'godTest';
-            g.godName = g.inheritGod;
-            log.push({ cls: 'god', text: '第' + g.age + '岁，通过' + g.inheritGod + '九考！继承神位，飞升神界！神位：' + g.godName + '！' });
-            g.ascended = true; g.lvl = 100;
-            g.combat = helpers.godCombat(g.combat, 8); g.lifespan = 99999;
+          if (!g.godTestProgress) g.godTestProgress = 0;
+          if (g.godTestProgress >= 9) return false; // 已通过全部神考
+          var testNum = g.godTestProgress + 1;
+          var godName = g.inheritGod || '神';
+          var evt = godTestEventText(g, testNum, godName);
+          var successRate = testNum <= 3 ? 0.7 : testNum <= 6 ? 0.5 : testNum <= 8 ? 0.35 : 0.2;
+          successRate += (g.ascendBonus || 0);
+          if (Math.random() < successRate) {
+            g.godTestProgress = testNum;
+            var sTxt = evt.successTexts[testNum];
+            var sMsg = sTxt[Math.floor(Math.random() * sTxt.length)];
+            log.push({ cls: testNum === 9 ? 'god' : 'ev1', text: evt.base + '——' + sMsg + '第' + testNum + '考通过！' + (testNum < 9 ? '神考进度：' + testNum + '/9' : '') });
+            if (testNum === 9) {
+              g.ascendMode = 'godTest';
+              g.godName = godName;
+              log.push({ cls: 'god', text: '第' + g.age + '岁，通过' + godName + '九考！继承神位，飞升神界！神位：' + g.godName + '！' });
+              g.ascended = true; g.lvl = 100;
+              g.combat = helpers.godCombat(g.combat, 8); g.lifespan = 99999;
+              return true;
+            }
+            return false;
+          }
+          /* 失败惩罚 */
+          var fTxt = evt.failTexts[testNum];
+          var fMsg = fTxt[Math.floor(Math.random() * fTxt.length)];
+          log.push({ cls: 'ev3', text: evt.base + '——' + fMsg });
+          if (testNum === 9) {
+            g.dead = true; g.ascendMode = 'fail';
+            log.push({ cls: 'dead', text: '第九考失败，神力反噬，灵魂彻底碎裂——再无轮回！' });
             return true;
           }
-          log.push({ cls: 'ev3', text: '第' + g.age + '岁，' + g.inheritGod + '神考未通过，明年再试！' });
+          var penalty = testNum <= 3 ? U.irand(3, 8) : testNum <= 6 ? U.irand(8, 15) : U.irand(15, 25);
+          g.lifespan -= penalty;
+          if (testNum >= 7) { g.combat = Math.floor(g.combat * 0.8); }
           return false;
         }
         /* 路径2：信仰自创 - 需信仰之力 + 修为≥95，成功率6%（递减） */
