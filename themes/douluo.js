@@ -542,7 +542,7 @@
     },
     { id: 'duo_seagod9', weight: 0.1, maxCount: 1, name: '海神九考', tier: 4, desc: '海神岛九考之试炼',
       minAge: 30, maxAge: 10000,
-      cond: function (g, U) { return g.lvl >= 70 && (!g.godTest || g.inheritGod === '海神'); },
+      cond: function (g, U) { return g.lvl >= 75 && !g.godTest; },
       ok: function (g, U, log) {
         g.godTest = true; g.inheritGod = '海神';
         var lf = U.irand(15, 25); g.lifespan += lf;
@@ -565,6 +565,45 @@
         return '血红色的修罗神力自九天倾泻而下，杀戮之心在胸腔中猛然跳动——你感受到无穷无尽的杀伐之意！修罗神传承降临，万剑臣服，魂力+' + add + '，寿元+' + lf + '！';
       },
       fail: function (g, U, log) { g.lifespan -= U.irand(8, 15); return '修罗神力如岩浆灌顶，你的皮肤龟裂出血，骨骼在神力的碾压下发出碎裂之声——肉身终究承受不住这极致的杀伐之气，寿元大损。'; }
+    },
+    { id: 'duo_tianshi', weight: 0.08, maxCount: 1, name: '天使神传承', tier: 4, desc: '六翼天使降临',
+      minAge: 35, maxAge: 10000,
+      cond: function (g, U) { return g.lvl >= 75 && !g.godTest; },
+      ok: function (g, U, log) {
+        g.godTest = true; g.inheritGod = '天使之神';
+        var lf = U.irand(15, 25); g.lifespan += lf;
+        var r = U.combatGain(g.aptitude, g.lvl);
+        var add = Math.floor(r * U.rand(4, 7));
+        g.combat += add;
+        return '六翼展开，圣光普照天地！天使之神降下神谁，纯洁的光明之力浸润着你的灵魂——六翼在背后缩放又展开，如同神的叔叔！天使传承领受，魂力+' + add + '，寿元+' + lf + '！';
+      },
+      fail: function (g, U, log) { g.lifespan -= U.irand(5, 12); return '天使之力如同火焰舞舞，纯洁的光明之力对你的肉身造成巨大的烧伤——六翼裂开，金色的血液风喷四散，寿元大损。'; }
+    },
+    { id: 'duo_jiutou', weight: 0.08, maxCount: 1, name: '罗刹神传承', tier: 4, desc: '罗刹神力降临',
+      minAge: 40, maxAge: 10000,
+      cond: function (g, U) { return g.lvl >= 78 && !g.godTest; },
+      ok: function (g, U, log) {
+        g.godTest = true; g.inheritGod = '罗刹神';
+        var lf = U.irand(15, 25); g.lifespan += lf;
+        var r = U.combatGain(g.aptitude, g.lvl);
+        var add = Math.floor(r * U.rand(4, 7));
+        g.combat += add;
+        return '网罗天罗地，全能之神降世！罗刹神力蔓延不绝，你的身体在神力浸润下形开口共鸣，全能之力在体内爆发——罗刹神传承，全能开启！魂力+' + add + '，寿元+' + lf + '！';
+      },
+      fail: function (g, U, log) { g.lifespan -= U.irand(5, 12); return '罗刹神力如同万刃刀刃刨过身体，你的经脉在神力的碾压下红肉横飞——全能力量反噬，寿元大损。'; }
+    },
+    { id: 'duo_shishen', weight: 0.08, maxCount: 1, name: '食神传承', tier: 4, desc: '食神降临',
+      minAge: 35, maxAge: 10000,
+      cond: function (g, U) { return g.lvl >= 73 && !g.godTest; },
+      ok: function (g, U, log) {
+        g.godTest = true; g.inheritGod = '食神';
+        var lf = U.irand(15, 25); g.lifespan += lf;
+        var r = U.combatGain(g.aptitude, g.lvl);
+        var add = Math.floor(r * U.rand(4, 7));
+        g.combat += add;
+        return '美味归乎一点，却能造化万物！食神降临，无数美食在空中凝聚，香气四溢——你品尝到了世间枀致美味，身体在美味中获得无穷力量！食神传承，魂力+' + add + '，寿元+' + lf + '！';
+      },
+      fail: function (g, U, log) { g.lifespan -= U.irand(5, 10); return '美食的力量太过强大，你的身体无法承受——美味在体内爆炸，经脉逆流，寿元大损。'; }
     },
 
     /* ---------- tier 3 稀有 (新增) ---------- */
@@ -1031,10 +1070,11 @@
       return redRings >= 3 ? '心灵之神' : '智慧之神';
     }
     /* 通用 fallback：根据魂环/魂骨数量赋予称号 */
+    var fallbackGods = ['海神','修罗神','天使之神','罗刹神','食神','九神女','至高之神','创世神','命运之神','战神','龙神','冰霜女神'];
     if (bones.length >= 4) return '守护之神';
-    if (redRings >= 2) return '至高之神';
+    if (redRings >= 2) return fallbackGods[Math.floor(Math.random() * fallbackGods.length)];
     if (g.age < 60) return '天才之神';
-    return '自然之神';
+    return fallbackGods[Math.floor(Math.random() * fallbackGods.length)];
   }
 
   /* ---------- 主题对象 ---------- */
