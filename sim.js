@@ -92,9 +92,14 @@
       g.combat += add;
       /* 主题钩子：获取具体斗技名称（如"焰分噬浪尺"），替换日志中的档位名 */
       var skillDisplayName = tier.name;
+      var hookRuns = g.dualWuhun ? 2 : 1;
       if (theme.hooks && theme.hooks.onAwakenSkill) {
-        var nm = theme.hooks.onAwakenSkill(g, tier.name, add);
-        if (nm) skillDisplayName = nm + '（' + tier.name + '阶）';
+        var skillNames = [];
+        for (var wi = 0; wi < hookRuns; wi++) {
+          var nm = theme.hooks.onAwakenSkill(g, tier.name, add);
+          if (nm) skillNames.push(nm + '（' + tier.name + '阶）');
+        }
+        if (skillNames.length) skillDisplayName = skillNames.join(' / ');
       }
       if (log) log.push({ cls: 'skill', text: theme.terms.awakenSkill(peak, skillDisplayName, add) });
       if (!g.skillSeq) g.skillSeq = [];
