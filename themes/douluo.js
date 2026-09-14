@@ -1030,7 +1030,7 @@
   ];
 
   /* 根据武魂和生平生成自创神位名 */
-    function generateGodName(g) {
+  function generateGodName(g) {
     var ability = g.ability || "";
     var rings = g.soulRings || [];
     var bones = g.soulBones || [];
@@ -1108,6 +1108,32 @@
     if (talent >= 8) return strongGods[4];
     if (g.age < 60) return "天才之神";
     return strongGods[Math.floor(Math.random() * strongGods.length)];
+  }
+
+  /* 生成神考当前阶段的事件文案，供九考流程统一读取。 */
+  function godTestEventText(g, testNum, godName) {
+    var tests = [
+      ['武魂觉醒试炼', ['武魂共鸣，神力认可了你的根基。'], ['武魂光芒黯淡，神力暂未认可你的资质。']],
+      ['魂力淬炼试炼', ['魂力在经脉中奔涌，你稳住了神力冲击。'], ['神力冲击撕裂经脉，你只能暂退调息。']],
+      ['魂兽猎杀试炼', ['你击败守关魂兽，取得了关键魂环。'], ['守关魂兽撕裂防线，你带伤逃出试炼场。']],
+      ['意志幻境试炼', ['你看破幻境，守住了本心。'], ['幻境动摇了你的心神，试炼被迫中止。']],
+      ['海域穿越试炼', ['你顶住怒潮，穿过了神力封锁的海域。'], ['怒潮将你卷回岸边，神考进度受到影响。']],
+      ['神威承受试炼', ['你以魂力化解神威，肉身与精神同步突破。'], ['神威压垮了你的防线，魂力根基受到震荡。']],
+      ['杀戮考验试炼', ['你在杀戮中保持清醒，没有被力量吞噬。'], ['杀意侵蚀心神，你的魂力被神力削弱。']],
+      ['信念抉择试炼', ['你坚持自己的道路，神位传承向你敞开。'], ['你的信念出现动摇，神位传承暂时沉寂。']],
+      ['终极神位试炼', ['你承受住最后的神力灌注，神格开始凝聚。'], ['最后的神威撕裂了你的防线，神魂随之崩解。']]
+    ];
+    var current = tests[Math.max(0, Math.min(tests.length - 1, testNum - 1))];
+    var successTexts = {}, failTexts = {};
+    for (var i = 0; i < tests.length; i++) {
+      successTexts[i + 1] = tests[i][1];
+      failTexts[i + 1] = tests[i][2];
+    }
+    return {
+      base: '第' + g.age + '岁，' + godName + current[0],
+      successTexts: successTexts,
+      failTexts: failTexts
+    };
   }
 /* ---------- 主题对象 ---------- */
   var theme = {
