@@ -255,6 +255,7 @@
     if (rec.emperorName) lines.push('帝名：' + rec.emperorName);
     if (rec.godName) lines.push('神位：' + rec.godName);
     if (rec.immortalName) lines.push('仙帝名：' + rec.immortalName);
+    if (rec.routeName) lines.push('道路：' + rec.routeName + (rec.alignment ? '（' + rec.alignment + '）' : ''));
     return lines.join('\n');
   }
   function hlClipText(rec) {
@@ -264,12 +265,13 @@
   }
   function hlCoreOf(rec) {
     var c = {}, k;
-    var keys = ['guid', 'ts', 'ability', 'innate', 'lvl', 'title', 'combat', 'age', 'lifespan', 'ascended', 'ascendMode', 'deathReason', 'skill', 'soulRings', 'soulBones', 'essenceName', 'end', 'fires', 'talents', 'alchemist', 'soulRealm', 'emperorName', 'godName', 'immortalName'];
+    var keys = ['guid', 'ts', 'ability', 'innate', 'lvl', 'title', 'combat', 'age', 'lifespan', 'ascended', 'ascendMode', 'deathReason', 'skill', 'soulRings', 'soulBones', 'essenceName', 'end', 'fires', 'talents', 'alchemist', 'soulRealm', 'emperorName', 'godName', 'immortalName', 'routeName', 'alignment'];
     for (k = 0; k < keys.length; k++) if (rec[keys[k]] !== undefined) c[keys[k]] = rec[keys[k]];
     return c;
   }
   function hlAscendKind(rec) {
     var m = rec && rec.ascendMode;
+    if (m === 'route') return rec.routeName || rec.godName || theme.terms.ascend;
     if (m === 'refine') return '炼化晋升';
     if (m === 'forced') return '强行' + theme.terms.ascend;
     if (m === 'origin') return theme.terms.origin;
@@ -297,8 +299,8 @@
       lvl: G.lvl, title: theme.titleOf(G.lvl), combat: G.combat,
       age: G.age, lifespan: G.lifespan, ascended: G.ascended,
       deathReason: G.deathReason || undefined,
-      ascendMode: G.ascended ? (G.ascendMode === 'refine' || G.ascendMode === 'forced' || G.ascendMode === 'origin' ? G.ascendMode : 'god') : (G.ascendMode === 'fail' ? 'fail' : 'dead'),
-      end: G.ascended ? (G.ascendMode === 'refine' ? '炼化晋升' : G.ascendMode === 'forced' ? ('强行' + theme.terms.ascend) : G.ascendMode === 'origin' ? theme.terms.origin : theme.terms.ascend) : (G.deathReason === 'ringBurst' ? '爆体而亡' : (G.ascendMode === 'fail' ? (theme.terms.ascend + '失败') : '寿终')),
+      ascendMode: G.ascended ? (G.ascendMode === 'refine' || G.ascendMode === 'forced' || G.ascendMode === 'origin' || G.ascendMode === 'route' ? G.ascendMode : 'god') : (G.ascendMode === 'fail' ? 'fail' : 'dead'),
+      end: G.ascended ? (G.ascendMode === 'route' ? (G.routeName || theme.terms.ascend) : G.ascendMode === 'refine' ? '炼化晋升' : G.ascendMode === 'forced' ? ('强行' + theme.terms.ascend) : G.ascendMode === 'origin' ? theme.terms.origin : theme.terms.ascend) : (G.deathReason === 'ringBurst' ? '爆体而亡' : (G.ascendMode === 'fail' ? (theme.terms.ascend + '失败') : '寿终')),
       skill: (G.skillSeq || []).slice(),
       soulRings: G.soulRings ? G.soulRings.slice() : undefined,
       soulBones: G.soulBones ? G.soulBones.slice() : undefined,
@@ -310,6 +312,8 @@
       emperorName: G.emperorName || undefined,
       godName: G.godName || undefined,
       immortalName: G.immortalName || undefined,
+      routeName: G.routeName || undefined,
+      alignment: G.alignment || undefined,
       ascendMode: G.ascendMode || undefined,
       log: log
     };
@@ -712,7 +716,10 @@
     if (settingsReturn === 'pause') { show('game'); $('pause-mask').hidden = false; }
     else show('home');
   }
-  function hideMask() { $('pause-mask').hidden = true; }
+  function hideMask() {
+    $('pause-mask').hidden = true;
+    var eventMask = $('event-mask'); if (eventMask) eventMask.hidden = true;
+  }
 
   /* ---------- 合集首页（主题网格） ---------- */
   function renderGrid() {
@@ -1027,9 +1034,11 @@ function confirmTalents() {
     if (pendingLogs.length) {
       renderLog([pendingLogs.shift()]);
       renderAttrs();
+      if (!pendingLogs.length && G && G.pendingEvent) showEventChoice(G.pendingEvent);
       if (!pendingLogs.length && (G.dead || G.ascended)) { stopPlay(); finishGame(G.dead ? 'dead' : 'god'); }
       return;
     }
+    if (G && G.pendingEvent) { stopPlay(); showEventChoice(G.pendingEvent); return; }
     var log = engine.rollYear(G);
     for (var i = 0; i < log.length; i++) fullLog.push(log[i]);
     renderAttrs();
@@ -1046,7 +1055,50 @@ function confirmTalents() {
         renderLog(log);
       }
     }
+    if (G.pendingEvent && !pendingLogs.length) { stopPlay(); showEventChoice(G.pendingEvent); }
     if (!pendingLogs.length && (G.dead || G.ascended)) { stopPlay(); finishGame(G.dead ? 'dead' : 'god'); }
+  }
+
+  function showEventChoice(ev) {
+    if (!ev || !G || !G.pendingEvent) return;
+    stopPlay();
+    var title = $('event-choice-title');
+    var tier = $('event-choice-tier');
+    var desc = $('event-choice-desc');
+    var list = $('event-choice-list');
+    if (title) title.textContent = ev.name || '命运抉择';
+    if (tier) tier.textContent = '第' + G.age + theme.terms.ageUnit + ' · ' + (ev.tier >= 4 ? '传说事件' : ev.tier >= 3 ? '稀有事件' : '命运事件');
+    if (desc) desc.textContent = ev.desc || '选择一条道路继续人生。';
+    if (!list) return;
+    list.innerHTML = '';
+    for (var i = 0; i < ev.choices.length; i++) {
+      (function (choice) {
+        var btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'event-choice-btn';
+        btn.disabled = choice.available === false;
+        var label = document.createElement('span'); label.className = 'event-choice-label'; label.textContent = choice.label || choice.id;
+        var detail = document.createElement('span'); detail.className = 'event-choice-detail'; detail.textContent = choice.detail || '';
+        btn.appendChild(label); btn.appendChild(detail);
+        if (choice.risk) { var risk = document.createElement('span'); risk.className = 'event-choice-risk'; risk.textContent = '风险：' + choice.risk; btn.appendChild(risk); }
+        btn.addEventListener('click', function () { resolveEventChoice(choice.id); });
+        list.appendChild(btn);
+      })(ev.choices[i]);
+    }
+    $('event-mask').hidden = false;
+  }
+
+  function resolveEventChoice(choiceId) {
+    if (!G || !G.pendingEvent) return;
+    var result = engine.chooseEvent(G, choiceId, []);
+    if (!result.ok) return;
+    $('event-mask').hidden = true;
+    for (var i = 0; i < result.log.length; i++) fullLog.push(result.log[i]);
+    renderLog(result.log);
+    renderAttrs();
+    checkAch();
+    if (G.dead || G.ascended) finishGame(G.dead ? 'dead' : 'god');
+    else if (!MANUAL) startPlay();
   }
 
   /* ---------- 渲染 ---------- */
@@ -1061,11 +1113,12 @@ function confirmTalents() {
     if (btn) { btn.textContent = '⏳ 推进中...'; btn.disabled = true; }
     var batch = 0;
     function skipBatch() {
-      if (!G || G.dead || G.ascended || batch >= 200) {
+      if (!G || G.dead || G.ascended || G.pendingEvent || batch >= 200) {
         _skipRunning = false;
         if (btn) { btn.textContent = '⏩ 跳过'; btn.disabled = false; }
         renderAttrs();
         if (G && (G.dead || G.ascended)) { finishGame(G.dead ? 'dead' : 'god'); }
+        else if (G && G.pendingEvent) { showEventChoice(G.pendingEvent); }
         else { startPlay(); }
         return;
       }
@@ -1078,7 +1131,7 @@ function confirmTalents() {
           if (log[k].cls === 'rare' || log[k].cls === 'brk' || log[k].cls === 'dead' || log[k].cls === 'god' || log[k].cls === 'ev3') hasRare = true;
         }
         batch++;
-        if (hasRare || G.dead || G.ascended) break;
+        if (hasRare || G.dead || G.ascended || G.pendingEvent) break;
       }
       renderAttrs();
       checkAch();
@@ -1093,6 +1146,12 @@ function renderAttrs() {
     $('attr-apt').textContent = theme.tierName(G.aptitude) + '/' + G.aptitude;
     $('attr-life').textContent = G.age + '/' + G.lifespan;
     $('attr-combat').textContent = fmt(G.combat);
+    var routeRow = $('attr-route-row'), routeEl = $('attr-route');
+    if (routeRow && routeEl && G.alignment && G.alignment !== 'neutral') {
+      var routeNames = { righteous: '守序', evil: '邪道', rogue: '独行' };
+      routeEl.textContent = (routeNames[G.alignment] || G.alignment) + ' · ' + (G.faction || '独行者') + ' · 声望 ' + (G.reputation || 0);
+      routeRow.hidden = false;
+    } else if (routeRow) routeRow.hidden = true;
 
     /* 顶部标题：斗破只显示血脉之力；完美只显示古文品阶；其他显示功法名+天赋 */
     var gt = $('game-title');
@@ -1678,6 +1737,11 @@ function renderAttrs() {
     }
     if (G.gotMutation) markAch('mutation');
     if (G.gotTwin) markAch('twin');
+    if (G.alignment === 'righteous') markAch('route_righteous');
+    if (G.alignment === 'evil') markAch('route_evil');
+    if (G.alignment === 'rogue') markAch('route_rogue');
+    if (G.choiceHistory && G.choiceHistory.length >= 3) markAch('choice_master');
+    if (G.ascendMode === 'route') markAch('route_ascend');
     /* 主题专属成就判定钩子 */
     if (theme.hooks && theme.hooks.customAchieveCheck) theme.hooks.customAchieveCheck(G, markAch, theme);
     checkAchFromRank();
@@ -1752,7 +1816,7 @@ function renderAttrs() {
     $('home-sound').addEventListener('change', function () { SOUND = this.checked; saveSound(); syncSoundUI(); });
     $('home-manual').addEventListener('change', function () { MANUAL = this.checked; saveManual(); syncManualUI(); });
     $('log-box').addEventListener('click', function () {
-      if (!MANUAL || !G || G.dead || G.ascended || timer) return;
+      if (!MANUAL || !G || G.dead || G.ascended || G.pendingEvent || timer) return;
       blip(400, 0.04, 'triangle', 0.06);
       if (pendingLogs.length) { renderLog(pendingLogs); pendingLogs = []; renderAttrs(); }
       tick();

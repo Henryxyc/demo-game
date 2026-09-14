@@ -934,3 +934,22 @@ body::before {
 /* 游戏内词条展示 */
 #attr-talent-row { border: 1px solid #7c3aed33; border-radius: 10px; background: rgba(124,58,237,.08); padding: 6px 10px; text-align: center; }
 #attr-talent-chips { font-size: 12px; }
+/* Branch events pause the simulation until the player commits to a route. */
+.event-choice-box { width: min(92vw, 520px); max-height: min(88vh, 680px); overflow: auto; }
+.event-choice-tier { color: #f4c542; font-size: 12px; letter-spacing: 0; margin: -8px 0 8px; }
+.event-choice-desc { line-height: 1.65; color: #d7dbe5; margin-bottom: 12px; }
+.event-choice-list { display: grid; gap: 10px; }
+.event-choice-btn {
+  display: block; width: 100%; padding: 12px 14px; text-align: left; color: #f4f5f7;
+  background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.16);
+  border-radius: 7px; cursor: pointer; transition: border-color .15s, background .15s, transform .15s;
+}
+.event-choice-btn:hover, .event-choice-btn:focus-visible { background: rgba(255,255,255,.12); border-color: #f4c542; transform: translateY(-1px); outline: none; }
+.event-choice-btn:disabled { opacity: .45; cursor: not-allowed; transform: none; }
+.event-choice-label { display: block; font-weight: 700; font-size: 15px; }
+.event-choice-detail { display: block; color: #aeb5c2; font-size: 12px; line-height: 1.5; margin-top: 4px; }
+.event-choice-risk { display: block; color: #fb7185; font-size: 11px; line-height: 1.45; margin-top: 5px; }
+@media (max-width: 420px) {
+  .event-choice-box { width: calc(100vw - 24px); padding: 16px; }
+  .event-choice-btn { padding: 11px 12px; }
+}

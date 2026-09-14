@@ -288,6 +288,10 @@
       minAge: 10, maxAge: 60,
       cond: function (g, U) { return g.innate >= 7 && g.lvl >= 30; },
       ok: function (g, U, log) {
+        g.dualWuhun = true;
+        g.gotTwin = true;
+        g.maxRings = 18;
+        g.secondWuhunRings = g.secondWuhunRings || 0;
         g.lifespan += U.irand(5, 10);
         var r = U.combatGain(g.aptitude, g.lvl);
         g.combat += Math.floor(r * U.rand(3, 5));

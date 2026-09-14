@@ -251,10 +251,28 @@
       combatGain: combatGain, lifespanGain: lifespanGain,
       gainLevels: gainLevels, levelUp: levelUp, evCombat: evCombat, breakChance: breakChance,
       drawHighAbility: drawHighAbility,
+      choosePath: choosePath,
+      setFlag: setFlag,
       printlog: printlog,
       testLv: testLv, testCombat: testCombat,
       DATA: theme     /* 事件访问 U.DATA.tierName 等 → theme.tierName */
     };
+
+    function choosePath(g, alignment, tag, reputation, faction) {
+      if (alignment) g.alignment = alignment;
+      if (tag) {
+        if (!g.pathTags) g.pathTags = [];
+        if (g.pathTags.indexOf(tag) < 0) g.pathTags.push(tag);
+      }
+      if (reputation) g.reputation = (g.reputation || 0) + reputation;
+      if (faction) g.faction = faction;
+      g.routePower = (g.routePower || 0) + Math.max(0, Math.abs(reputation || 0)) * 0.01;
+    }
+    function setFlag(g, key, value) {
+      if (!g.storyFlags) g.storyFlags = {};
+      g.storyFlags[key] = value === undefined ? true : value;
+      if (key === 'routeReady') g.routeReady = g.storyFlags[key];
+    }
 
     /* testLv/testCombat 模拟中置 true，跳过会递归调用测试的死疫禁区（deadzone） */
     var _testMode = false;
@@ -262,6 +280,7 @@
     /* ---------- 抽 1 个随机事件执行 ----------
      * 先按事件年龄上下限（minAge/maxAge，默认 0/10000）过滤可选池，再从池内按 weight 抽取 */
     function rollEvent(g, log) {
+      if (g.pendingEvent) return g.pendingEvent;
       var E = theme.EVENTS;
       var pool = [], i, mc = g.maxCount || (g.maxCount = {});
       for (i = 0; i < E.length; i++) {
@@ -286,13 +305,62 @@
       var prevCur = _curEv;
       _curEv = { ev: ev, g: g, log: log, printed: false };
       if (!ev.cond || ev.cond(g, U)) {
-        if (ev.ok) text = ev.ok(g, U, log);
+        if (ev.choices && ev.choices.length) {
+          var publicChoices = [];
+          for (var ci = 0; ci < ev.choices.length; ci++) {
+            var choice = ev.choices[ci];
+            var available = !choice.condition || choice.condition(g, U);
+            publicChoices.push({
+              id: choice.id,
+              label: choice.label,
+              detail: choice.detail || '',
+              available: available,
+              risk: choice.risk || ''
+            });
+          }
+          var hasChoice = false;
+          for (var hi = 0; hi < publicChoices.length; hi++) if (publicChoices[hi].available) { hasChoice = true; break; }
+          if (hasChoice) {
+            g.pendingEvent = {
+              id: ev.id,
+              name: ev.name,
+              tier: ev.tier || 2,
+              desc: ev.desc || '',
+              choices: publicChoices
+            };
+            printlog(ev.desc || '命运在此刻分岔，选择你的道路。');
+          } else if (ev.fail) {
+            text = ev.fail(g, U, log);
+          }
+        } else if (ev.ok) text = ev.ok(g, U, log);
       } else {
         if (ev.fail) text = ev.fail(g, U, log);
       }
       /* 事件内部用 U.printlog 打印「遇到事件」；未改用 printlog 的旧事件仍可用 return 文本兜底 */
       if (text && !_curEv.printed) printlog(text);
       _curEv = prevCur;   /* 恢复外层 _curEv：cond 里的 testCombat 模拟局会覆盖/清空 _curEv，不恢复则本事件的 printlog 失效 */
+      return g.pendingEvent || null;
+    }
+
+    function chooseEvent(g, choiceId, log) {
+      if (!g || !g.pendingEvent) return { ok: false, reason: 'no_pending_event', log: log || [] };
+      var pending = g.pendingEvent;
+      var ev = null, i;
+      for (i = 0; i < theme.EVENTS.length; i++) if (theme.EVENTS[i].id === pending.id) { ev = theme.EVENTS[i]; break; }
+      if (!ev || !ev.choices) return { ok: false, reason: 'event_not_found', log: log || [] };
+      var choice = null;
+      for (i = 0; i < ev.choices.length; i++) if (ev.choices[i].id === choiceId) { choice = ev.choices[i]; break; }
+      if (!choice || (choice.condition && !choice.condition(g, U))) return { ok: false, reason: 'choice_unavailable', log: log || [] };
+      var out = log || [];
+      g.pendingEvent = null;
+      if (!g.choiceHistory) g.choiceHistory = [];
+      g.choiceHistory.push({ event: ev.id, choice: choice.id, age: g.age });
+      var prevCur = _curEv;
+      _curEv = { ev: ev, g: g, log: out, printed: false };
+      var text = choice.apply ? choice.apply(g, U, out) : null;
+      if (text && !_curEv.printed) printlog(text);
+      _curEv = prevCur;
+      return { ok: true, choice: choice.id, log: out, event: ev.id };
     }
 
     /* ---------- 工具：模拟某天赋档修炼到指定岁数的 top X% 分位数值 ----------
@@ -360,6 +428,11 @@
     function tryAscend(g, log) {
       /* 主题钩子：注入主题专属加成（如斗破异火提升源质 rate / 降低 needCombat） */
       if (theme.hooks && theme.hooks.onAscendCheck) theme.hooks.onAscendCheck(g, log, U);
+
+      if (theme.hooks && theme.hooks.tryRouteAscend) {
+        var routeHandled = theme.hooks.tryRouteAscend(g, log, U, { godCombat: godCombat });
+        if (routeHandled) { if (!g._godName) g._godName = g.emperorName || g.godName || g.immortalName || (theme.terms.ascend || ''); return true; }
+      }
 
       /* ★ 主题专属突破路径（优先判定，如斗破陀舍古帝传承/本源魂气，斗罗神考/信仰）
        * 钩子返回 true 表示已处理突破（成功或失败），跳过默认 refine/forced 逻辑 */
@@ -439,7 +512,15 @@
         maxCount: {},   /* 各事件本局剩余触发次数 */
         skillSeq: [],    /* 本局领悟的技能档级序列 */
         ascended: false,
-        dead: false
+        dead: false,
+        alignment: 'neutral',
+        pathTags: [],
+        reputation: 0,
+        faction: '独行者',
+        routePower: 0,
+        storyFlags: {},
+        choiceHistory: [],
+        pendingEvent: null
       };
       /* 注入主题专属初始状态（如斗破 g.fires） */
       var is = theme.initialState || {}, k;
@@ -451,9 +532,10 @@
      * 每年固定一条「第X岁，修炼」；突破则替换该行；事件/奇遇/超生命体进化/死亡单独成行 */
     function rollYear(g) {
       var log = [];
+      if (g.pendingEvent) return log;
       g.year++;
       g.age++;
-      log.push({ cls: 'year', text: theme.terms.year(g.age) });
+      log.push({ cls: 'year', text: theme.terms.yearFor ? theme.terms.yearFor(g) : theme.terms.year(g.age) });
 
       /* 特殊事件：进化本源（亿分之一）无视条件直接进化为超生命体 */
       if (Math.random() < theme.ORIGIN_CHANCE) {
@@ -553,6 +635,18 @@
       /* 普通随机事件 */
       if (!g.ascended && Math.random() < theme.EVENT_CHANCE) rollEvent(g, log);
 
+      /* 统计模拟没有用户界面：用第一个可用选项继续推进，确保概率测试不会卡在待决策状态。 */
+      if (_testMode && g.pendingEvent) {
+        var autoChoice = null;
+        for (var aci = 0; aci < g.pendingEvent.choices.length; aci++) {
+          if (g.pendingEvent.choices[aci].available) { autoChoice = g.pendingEvent.choices[aci].id; break; }
+        }
+        if (autoChoice) chooseEvent(g, autoChoice, log);
+      }
+
+      /* 有待决策事件时暂停在当前年份，避免自动模式越过玩家选择。 */
+      if (g.pendingEvent) return log;
+
       if (g.dead) return log;
 
       /* 主题每年额外逻辑钩子（如斗破异火暴动等） */
@@ -582,6 +676,7 @@
       createGame: createGame,
       rollYear: rollYear,
       tryAscend: tryAscend,
+      chooseEvent: chooseEvent,
       EVENTS: theme.EVENTS,
       theme: theme
     };

@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta name="theme-color" content="#141b26">
   <title>模拟器合集</title>
-  <link rel="stylesheet" href="style.css?v=3.7">
+  <link rel="stylesheet" href="style.css?v=4.0">
 </head>
 <body>
   <div id="ach-toast" class="ach-toast" hidden></div>
@@ -84,6 +84,7 @@
       </div>
       <!-- 技能行（非斗破主题显示） -->
       <div class="skill-line" id="attr-skill"><span class="skill-label">技能</span><span class="skill-data" id="attr-skill-chips"></span></div>
+      <div class="skill-line route-line" id="attr-route-row" hidden><span class="skill-label">道路</span><span class="skill-data" id="attr-route"></span></div>
 
       <!-- 斗破专属：炼药/精神力卡片行（跟等级一样的卡片样式） -->
       <div class="attr-grid" id="attr-doupo-cards" hidden>
@@ -294,6 +295,16 @@
     </div>
   </div>
 
+  <!-- ============ 命运抉择弹窗 ============ -->
+  <div id="event-mask" class="mask" hidden>
+    <div class="mask-box event-choice-box">
+      <div class="mask-title" id="event-choice-title">命运抉择</div>
+      <div class="event-choice-tier" id="event-choice-tier"></div>
+      <div class="mask-info event-choice-desc" id="event-choice-desc"></div>
+      <div class="event-choice-list" id="event-choice-list"></div>
+    </div>
+  </div>
+
   <!-- ============ 暂停遮罩 ============ -->
   <div id="pause-mask" class="mask" hidden>
     <div class="mask-box">
@@ -306,15 +317,16 @@
     </div>
   </div>
 
-  <script src="data.js?v=3.7"></script>
-  <script src="ability.js?v=3.7"></script>
-  <script src="events.js?v=3.7"></script>
-  <script src="themes/doomsday.js?v=3.7"></script>
-  <script src="themes/douluo.js?v=3.7"></script>
-  <script src="themes/doupo.js?v=3.7"></script>
-  <script src="themes/wanmei.js?v=3.7"></script>
-  <script src="themes/registry.js?v=3.7"></script>
-  <script src="sim.js?v=3.7"></script>
-  <script src="game.js?v=3.7"></script>
+  <script src="data.js?v=4.0"></script>
+  <script src="ability.js?v=4.0"></script>
+  <script src="events.js?v=4.0"></script>
+  <script src="themes/doomsday.js?v=4.0"></script>
+  <script src="themes/douluo.js?v=4.0"></script>
+  <script src="themes/doupo.js?v=4.0"></script>
+  <script src="themes/wanmei.js?v=4.0"></script>
+  <script src="branch-events.js?v=4.0"></script>
+  <script src="themes/registry.js?v=4.0"></script>
+  <script src="sim.js?v=4.0"></script>
+  <script src="game.js?v=4.0"></script>
 </body>
 </html>
