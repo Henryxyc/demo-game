@@ -1026,7 +1026,7 @@
     { id:'dl_t26', name:'天赐神力', rarity:'gold', desc:'幸运加持，魂环品质提升，成神+6%', apply:function(g){ g.ascendBonus = (g.ascendBonus || 0) + 0.06; g.luckBonus = (g.luckBonus || 0) + 1; g.combat = Math.floor(g.combat * 1.3); } },
     { id:'dl_t27', name:'命运之轮', rarity:'gold', desc:'每次突破概率+10%，成神+5%', apply:function(g){ g.ascendBonus = (g.ascendBonus || 0) + 0.05; g.breakBonus = (g.breakBonus || 0) + 0.10; g.lifespan += 15; } },
     { id:'dl_t28', name:'武魂真身', rarity:'gold', desc:'开局武魂进化真身，魂力+50%，成神+7%', apply:function(g){ g.combat = Math.floor(g.combat * 1.5); g.ascendBonus = (g.ascendBonus || 0) + 0.07; g.lifespan += 10; } },
-    { id:'dl_t29', name:'双生武魂', rarity:'gold', desc:'天赋双生武魂，每个武魂可容9个魂环，共18个魂环上限，天赋+1，成神+8%', apply:function(g){ g.dualWuhun = true; g.innate = Math.min(10, g.innate + 1); g.aptitude = Math.max(g.aptitude, g.innate); g.ascendBonus = (g.ascendBonus || 0) + 0.08; g.maxRings = (g.maxRings || 9) + 9; } },
+    { id:'dl_t29', name:'双生武魂', rarity:'gold', desc:'天赋双生武魂，第一武魂先修九环，第二武魂后期逐环吸收，天赋+1，成神+8%', apply:function(g){ g.dualWuhun = true; g.innate = Math.min(10, g.innate + 1); g.aptitude = Math.max(g.aptitude, g.innate); g.ascendBonus = (g.ascendBonus || 0) + 0.08; g.maxRings = 18; g.secondWuhunRings = 0; } },
   ];
 
   /* 根据武魂和生平生成自创神位名 */
@@ -1195,7 +1195,7 @@
         var skill = skills[Math.floor(Math.random() * skills.length)];
         var maxR = g.maxRings || 9;
         if (g.soulRings.length < maxR) {
-          g.soulRings.push({ name: beast.name, year: beast.year, skill: skill, tier: tierName });
+          g.soulRings.push({ name: beast.name, year: beast.year, skill: skill, tier: tierName, wuhun: 1 });
         }
         var desc = beast.name + '（' + beast.year + '，' + skill + '）';
         /* 魂骨掉落判定：千年以上有概率，十万年必定掉落 */
@@ -1222,6 +1222,35 @@
           }
         }
         return desc;
+      },
+      /* 第二武魂：第一武魂九环后，从91级开始逐级吸收第二套魂环。战力不足时有爆体风险。 */
+      onSecondWuhunRing: function (g) {
+        if (!g.dualWuhun || g.lvl < 91 || g.lvl > 99) return null;
+        if ((g.soulRings || []).length < 9) return null;
+        if (g.secondWuhunLastLevel === g.lvl || (g.secondWuhunRings || 0) >= 9) return null;
+
+        g.secondWuhunLastLevel = g.lvl;
+        var ringNo = (g.secondWuhunRings || 0) + 1;
+        var requiredCombat = 15000 + ringNo * 8000;
+        var deficit = Math.max(0, 1 - g.combat / requiredCombat);
+        var burstChance = Math.min(0.80, deficit * 0.75 + (deficit > 0 ? 0.05 : 0));
+        if (Math.random() < burstChance) {
+          g.deathReason = 'ringBurst';
+          return {
+            dead: true,
+            text: '第' + g.age + '岁，第二武魂强行吸收第' + ringNo + '枚魂环，魂力反噬冲垮肉身——爆体而亡！'
+          };
+        }
+
+        var tier = selectSkill(g.combat, ringNo);
+        var before = (g.soulRings || []).length;
+        var desc = theme.hooks.onAwakenSkill(g, tier.name, tier.addLo);
+        if (g.soulRings.length > before) {
+          g.soulRings[g.soulRings.length - 1].wuhun = 2;
+          g.soulRings[g.soulRings.length - 1].ringNo = ringNo;
+          g.secondWuhunRings = ringNo;
+        }
+        return { text: '第' + g.age + '岁，第二武魂吸收第' + ringNo + '枚魂环：' + desc };
       },
       /* ★ 斗罗多路径成神：神考继承 / 信仰自创 */
       tryAscendPath: function (g, log, U, helpers) {

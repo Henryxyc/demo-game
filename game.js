@@ -197,6 +197,7 @@
   }
   function hlEndText(rec) {
     if (rec.ascended) return hlAscendKind(rec);
+    if (rec.deathReason === 'ringBurst') return '爆体而亡';
     if (rec.ascendMode === 'fail') return theme.terms.settleFailTitle.replace(/^[^\u4e00-\u9fa5]+/, '').trim() || '进化失败';
     return '寿终';
   }
@@ -263,7 +264,7 @@
   }
   function hlCoreOf(rec) {
     var c = {}, k;
-    var keys = ['guid', 'ts', 'ability', 'innate', 'lvl', 'title', 'combat', 'age', 'lifespan', 'ascended', 'ascendMode', 'skill', 'soulRings', 'soulBones', 'essenceName', 'end', 'fires', 'talents', 'alchemist', 'soulRealm', 'emperorName', 'godName', 'immortalName'];
+    var keys = ['guid', 'ts', 'ability', 'innate', 'lvl', 'title', 'combat', 'age', 'lifespan', 'ascended', 'ascendMode', 'deathReason', 'skill', 'soulRings', 'soulBones', 'essenceName', 'end', 'fires', 'talents', 'alchemist', 'soulRealm', 'emperorName', 'godName', 'immortalName'];
     for (k = 0; k < keys.length; k++) if (rec[keys[k]] !== undefined) c[keys[k]] = rec[keys[k]];
     return c;
   }
@@ -276,6 +277,7 @@
   }
   function hlResultLabel(rec) {
     if (rec.ascended) return hlAscendKind(rec);
+    if (rec.deathReason === 'ringBurst') return '爆体而亡';
     if (rec.ascendMode === 'fail') return theme.terms.settleFailTitle.replace(/^[^\u4e00-\u9fa5]+/, '').trim() || (theme.terms.ascend + '失败');
     return '寿终';
   }
@@ -294,8 +296,9 @@
       ts: Date.now(), ability: G.ability, innate: G.innate,
       lvl: G.lvl, title: theme.titleOf(G.lvl), combat: G.combat,
       age: G.age, lifespan: G.lifespan, ascended: G.ascended,
+      deathReason: G.deathReason || undefined,
       ascendMode: G.ascended ? (G.ascendMode === 'refine' || G.ascendMode === 'forced' || G.ascendMode === 'origin' ? G.ascendMode : 'god') : (G.ascendMode === 'fail' ? 'fail' : 'dead'),
-      end: G.ascended ? (G.ascendMode === 'refine' ? '炼化晋升' : G.ascendMode === 'forced' ? ('强行' + theme.terms.ascend) : G.ascendMode === 'origin' ? theme.terms.origin : theme.terms.ascend) : (G.ascendMode === 'fail' ? (theme.terms.ascend + '失败') : '寿终'),
+      end: G.ascended ? (G.ascendMode === 'refine' ? '炼化晋升' : G.ascendMode === 'forced' ? ('强行' + theme.terms.ascend) : G.ascendMode === 'origin' ? theme.terms.origin : theme.terms.ascend) : (G.deathReason === 'ringBurst' ? '爆体而亡' : (G.ascendMode === 'fail' ? (theme.terms.ascend + '失败') : '寿终')),
       skill: (G.skillSeq || []).slice(),
       soulRings: G.soulRings ? G.soulRings.slice() : undefined,
       soulBones: G.soulBones ? G.soulBones.slice() : undefined,
@@ -1358,7 +1361,8 @@ function renderAttrs() {
     var t = $('settle-title');
     if (reason === 'god') { t.textContent = theme.terms.settleGodTitle; t.className = 'settle-title god'; blip(880, 0.4, 'triangle', 0.14); }
     else if (reason === 'dead') {
-      if (G.ascendMode === 'fail') { t.textContent = theme.terms.settleFailTitle; blip(120, 0.4, 'sawtooth', 0.14); }
+      if (G.deathReason === 'ringBurst') { t.textContent = '💥 爆体而亡'; blip(100, 0.4, 'sawtooth', 0.16); }
+      else if (G.ascendMode === 'fail') { t.textContent = theme.terms.settleFailTitle; blip(120, 0.4, 'sawtooth', 0.14); }
       else { t.textContent = theme.terms.settleDeadTitle; blip(160, 0.4, 'sawtooth', 0.12); }
       t.className = 'settle-title';
     }

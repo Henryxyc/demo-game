@@ -92,20 +92,29 @@
       g.combat += add;
       /* 主题钩子：获取具体斗技名称（如"焰分噬浪尺"），替换日志中的档位名 */
       var skillDisplayName = tier.name;
-      var hookRuns = g.dualWuhun ? 2 : 1;
       if (theme.hooks && theme.hooks.onAwakenSkill) {
-        var skillNames = [];
-        for (var wi = 0; wi < hookRuns; wi++) {
-          var nm = theme.hooks.onAwakenSkill(g, tier.name, add);
-          if (nm) skillNames.push(nm + '（' + tier.name + '阶）');
-        }
-        if (skillNames.length) skillDisplayName = skillNames.join(' / ');
+        var nm = theme.hooks.onAwakenSkill(g, tier.name, add);
+        if (nm) skillDisplayName = nm + '（' + tier.name + '阶）';
       }
       if (log) log.push({ cls: 'skill', text: theme.terms.awakenSkill(peak, skillDisplayName, add) });
       if (!g.skillSeq) g.skillSeq = [];
       g.skillSeq.push(tier.name);   /* 记录本局觉醒的技能档级（D/C/B/A/S，UI 展示） */
       var r = levelUp(g);   /* 觉醒技能后直接突破到下一阶 */
       if (log && r) log.push({ cls: 'brk', text: r.text });
+      return maybeAbsorbSecondWuhun(g, log);
+    }
+
+    /* 双生武魂：第一武魂完成九环后，第二武魂随高等级突破逐枚吸收魂环。 */
+    function maybeAbsorbSecondWuhun(g, log) {
+      if (!theme.hooks || !theme.hooks.onSecondWuhunRing) return false;
+      var result = theme.hooks.onSecondWuhunRing(g);
+      if (!result) return false;
+      if (log && result.text) log.push({ cls: result.dead ? 'dead' : 'skill', text: result.text });
+      if (result.dead) {
+        g.dead = true;
+        return true;
+      }
+      return false;
     }
     function attemptBreak(g) {
       if (g.lvl >= 99) return 0;
@@ -197,7 +206,11 @@
         var r = levelUp(g);
         up++; ct += r.combat; life += r.life;
         if (log) log.push({ cls: 'brk', text: r.text });
-        if (g.lvl % 10 === 0 && g.lvl < theme.terms.peakLv) awakenSkill(g, log);
+        if (g.lvl % 10 === 0 && g.lvl < theme.terms.peakLv) {
+          if (awakenSkill(g, log)) break;
+        } else if (maybeAbsorbSecondWuhun(g, log)) {
+          break;
+        }
       }
       return { up: up, combat: ct, life: life };
     }
@@ -475,6 +488,7 @@
         for (var upi = 0; upi < ups; upi++) {
           var ur = levelUp(g);
           if (ur && ur.text) log.push({ cls: 'brk', text: ur.text });
+          if (maybeAbsorbSecondWuhun(g, log)) return log;
         }
       }
 
@@ -486,6 +500,7 @@
           for (var k = 0; k < gained; k++) {
             var r = levelUp(g);
             log.push({ cls: 'brk', text: r.text });
+            if (maybeAbsorbSecondWuhun(g, log)) break;
             if (k + 1 < gained && g.lvl < peakLv) log.push({ cls: 'brk', text: theme.terms.combo(g.age) });
             if (g.lvl >= peakLv) break;
           }
@@ -496,8 +511,10 @@
           log[0] = { cls: 'year', text: theme.terms.yearCombat(g.age, gcv) };
         }
         /* 达到 10/20/..90（大境界顶，含初始/突破后）：领悟技能，直接突破到下一阶（+1级） */
-        if (g.lvl % 10 === 0 && g.lvl < peakLv) awakenSkill(g, log);
+        if (g.lvl % 10 === 0 && g.lvl < peakLv && awakenSkill(g, log)) return log;
       }
+
+      if (g.dead) return log;
 
       /* 达到巅峰等级：立即尝试飞升，失败则游戏结束 */
       if (g.lvl >= peakLv && !g.ascended && theme.ascend) {
@@ -535,6 +552,8 @@
 
       /* 普通随机事件 */
       if (!g.ascended && Math.random() < theme.EVENT_CHANCE) rollEvent(g, log);
+
+      if (g.dead) return log;
 
       /* 主题每年额外逻辑钩子（如斗破异火暴动等） */
       if (theme.hooks && theme.hooks.onYear) theme.hooks.onYear(g, log, U);
