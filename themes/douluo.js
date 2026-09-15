@@ -1263,6 +1263,10 @@
         }
 
         var tier = selectSkill(g.combat, Math.max(ringNo, 3));
+        /* ★ 第二武魂第一魂环保底万年（黑级）以上，还原著设定 */
+        if (ringNo === 1 && tier.name !== '黑' && tier.name !== '红') {
+          tier = { name: '黑', combatLo: 10000, combatHi: 72499, addLo: 500, addHi: 1500 };
+        }
         var before = (g.soulRings || []).length;
         var desc = theme.hooks.onAwakenSkill(g, tier.name, tier.addLo);
         if (g.soulRings.length > before) {
