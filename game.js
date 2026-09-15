@@ -1178,7 +1178,7 @@ function renderAttrs() {
       /* 斗罗：魂环用旧式 skill-line 展示（可靠），魂骨用新容器 */
       if (skillRow) skillRow.hidden = false;
       if (dlArea) dlArea.hidden = true;
-      /* 魂环：按颜色着色展示，魂技简写 */
+      /* 魂环：魂兽名+魂技，按魂环颜色着色 */
       var rings = G && G.soulRings;
       if (ahc) {
         if (rings && rings.length) {
@@ -1188,7 +1188,7 @@ function renderAttrs() {
             var rk = rings[ri];
             var rc = RING_CLR[rk.tier] || '#e8e4d8';
             if (ri > 0) rhtml += ' ';
-            rhtml += '<span class="skill-chip" style="background:' + rc + ';color:' + (rk.tier === '白' ? '#333' : '#fff') + ';border:none;font-size:10px;padding:2px 5px;" title="' + esc(rk.name) + '（' + esc(rk.year) + '·' + esc(rk.skill) + ')' + '">' + esc(rk.tier) + '</span>';
+            rhtml += '<span class="skill-chip" style="background:' + rc + ';color:' + (rk.tier === '白' ? '#333' : '#fff') + ';border:none;font-size:10px;padding:2px 5px;white-space:nowrap;" title="' + esc(rk.name) + '（' + esc(rk.year) + '·' + esc(rk.skill) + '）">' + esc(rk.name) + '·' + esc(rk.skill) + '</span>';
           }
           ahc.innerHTML = rhtml;
         } else { ahc.innerHTML = '<span style="color:#556;font-size:11px;">暂无魂环</span>'; }
