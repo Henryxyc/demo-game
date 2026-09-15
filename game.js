@@ -1175,58 +1175,43 @@ function renderAttrs() {
     var ahc = $('attr-skill-chips');
     var dlArea = $('dl-rings-area');
     if (theme.id === 'douluo') {
-      /* 斗罗：使用专属展示区（魂环芯片 + 魂骨） */
-      if (skillRow) skillRow.hidden = true;
-      if (dlArea) dlArea.hidden = false;
-      if (ahc) ahc.innerHTML = '';
-      /* 魂环芯片展示 */
+      /* 斗罗：魂环用旧式 skill-line 展示（可靠），魂骨用新容器 */
+      if (skillRow) skillRow.hidden = false;
+      if (dlArea) dlArea.hidden = true;
+      /* 魂环：按颜色着色展示，魂技简写 */
       var rings = G && G.soulRings;
-      var RING_CHIP_COLORS = { '白': '#e0e0e0', '黄': '#f5c542', '紫': '#a855f7', '黑': '#62a8e6', '红': '#ef4444' };
-      var ring1Html = '', ring2Html = '', ringCount1 = 0, ringCount2 = 0;
-      if (rings && rings.length) {
-        for (var ri = 0; ri < rings.length; ri++) {
-          var rk = rings[ri];
-          var rc = RING_CHIP_COLORS[rk.tier] || '#e8e4d8';
-          var chipHtml = '<span class="dl-ring-chip" style="border-color:' + rc + ';color:' + rc + '">' +
-            '<span class="dl-ring-dot" style="background:' + rc + '"></span>' +
-            '<span class="dl-ring-text">' + esc(rk.name) + '<br><small>' + esc(rk.year) + ' · ' + esc(rk.skill) + '</small></span></span>';
-          if (rk.wuhun === 2) { ring2Html += chipHtml; ringCount2++; }
-          else { ring1Html += chipHtml; ringCount1++; }
-        }
+      if (ahc) {
+        if (rings && rings.length) {
+          var RING_CLR = { '白': '#e0e0e0', '黄': '#f5c542', '紫': '#a855f7', '黑': '#62a8e6', '红': '#ef4444' };
+          var rhtml = '';
+          for (var ri = 0; ri < rings.length; ri++) {
+            var rk = rings[ri];
+            var rc = RING_CLR[rk.tier] || '#e8e4d8';
+            if (ri > 0) rhtml += ' ';
+            rhtml += '<span class="skill-chip" style="background:' + rc + ';color:' + (rk.tier === '白' ? '#333' : '#fff') + ';border:none;font-size:10px;padding:2px 5px;" title="' + esc(rk.name) + '（' + esc(rk.year) + '·' + esc(rk.skill) + ')' + '">' + esc(rk.tier) + '</span>';
+          }
+          ahc.innerHTML = rhtml;
+        } else { ahc.innerHTML = '<span style="color:#556;font-size:11px;">暂无魂环</span>'; }
       }
-      var ring1Chips = $('dl-ring1-chips');
-      var ring2Chips = $('dl-ring2-chips');
-      var ring2Section = $('dl-ring2-section');
-      var ring1Title = document.querySelector('#dl-ring1-section .dl-ring-title');
-      if (ring1Chips) ring1Chips.innerHTML = ring1Html || '<span style="color:#556;font-size:12px;">暂无</span>';
-      if (ring1Title) ring1Title.textContent = '🔵 第一武魂 · 魂环（' + ringCount1 + '/9）';
-      if (ring2Chips) ring2Chips.innerHTML = ring2Html;
-      if (ring2Section) ring2Section.hidden = !ring2Html;
-      if (ring2Html) {
-        var ring2Title = document.querySelector('#dl-ring2-section .dl-ring-title');
-        if (ring2Title) ring2Title.textContent = '🔴 第二武魂 · 魂环（' + ringCount2 + '/9）';
-      }
-      /* 魂骨展示 */
+      var skillLabel = skillRow && skillRow.querySelector('.skill-label');
+      if (skillLabel) skillLabel.textContent = '魂环';
+      /* 魂骨展示（用旧式行） */
+      var boneRow = $('attr-bone-row');
+      var boneChips = $('attr-bone-chips');
       var bones = G && G.soulBones;
-      var boneSection = $('dl-bone-section');
-      var boneChips2 = $('dl-bone-chips');
-      if (bones && bones.length) {
-        if (boneSection) boneSection.hidden = false;
+      if (boneRow) boneRow.hidden = false;
+      if (boneChips && bones && bones.length) {
         var bhtml = '';
         for (var bii = 0; bii < bones.length; bii++) {
           var sb = bones[bii];
           var bc = TIER_COLORS[sb.tier] || '#fbbf24';
-          bhtml += '<span class="dl-ring-chip" style="border-color:' + bc + ';color:' + bc + '">' +
-            '<span class="dl-ring-dot" style="background:' + bc + '"></span>' +
-            '<span class="dl-ring-text">' + esc(sb.part) + '<br><small>' + esc(sb.skill) + '</small></span></span>';
+          if (bii > 0) bhtml += ' ';
+          bhtml += '<span class="skill-chip" style="background:' + bc + ';color:' + (sb.tier === '紫' ? '#fff' : '#333') + ';border:none;font-size:10px;padding:2px 5px;" title="' + esc(sb.skill) + '">' + esc(sb.part) + '</span>';
         }
-        if (boneChips2) boneChips2.innerHTML = bhtml;
-      } else {
-        if (boneSection) boneSection.hidden = true;
+        boneChips.innerHTML = bhtml;
+      } else if (boneChips) {
+        boneChips.innerHTML = '<span style="color:#556;font-size:11px;">暂无魂骨</span>';
       }
-      /* 隐藏旧的魂骨行 */
-      var boneRowOld = $('attr-bone-row');
-      if (boneRowOld) boneRowOld.hidden = true;
     } else if (theme.id === 'doupo' || theme.id === 'wanmei') {
       /* 斗破/完美：隐藏技能行（各自有独立的斗技/功法行在下方展示，避免重复） */
       if (skillRow) skillRow.hidden = true;
