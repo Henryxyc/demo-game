@@ -1871,21 +1871,41 @@ function renderAttrs() {
     if (sec) sec.hidden = list.length === 0;
   }
 
-  /* ============ 更新日志系统 ============ */
+  /* ============ 更新日志 & 分析报告系统 ============ */
+  var _clTab = 'changelog';   /* 'changelog' | 'report' */
   function openChangelog() {
     blip(500, 0.06, 'triangle', 0.08);
+    _clTab = 'changelog';
+    renderClTabs();
     renderChangelog();
     $('changelog-mask').hidden = false;
   }
   function closeChangelog() { $('changelog-mask').hidden = true; }
+  function renderClTabs() {
+    var box = $('cl-tabs'); if (!box) return;
+    box.innerHTML = '';
+    var tabs = [['changelog', '📋 更新日志'], ['report', '📊 分析报告']];
+    for (var i = 0; i < tabs.length; i++) {
+      (function (id, label) {
+        var b = document.createElement('button');
+        b.className = 'cl-tab' + (_clTab === id ? ' active' : '');
+        b.textContent = label;
+        b.addEventListener('click', function () {
+          _clTab = id;
+          renderClTabs();
+          if (id === 'changelog') { renderChangelog(); $('report-list').hidden = true; $('changelog-list').hidden = false; }
+          else { renderReports(); $('changelog-list').hidden = true; $('report-list').hidden = false; }
+          blip(500, 0.06, 'triangle', 0.08);
+        });
+        box.appendChild(b);
+      })(tabs[i][0], tabs[i][1]);
+    }
+  }
   function renderChangelog() {
     var box = $('changelog-list'); if (!box) return;
     box.innerHTML = '';
     var log = window.CHANGELOG || [];
-    if (!log.length) {
-      box.innerHTML = '<div style="text-align:center;color:#556;font-size:13px;padding:20px;">暂无更新记录</div>';
-      return;
-    }
+    if (!log.length) { box.innerHTML = '<div style="text-align:center;color:#556;font-size:13px;padding:20px;">暂无更新记录</div>'; return; }
     for (var i = 0; i < log.length; i++) {
       var entry = log[i];
       var div = document.createElement('div');
@@ -1897,6 +1917,61 @@ function renderAttrs() {
       }
       changes += '</div>';
       div.innerHTML = head + changes;
+      box.appendChild(div);
+    }
+  }
+  function renderReports() {
+    var box = $('report-list'); if (!box) return;
+    box.innerHTML = '';
+    var reports = window.REPORTS || [];
+    if (!reports.length) { box.innerHTML = '<div class="rp-empty">暂无分析报告<br>系统每日自动分析用户反馈并生成报告</div>'; return; }
+    var THEME_NAMES = { doomsday: '末日', douluo: '斗罗', doupo: '斗破', wanmei: '完美' };
+    for (var i = 0; i < reports.length; i++) {
+      var r = reports[i];
+      var div = document.createElement('div');
+      div.className = 'rp-entry';
+      var hasBugs = r.bugs && r.bugs.length;
+      var hasFixes = r.fixes && r.fixes.length;
+      var badgeCls = hasFixes ? 'has-fix' : 'ok';
+      var badgeText = hasFixes ? '已修复 ' + r.fixes.length + ' 项' : '运行正常';
+      /* 头部 */
+      var html = '<div class="rp-head"><span class="rp-date">' + esc(r.date) + '</span><span class="rp-badge ' + badgeCls + '">' + badgeText + '</span></div>';
+      /* 摘要 */
+      if (r.summary) html += '<div class="rp-summary">' + esc(r.summary) + '</div>';
+      /* 统计 */
+      if (r.stats) {
+        html += '<div class="rp-stats-row">';
+        html += '<span class="rp-stat">建议 <b>' + (r.stats.suggestion || 0) + '</b></span>';
+        html += '<span class="rp-stat">Bug <b>' + (r.stats.bug || 0) + '</b></span>';
+        html += '<span class="rp-stat">好评 <b>' + (r.stats.praise || 0) + '</b></span>';
+        html += '<span class="rp-stat">其他 <b>' + (r.stats.other || 0) + '</b></span>';
+        html += '</div>';
+      }
+      /* Bug 列表 */
+      if (hasBugs) {
+        html += '<div class="rp-section-title">🐛 Bug清单</div>';
+        for (var j = 0; j < r.bugs.length; j++) {
+          var bug = r.bugs[j];
+          var cls = 'rp-item bug-' + (bug.severity || 'p2').toLowerCase();
+          html += '<div class="' + cls + '">[' + esc(bug.severity || '?') + '] ' + esc(THEME_NAMES[bug.theme] || bug.theme) + '：' + esc(bug.desc) + ' → ' + esc(bug.status || '') + '</div>';
+        }
+      }
+      /* 建议 */
+      if (r.suggestions && r.suggestions.length) {
+        html += '<div class="rp-section-title">💡 优化建议</div>';
+        for (var k = 0; k < r.suggestions.length; k++) {
+          var sug = r.suggestions[k];
+          html += '<div class="rp-item sug">' + esc(typeof sug === 'string' ? sug : (sug.text || JSON.stringify(sug))) + '</div>';
+        }
+      }
+      /* 修复记录 */
+      if (hasFixes) {
+        html += '<div class="rp-section-title">✅ 修复记录</div>';
+        for (var m = 0; m < r.fixes.length; m++) {
+          html += '<div class="rp-item fix">' + esc(r.fixes[m]) + '</div>';
+        }
+      }
+      div.innerHTML = html;
       box.appendChild(div);
     }
   }

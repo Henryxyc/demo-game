@@ -852,6 +852,65 @@ body::before {
 .cl-item:nth-child(3)::before { background: #c084fc; }
 .cl-item:nth-child(4)::before { background: #fbbf24; }
 .cl-item:nth-child(5)::before { background: #f87171; }
+/* Tab 切换 */
+.cl-tabs {
+  display: flex;
+  gap: 6px;
+  padding: 0 0 8px;
+}
+.cl-tab {
+  flex: 1;
+  border: none;
+  border-radius: 8px;
+  padding: 7px 0;
+  background: #232f47;
+  color: #8b96ab;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.cl-tab.active { background: linear-gradient(180deg, #e6c765, #c9a13b); color: #3a2c0a; }
+/* 分析报告列表 */
+.report-list {
+  overflow-y: auto;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  max-height: 65vh;
+  padding: 2px 0;
+}
+.report-list::-webkit-scrollbar { width: 4px; }
+.report-list::-webkit-scrollbar-thumb { background: #3a4a66; border-radius: 2px; }
+.rp-entry {
+  border-bottom: 1px solid #2c3850;
+  padding-bottom: 12px;
+}
+.rp-entry:last-child { border-bottom: none; }
+.rp-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+.rp-date { font-size: 12px; color: #7a86a0; white-space: nowrap; }
+.rp-badge {
+  font-size: 10px; padding: 1px 6px; border-radius: 6px; font-weight: 600; white-space: nowrap;
+}
+.rp-badge.ok { background: rgba(74,222,128,.15); color: #4ade80; border: 1px solid rgba(74,222,128,.3); }
+.rp-badge.has-fix { background: rgba(251,191,36,.12); color: #fbbf24; border: 1px solid rgba(251,191,36,.3); }
+.rp-summary { font-size: 12px; color: #b8c2d4; line-height: 1.6; margin-bottom: 6px; }
+.rp-stats-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 6px; }
+.rp-stat { font-size: 11px; color: #8b96ab; }
+.rp-stat b { color: #e8e4d8; }
+.rp-section-title { font-size: 11px; color: #d4af37; font-weight: 600; margin: 6px 0 3px; letter-spacing: 1px; }
+.rp-item { font-size: 12px; color: #b8c2d4; line-height: 1.6; padding-left: 8px; position: relative; }
+.rp-item::before { content: ''; position: absolute; left: 0; top: 7px; width: 4px; height: 4px; border-radius: 50%; background: #556; }
+.rp-item.bug-p0::before, .rp-item.bug-p1::before { background: #ef4444; }
+.rp-item.bug-p2::before, .rp-item.bug-p3::before { background: #f59e0b; }
+.rp-item.sug::before { background: #3b82f6; }
+.rp-item.fix::before { background: #4ade80; }
+.rp-empty { text-align: center; color: #556; font-size: 13px; padding: 20px; }
 
 /* ---------- 主题首页文案动态化 ---------- */
 .home-title.dynamic {

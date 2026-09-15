@@ -353,14 +353,17 @@
   <div id="changelog-mask" class="mask" hidden>
     <div class="mask-box changelog-box">
       <div class="mask-head">
-        <div class="mask-title">📋 更新日志</div>
+        <div class="mask-title" id="cl-mask-title">📋 更新日志</div>
         <button class="btn-close" id="btn-changelog-close">✕</button>
       </div>
+      <div class="cl-tabs" id="cl-tabs"></div>
       <div class="changelog-list" id="changelog-list"></div>
+      <div class="report-list" id="report-list" hidden></div>
     </div>
   </div>
 
   <script src="changelog.js?v=4.1"></script>
+  <script src="reports.js?v=4.1"></script>
   <script src="data.js?v=4.0"></script>
   <script src="ability.js?v=4.0"></script>
   <script src="events.js?v=4.0"></script>
