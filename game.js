@@ -975,16 +975,21 @@ function confirmTalents() {
     var talentLog = picked.length ? '✨ 天赐词条：' + G.talents.map(function(t){return t.name}).join('、') + '！' : '';
     $('game-title').textContent = G.ability + '【' + theme.terms.abilityTalent + '：' + theme.tierName(G.innate) + '】';
     renderAttrs();
-    /* 展示词条 */
+    /* 展示词条（按稀有度排序：金→紫→蓝→绿） */
     var tRow = $('attr-talent-row');
     var tChips = $('attr-talent-chips');
     if (G.talents && G.talents.length) {
       if (tRow) tRow.hidden = false;
       if (tChips) {
+        var rarityOrder = { gold: 0, purple: 1, blue: 2, green: 3 };
+        var sortedTalents = G.talents.slice().sort(function (a, b) {
+          return (rarityOrder[a.rarity] || 9) - (rarityOrder[b.rarity] || 9);
+        });
         var th = '';
-        for (var ti = 0; ti < G.talents.length; ti++) {
+        for (var ti = 0; ti < sortedTalents.length; ti++) {
           if (ti > 0) th += ' · ';
-          var tc = {green:'#22c55e',blue:'#3b82f6',purple:'#a855f7',gold:'#fbbf24'}[G.talents[ti].rarity]||'#fbbf24'; th += '<span style="color:'+tc+'"'+'>✨'+esc(G.talents[ti].name)+'</span>';
+          var tc = {green:'#22c55e',blue:'#3b82f6',purple:'#a855f7',gold:'#fbbf24'}[sortedTalents[ti].rarity]||'#fbbf24';
+          th += '<span style="color:'+tc+'">✨'+esc(sortedTalents[ti].name)+'</span>';
         }
         tChips.innerHTML = th;
       }
@@ -1170,31 +1175,37 @@ function renderAttrs() {
     var ahc = $('attr-skill-chips');
     var dlArea = $('dl-rings-area');
     if (theme.id === 'douluo') {
-      /* 斗罗：使用专属分组展示区（第一/第二武魂魂环 + 魂骨） */
-      if (skillRow) skillRow.hidden = true;   /* 隐藏旧的单行展示 */
+      /* 斗罗：使用专属展示区（魂环芯片 + 魂骨） */
+      if (skillRow) skillRow.hidden = true;
       if (dlArea) dlArea.hidden = false;
       if (ahc) ahc.innerHTML = '';
-      /* 分离第一武魂和第二武魂的魂环 */
+      /* 魂环芯片展示 */
       var rings = G && G.soulRings;
-      var ring1Html = '', ring2Html = '';
       var RING_CHIP_COLORS = { '白': '#e0e0e0', '黄': '#f5c542', '紫': '#a855f7', '黑': '#62a8e6', '红': '#ef4444' };
+      var ring1Html = '', ring2Html = '', ringCount1 = 0, ringCount2 = 0;
       if (rings && rings.length) {
         for (var ri = 0; ri < rings.length; ri++) {
-          var r = rings[ri];
-          var rc = RING_CHIP_COLORS[r.tier] || '#e8e4d8';
+          var rk = rings[ri];
+          var rc = RING_CHIP_COLORS[rk.tier] || '#e8e4d8';
           var chipHtml = '<span class="dl-ring-chip" style="border-color:' + rc + ';color:' + rc + '">' +
             '<span class="dl-ring-dot" style="background:' + rc + '"></span>' +
-            '<span class="dl-ring-text">' + esc(r.name) + '<br><small>' + esc(r.year) + '</small></span></span>';
-          if (r.wuhun === 2) ring2Html += chipHtml;
-          else ring1Html += chipHtml;
+            '<span class="dl-ring-text">' + esc(rk.name) + '<br><small>' + esc(rk.year) + ' · ' + esc(rk.skill) + '</small></span></span>';
+          if (rk.wuhun === 2) { ring2Html += chipHtml; ringCount2++; }
+          else { ring1Html += chipHtml; ringCount1++; }
         }
       }
       var ring1Chips = $('dl-ring1-chips');
       var ring2Chips = $('dl-ring2-chips');
       var ring2Section = $('dl-ring2-section');
+      var ring1Title = document.querySelector('#dl-ring1-section .dl-ring-title');
       if (ring1Chips) ring1Chips.innerHTML = ring1Html || '<span style="color:#556;font-size:12px;">暂无</span>';
+      if (ring1Title) ring1Title.textContent = '🔵 第一武魂 · 魂环（' + ringCount1 + '/9）';
       if (ring2Chips) ring2Chips.innerHTML = ring2Html;
       if (ring2Section) ring2Section.hidden = !ring2Html;
+      if (ring2Html) {
+        var ring2Title = document.querySelector('#dl-ring2-section .dl-ring-title');
+        if (ring2Title) ring2Title.textContent = '🔴 第二武魂 · 魂环（' + ringCount2 + '/9）';
+      }
       /* 魂骨展示 */
       var bones = G && G.soulBones;
       var boneSection = $('dl-bone-section');
