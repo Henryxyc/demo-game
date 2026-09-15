@@ -1262,7 +1262,7 @@
           };
         }
 
-        var tier = selectSkill(g.combat, ringNo);
+        var tier = selectSkill(g.combat, Math.max(ringNo, 3));
         var before = (g.soulRings || []).length;
         var desc = theme.hooks.onAwakenSkill(g, tier.name, tier.addLo);
         if (g.soulRings.length > before) {
