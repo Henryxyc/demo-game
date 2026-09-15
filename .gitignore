@@ -2,6 +2,7 @@
 _*.js
 _*.py
 _*.json
+!api/_security.js
 *.bak
 *.py
 *.b64
