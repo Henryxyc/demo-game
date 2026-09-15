@@ -22,12 +22,17 @@ export default async function handler(req, res) {
   if (req.method === "GET") {
     try {
       const theme = req.query.theme || "all";
+      const since = parseInt(req.query.since) || 0;   /* 时间戳，仅返回 ts >= since 的反馈 */
       const key = theme === "all" ? "feedback:all" : ("feedback:" + theme);
       const r = await fetch(UP_URL + "/get/" + encodeURIComponent(key), {
         headers: { Authorization: "Bearer " + UP_TOKEN }
       });
       const d = await r.json();
       let entries = parseEntries(d);
+      /* 时间过滤：仅返回指定时间戳之后的反馈 */
+      if (since > 0) {
+        entries = entries.filter(function (e) { return (e.ts || 0) >= since; });
+      }
       entries.sort((a, b) => b.ts - a.ts);
       const limit = Math.min(parseInt(req.query.limit) || 100, 500);
       entries = entries.slice(0, limit);
