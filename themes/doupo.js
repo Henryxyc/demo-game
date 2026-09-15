@@ -391,23 +391,23 @@
     },
 
     /* ---------- tier 2 中级 ---------- */
-    { id: 'dp_train', weight: 0.7, maxCount: 10, name: '刻苦修炼', tier: 2, desc: '在宗门中刻苦修炼斗气',
+    { id: 'dp_train', weight: 0.7, maxCount: 4, name: '刻苦修炼', tier: 2, desc: '在宗门中刻苦修炼斗气',
       minAge: 6, maxAge: 10000, cond: null,
       ok: function (g, U, log) { var gain = U.evCombat(g, 0.03, 0.10, 200); var msgs = ['闭关苦修三月，经脉中斗气如江河奔涌，斗气+' + gain,'日夜不辍修炼，丹田中斗气凝聚如实质，斗气+' + gain,'在天地元气充沛之处静修，斗气突飞猛进，斗气+' + gain,'药老指点修炼要诀，你的斗气修为精进神速，斗气+' + gain,'与同门切磋后领悟瓶颈所在，突破后斗气精进，斗气+' + gain]; return msgs[Math.floor(Math.random()*msgs.length)]; }, 
       fail: function (g, U, log) { var msgs = ['修炼途中遭遇瓶颈，斗气运转凝滞，收获寥寥','心浮气躁难以入定，经脉中斗气紊乱，此番修炼收效甚微','急于求成反而适得其反，斗气在经脉中忽强忽弱，难以精进']; return msgs[Math.floor(Math.random()*msgs.length)]; }
     },
-    { id: 'dp_mediate', weight: 0.7, maxCount: 10, name: '冥想修炼', tier: 2, desc: '静坐冥想吸收天地斗气',
+    { id: 'dp_mediate', weight: 0.7, maxCount: 4, name: '冥想修炼', tier: 2, desc: '静坐冥想吸收天地斗气',
       minAge: 6, maxAge: 10000, cond: null,
       ok: function (g, U, log) { var gain = U.evCombat(g, 0.02, 0.08, 150); var msgs = ['盘膝而坐，神识内观，天地斗气缓缓汇入丹田，斗气稳步增长+' + gain,'入定冥想，感知到天地间游离的元气如丝线般缠绕周身，斗气+' + gain,'心境空明，斗气自然而然地凝聚壮大，斗气稳步提升+' + gain,'在山巅静坐冥想，清晨第一缕阳光洒下时，斗气已然精进，斗气+' + gain]; return msgs[Math.floor(Math.random()*msgs.length)]; }, 
       fail: null
     },
-    { id: 'dp_douji', weight: 0.6, maxCount: 8, name: '斗技演练', tier: 2, desc: '演练高阶斗技',
+    { id: 'dp_douji', weight: 0.6, maxCount: 4, name: '斗技演练', tier: 2, desc: '演练高阶斗技',
       minAge: 10, maxAge: 10000,
       cond: function (g, U) { return g.lvl >= 10; },
       ok: function (g, U, log) { var gain = U.evCombat(g, 0.04, 0.12, 300); var msgs = ['反复演练高阶斗技，招式愈发纯熟，斗气在实战中磨砺精进，斗气+' + gain,'与药老拆解斗技精髓，领悟了新的发力技巧，斗气暴涨，斗气+' + gain,'在演武场中挥洒自如，斗技的威力比从前强了数倍，斗气+' + gain,'一遍又一遍地演练，终于将斗技融入本能，斗气+' + gain]; return msgs[Math.floor(Math.random()*msgs.length)]; }, 
       fail: function (g, U, log) { g.lifespan -= U.irand(1, 4); var msgs = ['强行施展尚未掌握的斗技，经脉中传来撕裂般的剧痛——斗技反噬，寿元受损','运转斗技时气息逆行，一口鲜血喷出，反噬之力冲击五脏六腑，寿元受损','药老厉声喝止：收手！你的身体承受不住这股力量！斗技反噬，寿元受损']; return msgs[Math.floor(Math.random()*msgs.length)]; }
     },
-    { id: 'dp_dan', weight: 0.5, maxCount: 5, name: '丹药辅助', tier: 2, desc: '服用修炼丹药',
+    { id: 'dp_dan', weight: 0.5, maxCount: 4, name: '丹药辅助', tier: 2, desc: '服用修炼丹药',
       minAge: 8, maxAge: 10000, cond: null,
       ok: function (g, U, log) {
         var lf = U.irand(1, 4); g.lifespan += lf;
@@ -469,7 +469,7 @@
       },
       fail: null
     },
-    { id: 'dp_mountain', weight: 0.9, maxCount: 5, name: '魔兽山脉历练', tier: 1, desc: '在魔兽山脉中搏杀历练',
+    { id: 'dp_mountain', weight: 0.9, maxCount: 3, name: '魔兽山脉历练', tier: 1, desc: '在魔兽山脉中搏杀历练',
       minAge: 10, maxAge: 10000,
       cond: null,
       ok: function (g, U, log) {
@@ -902,7 +902,7 @@
     },
 
     /* ---------- tier 1 普通（新增） ---------- */
-    { id: 'dp_wutan', weight: 1.0, maxCount: 5, name: '乌坦城历练', tier: 1, desc: '在乌坦城周边历练斗气',
+    { id: 'dp_wutan', weight: 1.0, maxCount: 3, name: '乌坦城历练', tier: 1, desc: '在乌坦城周边历练斗气',
       minAge: 6, maxAge: 10000, cond: null,
       ok: function (g, U, log) {
         var r = U.combatGain(g.aptitude, g.lvl);
@@ -916,7 +916,7 @@
       },
       fail: null
     },
-    { id: 'dp_devil_train', weight: 0.9, maxCount: 5, name: '魔鬼训练', tier: 1, desc: '接受魔鬼式斗气训练',
+    { id: 'dp_devil_train', weight: 0.9, maxCount: 3, name: '魔鬼训练', tier: 1, desc: '接受魔鬼式斗气训练',
       minAge: 8, maxAge: 10000, cond: null,
       ok: function (g, U, log) {
         var r = U.combatGain(g.aptitude, g.lvl);
@@ -933,7 +933,7 @@
         return '魔鬼训练过劳，寿元略损';
       }
     },
-    { id: 'dp_douji_field', weight: 0.85, maxCount: 5, name: '斗技演练场', tier: 1, desc: '在斗技演练场切磋斗技',
+    { id: 'dp_douji_field', weight: 0.85, maxCount: 3, name: '斗技演练场', tier: 1, desc: '在斗技演练场切磋斗技',
       minAge: 8, maxAge: 10000,
       cond: function (g, U) { return g.lvl >= 5; },
       ok: function (g, U, log) {
@@ -1011,7 +1011,7 @@
       },
       fail: null
     },
-    { id: 'dp_zhongzhou_edge', weight: 0.8, maxCount: 4, name: '中州边缘历练', tier: 1, desc: '在中州边缘地带历练',
+    { id: 'dp_zhongzhou_edge', weight: 0.8, maxCount: 3, name: '中州边缘历练', tier: 1, desc: '在中州边缘地带历练',
       minAge: 25, maxAge: 10000,
       cond: function (g, U) { return g.lvl >= 25; },
       ok: function (g, U, log) {

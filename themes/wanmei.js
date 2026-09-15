@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
  * 主题包 · 完美世界模拟器（wanmei）
  * 修炼体系：搬血→洞天→化灵→铭纹→列阵→尊者→神火→真一→天神→至尊→真仙→仙王→仙帝
  * 骨文天赋 1-10（F~EX），宝术，至尊骨/仙种，以身为种，仙气
@@ -242,23 +242,23 @@
     },
 
     /* ---------- tier 2 中级 ---------- */
-    { id: 'wm_train', weight: 0.7, maxCount: 10, name: '大荒历练', tier: 2, desc: '在大荒中刻苦修炼',
+    { id: 'wm_train', weight: 0.7, maxCount: 4, name: '大荒历练', tier: 2, desc: '在大荒中刻苦修炼',
       minAge: 6, maxAge: 10000, cond: null,
       ok: function (g, U, log) { var gain = U.evCombat(g, 0.03, 0.10, 200); return '大荒的风沙与猛兽磨砺了你的意志，历练归来气质焕然一新'; },
       fail: function (g, U, log) { return '大荒的历练枯燥而漫长，瓶颈迟迟未能突破'; }
     },
-    { id: 'wm_mediate', weight: 0.7, maxCount: 10, name: '参悟骨文', tier: 2, desc: '静坐参悟天地骨文',
+    { id: 'wm_mediate', weight: 0.7, maxCount: 4, name: '参悟骨文', tier: 2, desc: '静坐参悟天地骨文',
       minAge: 6, maxAge: 10000, cond: null,
       ok: function (g, U, log) { var gain = U.evCombat(g, 0.02, 0.08, 150); return '盘膝入定七日，骨文在体内自行运转，修为水到渠成'; },
       fail: null
     },
-    { id: 'wm_xsv', weight: 0.6, maxCount: 8, name: '虚神界历练', tier: 2, desc: '进入虚神界修炼',
+    { id: 'wm_xsv', weight: 0.6, maxCount: 4, name: '虚神界历练', tier: 2, desc: '进入虚神界修炼',
       minAge: 8, maxAge: 10000,
       cond: function (g, U) { return g.lvl >= 10; },
       ok: function (g, U, log) { var gain = U.evCombat(g, 0.04, 0.12, 300); return '虚神界中强者如林，你以战养战在激战中领悟了新的骨文奥义'; },
       fail: function (g, U, log) { g.lifespan -= U.irand(1, 4); return '虚神界中遇到实力远超你的对手，重伤退出，寿元受损'; }
     },
-    { id: 'wm_herb', weight: 0.5, maxCount: 5, name: '灵药辅助', tier: 2, desc: '服用大荒灵药',
+    { id: 'wm_herb', weight: 0.5, maxCount: 4, name: '灵药辅助', tier: 2, desc: '服用大荒灵药',
       minAge: 8, maxAge: 10000, cond: null,
       ok: function (g, U, log) {
         var lf = U.irand(1, 4); g.lifespan += lf;
@@ -501,12 +501,12 @@
     },
 
     /* ---------- [新增] tier 2 中级 ---------- */
-    { id: 'wm_shicungo', weight: 0.65, maxCount: 8, name: '石村·骨文修行', tier: 2, desc: '在石村中参悟骨文',
+    { id: 'wm_shicungo', weight: 0.65, maxCount: 4, name: '石村·骨文修行', tier: 2, desc: '在石村中参悟骨文',
       minAge: 6, maxAge: 10000, cond: null,
       ok: function (g, U, log) { var gain = U.evCombat(g, 0.03, 0.10, 250); var lf = U.irand(1, 3); g.lifespan += lf; return '你在石村老柳树下观摩先人留下的骨文，一笔一画皆有深意，寿元+' + lf; },
       fail: null
     },
-    { id: 'wm_butiansk', weight: 0.6, maxCount: 5, name: '补天阁·宝术传授', tier: 2, desc: '补天阁传授宝术',
+    { id: 'wm_butiansk', weight: 0.6, maxCount: 4, name: '补天阁·宝术传授', tier: 2, desc: '补天阁传授宝术',
       minAge: 8, maxAge: 10000,
       cond: function (g, U) { return g.lvl >= 5; },
       ok: function (g, U, log) { var gain = U.evCombat(g, 0.04, 0.12, 300); var lf = U.irand(1, 3); g.lifespan += lf; return '补天阁长老亲自传授宝术精要，你反复演练至月上中天，寿元+' + lf; },
@@ -570,7 +570,7 @@
       },
       fail: null
     },
-    { id: 'wm_zifu', weight: 0.6, maxCount: 5, name: '紫府修行', tier: 2, desc: '在紫府中静修',
+    { id: 'wm_zifu', weight: 0.6, maxCount: 4, name: '紫府修行', tier: 2, desc: '在紫府中静修',
       minAge: 15, maxAge: 10000,
       cond: function (g, U) { return g.lvl >= 20; },
       ok: function (g, U, log) { var gain = U.evCombat(g, 0.04, 0.13, 280); var lf = U.irand(2, 4); g.lifespan += lf; return '紫府之中灵气浓郁如水，修为在不知不觉中稳步攀升，寿元+' + lf; },
@@ -602,7 +602,7 @@
     },
 
     /* ---------- [新增] tier 1 普通 ---------- */
-    { id: 'wm_luoxing', weight: 0.9, maxCount: 5, name: '落星村', tier: 1, desc: '在落星村中修行',
+    { id: 'wm_luoxing', weight: 0.9, maxCount: 3, name: '落星村', tier: 1, desc: '在落星村中修行',
       minAge: 5, maxAge: 10000, cond: null,
       ok: function (g, U, log) {
         var r = U.combatGain(g.aptitude, g.lvl);
@@ -613,12 +613,12 @@
       },
       fail: null
     },
-    { id: 'wm_dhouter', weight: 1.0, maxCount: 8, name: '大荒外围', tier: 1, desc: '在大荒外围历练',
+    { id: 'wm_dhouter', weight: 1.0, maxCount: 3, name: '大荒外围', tier: 1, desc: '在大荒外围历练',
       minAge: 6, maxAge: 10000, cond: null,
       ok: function (g, U, log) { var gain = U.evCombat(g, 0.02, 0.08, 150); var lf = U.irand(1, 2); g.lifespan += lf; return '大荒外围虽不及深处凶险，但每一寸土地都暗藏玄机，寿元+' + lf; },
       fail: null
     },
-    { id: 'wm_qingyang', weight: 0.9, maxCount: 5, name: '青阳镇', tier: 1, desc: '在青阳镇中历练',
+    { id: 'wm_qingyang', weight: 0.9, maxCount: 3, name: '青阳镇', tier: 1, desc: '在青阳镇中历练',
       minAge: 6, maxAge: 10000, cond: null,
       ok: function (g, U, log) {
         var r = U.combatGain(g.aptitude, g.lvl);
@@ -629,7 +629,7 @@
       },
       fail: null
     },
-    { id: 'wm_zhenshan', weight: 0.85, maxCount: 5, name: '鎇山狩猎', tier: 1, desc: '在鎇山中狩猎',
+    { id: 'wm_zhenshan', weight: 0.85, maxCount: 3, name: '鎇山狩猎', tier: 1, desc: '在鎇山中狩猎',
       minAge: 8, maxAge: 10000, cond: null,
       ok: function (g, U, log) {
         var r = U.combatGain(g.aptitude, g.lvl);
@@ -640,7 +640,7 @@
       },
       fail: null
     },
-    { id: 'wm_lingyao', weight: 0.8, maxCount: 5, name: '灵药采集', tier: 1, desc: '采集大荒灵药',
+    { id: 'wm_lingyao', weight: 0.8, maxCount: 3, name: '灵药采集', tier: 1, desc: '采集大荒灵药',
       minAge: 6, maxAge: 10000, cond: null,
       ok: function (g, U, log) {
         var lf = U.irand(1, 3); g.lifespan += lf;
@@ -649,7 +649,7 @@
       },
       fail: null
     },
-    { id: 'wm_shicunpang', weight: 0.9, maxCount: 5, name: '石村旁山', tier: 1, desc: '在石村旁山中历练',
+    { id: 'wm_shicunpang', weight: 0.9, maxCount: 3, name: '石村旁山', tier: 1, desc: '在石村旁山中历练',
       minAge: 5, maxAge: 10000, cond: null,
       ok: function (g, U, log) {
         var r = U.combatGain(g.aptitude, g.lvl);
@@ -660,7 +660,7 @@
       },
       fail: null
     },
-    { id: 'wm_butianout', weight: 0.85, maxCount: 5, name: '补天阁外院', tier: 1, desc: '在补天阁外院修行',
+    { id: 'wm_butianout', weight: 0.85, maxCount: 3, name: '补天阁外院', tier: 1, desc: '在补天阁外院修行',
       minAge: 7, maxAge: 10000, cond: null,
       ok: function (g, U, log) {
         var r = U.combatGain(g.aptitude, g.lvl);
@@ -670,7 +670,7 @@
       },
       fail: null
     },
-    { id: 'wm_xushenout', weight: 0.8, maxCount: 5, name: '虚神界外围', tier: 1, desc: '在虚神界外围参悟',
+    { id: 'wm_xushenout', weight: 0.8, maxCount: 3, name: '虚神界外围', tier: 1, desc: '在虚神界外围参悟',
       minAge: 8, maxAge: 10000,
       cond: function (g, U) { return g.lvl >= 5; },
       ok: function (g, U, log) {

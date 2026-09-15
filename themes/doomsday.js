@@ -354,7 +354,7 @@
     },
     /* === tier 2 中级 === */
     {
-      id: 'legacy', weight: 5, maxCount: 5,
+      id: 'legacy', weight: 5, maxCount: 4,
       name: '前辈遗泽', tier: 2,
       desc: '一位老异能者的遗儿指引你接收传承',
       minAge: 0, maxAge: 10000,
@@ -372,7 +372,7 @@
       }
     },
     {
-      id: 'bandits', weight: 4, maxCount: 5,
+      id: 'bandits', weight: 4, maxCount: 4,
       name: '劫掠者袭出', tier: 2,
       desc: '一伙劫掠者盯上了你的物资',
       minAge: 10, maxAge: 10000,
@@ -389,7 +389,7 @@
       }
     },
     {
-      id: 'warlord', weight: 4, maxCount: 5,
+      id: 'warlord', weight: 4, maxCount: 4,
       name: '军阀冲突', tier: 2,
       desc: '两大军阀势力在此交火，你被卷入其中',
       minAge: 15, maxAge: 10000,
@@ -423,7 +423,7 @@
       }
     },
     {
-      id: 'combatinsight', weight: 3, maxCount: 5,
+      id: 'combatinsight', weight: 3, maxCount: 4,
       name: '战斗领悟', tier: 2,
       desc: '在生死搏杀中领悟新的战斗技巧',
       minAge: 10, maxAge: 10000,
@@ -440,7 +440,7 @@
       }
     },
     {
-      id: 'mission', weight: 4, maxCount: 5,
+      id: 'mission', weight: 4, maxCount: 4,
       name: '秘密任务', tier: 2,
       desc: '被营地选中执行一项危险的秘密任务',
       minAge: 15, maxAge: 10000,
@@ -459,7 +459,7 @@
     },
     /* === tier 1 普通 === */
     {
-      id: 'cull', weight: 8, maxCount: 8,
+      id: 'cull', weight: 8, maxCount: 3,
       name: '清剿变异体', tier: 1,
       desc: '参与营地组织的变异体清剿行动',
       minAge: 8, maxAge: 10000, cond: null,
@@ -473,7 +473,7 @@
       }
     },
     {
-      id: 'scavenge', weight: 10, maxCount: 10,
+      id: 'scavenge', weight: 10, maxCount: 3,
       name: '搜刮物资', tier: 1,
       desc: '在废墟中搜刮生存物资',
       minAge: 6, maxAge: 10000, cond: null,
@@ -488,7 +488,7 @@
       }
     },
     {
-      id: 'spar', weight: 8, maxCount: 8,
+      id: 'spar', weight: 8, maxCount: 3,
       name: '幸存者切磋', tier: 1,
       desc: '与其他幸存者进行实战切磋',
       minAge: 6, maxAge: 10000, cond: null,
@@ -502,7 +502,7 @@
       }
     },
     {
-      id: 'epiphany', weight: 8, maxCount: 8,
+      id: 'epiphany', weight: 8, maxCount: 3,
       name: '略有感悟', tier: 1,
       desc: '日常修炼中略有感悟',
       minAge: 0, maxAge: 10000, cond: null,
@@ -514,7 +514,7 @@
     },
     /* --- ev_ events tier 1 --- */
     {
-      id: 'ev_shelter', weight: 8, maxCount: 5,
+      id: 'ev_shelter', weight: 8, maxCount: 3,
       name: '避难所搜刮', tier: 1,
       desc: '搜刮避难所的物资',
       minAge: 8, maxAge: 10000, cond: null,
@@ -526,7 +526,7 @@
       fail: null
     },
     {
-      id: 'ev_mutbeast', weight: 9, maxCount: 5,
+      id: 'ev_mutbeast', weight: 9, maxCount: 3,
       name: '搏杀变异兽', tier: 1,
       desc: '遭遇落单的变异兽',
       minAge: 8, maxAge: 10000,
@@ -568,7 +568,7 @@
       fail: null
     },
     {
-      id: 'ev_survivor', weight: 8, maxCount: 5,
+      id: 'ev_survivor', weight: 8, maxCount: 3,
       name: '幸存者营地', tier: 1,
       desc: '在幸存者营地休整并搜刮物资',
       minAge: 5, maxAge: 10000, cond: null,
@@ -808,7 +808,7 @@
       }
     },
     {
-      id: 'ev_campbuild', weight: 5, maxCount: 5,
+      id: 'ev_campbuild', weight: 5, maxCount: 4,
       name: '营地建设', tier: 2,
       desc: '参与营地的扩建工程',
       minAge: 10, maxAge: 10000,
@@ -840,7 +840,7 @@
       }
     },
     {
-      id: 'ev_refugee', weight: 5, maxCount: 5,
+      id: 'ev_refugee', weight: 5, maxCount: 4,
       name: '难民救援', tier: 2,
       desc: '一群难民遭遇变异体围攻，你出手相救',
       minAge: 10, maxAge: 10000,
@@ -873,7 +873,7 @@
     },
     /* --- ev_ events tier 1 --- */
     {
-      id: 'ev_shelterbuild', weight: 10, maxCount: 10,
+      id: 'ev_shelterbuild', weight: 10, maxCount: 3,
       name: '避难所建设', tier: 1,
       desc: '参与地下避难所的扩建工程',
       minAge: 8, maxAge: 10000, cond: null,
@@ -885,7 +885,7 @@
       fail: null
     },
     {
-      id: 'ev_survivorcouncil', weight: 8, maxCount: 5,
+      id: 'ev_survivorcouncil', weight: 8, maxCount: 3,
       name: '幸存者大会', tier: 1,
       desc: '参加幸存者大会，交流生存经验',
       minAge: 10, maxAge: 10000, cond: null,
@@ -897,7 +897,7 @@
       fail: null
     },
     {
-      id: 'ev_warlordbattle', weight: 8, maxCount: 5,
+      id: 'ev_warlordbattle', weight: 8, maxCount: 3,
       name: '军阀大战', tier: 1,
       desc: '卷入两方军阀混战',
       minAge: 12, maxAge: 10000,
@@ -913,7 +913,7 @@
       }
     },
     {
-      id: 'ev_mutnest', weight: 9, maxCount: 5,
+      id: 'ev_mutnest', weight: 9, maxCount: 3,
       name: '变异体巢穴', tier: 1,
       desc: '清剿一处变异体巢穴',
       minAge: 10, maxAge: 10000,
@@ -945,7 +945,7 @@
       }
     },
     {
-      id: 'ev_undershelter', weight: 10, maxCount: 10,
+      id: 'ev_undershelter', weight: 10, maxCount: 3,
       name: '地下避难所', tier: 1,
       desc: '在地下避难所中休整并搜刮物资',
       minAge: 5, maxAge: 10000, cond: null,
@@ -957,7 +957,7 @@
       fail: null
     },
     {
-      id: 'ev_abandonedlab', weight: 8, maxCount: 5,
+      id: 'ev_abandonedlab', weight: 8, maxCount: 3,
       name: '废弃实验室', tier: 1,
       desc: '潜入废弃实验室搜寻研究资料',
       minAge: 10, maxAge: 10000,
@@ -973,7 +973,7 @@
       }
     },
     {
-      id: 'ev_raddeep', weight: 8, maxCount: 5,
+      id: 'ev_raddeep', weight: 8, maxCount: 3,
       name: '辐射区深处', tier: 1,
       desc: '深入辐射区深处搜寻高度变异材料',
       minAge: 12, maxAge: 10000,
@@ -989,7 +989,7 @@
       }
     },
     {
-      id: 'ev_mutforest', weight: 9, maxCount: 5,
+      id: 'ev_mutforest', weight: 9, maxCount: 3,
       name: '异变森林', tier: 1,
       desc: '穿越异变森林，猎杀变异生物',
       minAge: 8, maxAge: 10000,

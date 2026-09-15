@@ -388,7 +388,7 @@
     },
 
     /* ---------- tier 2 中级 ---------- */
-    { id: 'duo_train', weight: 0.7, maxCount: 10, name: '宗门历练', tier: 2, desc: '在宗门中刻苦修炼',
+    { id: 'duo_train', weight: 0.7, maxCount: 4, name: '宗门历练', tier: 2, desc: '在宗门中刻苦修炼',
       minAge: 6, maxAge: 10000, cond: null,
       ok: function (g, U, log) {
         var gain = U.evCombat(g, 0.03, 0.10, 200);
@@ -396,7 +396,7 @@
       },
       fail: function (g, U, log) { return '修炼数日后，你陷入了瓶颈——无论怎样尝试，魂力都像撞上了一堵无形的墙，进展缓慢。长老摇头道：时机未到，切勿急躁。'; }
     },
-    { id: 'duo_mediate', weight: 0.7, maxCount: 10, name: '冥想修炼', tier: 2, desc: '静坐冥想吸收天地魂力',
+    { id: 'duo_mediate', weight: 0.7, maxCount: 4, name: '冥想修炼', tier: 2, desc: '静坐冥想吸收天地魂力',
       minAge: 6, maxAge: 10000, cond: null,
       ok: function (g, U, log) {
         var gain = U.evCombat(g, 0.02, 0.08, 150);
@@ -404,7 +404,7 @@
       },
       fail: null
     },
-    { id: 'duo_huntring', weight: 0.6, maxCount: 8, name: '猎杀魂兽', tier: 2, desc: '前往星斗大森林猎杀魂兽',
+    { id: 'duo_huntring', weight: 0.6, maxCount: 4, name: '猎杀魂兽', tier: 2, desc: '前往星斗大森林猎杀魂兽',
       minAge: 10, maxAge: 10000,
       cond: function (g, U) { return g.lvl >= 10; },
       ok: function (g, U, log) {
@@ -416,7 +416,7 @@
         return '你低估了魂兽的实力——它在濒死前爆发的魂力冲击波将你掀翻在地，你拖着伤重的身体狼狈逃出森林，寿元受损。';
       }
     },
-    { id: 'duo_dan', weight: 0.5, maxCount: 5, name: '丹药辅助', tier: 2, desc: '服用修炼丹药',
+    { id: 'duo_dan', weight: 0.5, maxCount: 4, name: '丹药辅助', tier: 2, desc: '服用修炼丹药',
       minAge: 8, maxAge: 10000, cond: null,
       ok: function (g, U, log) {
         var lf = U.irand(1, 4); g.lifespan += lf;
@@ -481,7 +481,7 @@
       },
       fail: null
     },
-    { id: 'duo_arena', weight: 0.9, maxCount: 5, name: '大斗兽场', tier: 1, desc: '在大斗兽场中磨练魂技',
+    { id: 'duo_arena', weight: 0.9, maxCount: 3, name: '大斗兽场', tier: 1, desc: '在大斗兽场中磨练魂技',
       minAge: 10, maxAge: 10000,
       cond: null,
       ok: function (g, U, log) {
@@ -495,7 +495,7 @@
         return '大斗兽场的对手比预想中强得多——你的魂技被看穿，一记重击将你打趴在地，你被迫认输，带着满身伤痕黯然离场，寿元受损。';
       }
     },
-    { id: 'duo_xingdou', weight: 0.8, maxCount: 5, name: '星斗大森林', tier: 1, desc: '在星斗大森林中猎杀魂兽',
+    { id: 'duo_xingdou', weight: 0.8, maxCount: 3, name: '星斗大森林', tier: 1, desc: '在星斗大森林中猎杀魂兽',
       minAge: 10, maxAge: 10000,
       cond: null,
       ok: function (g, U, log) {
@@ -720,7 +720,7 @@
       },
       fail: function (g, U, log) { g.lifespan -= U.irand(1, 3); return '大斗兽场的对手竟是一名魂王级别的老将——你的魂技被轻易化解，一记重击将你轰出擂台，观众的欢呼变成了嘘声，你重伤离场，寿元受损。'; }
     },
-    { id: 'duo_yuexuan', weight: 0.5, maxCount: 5, name: '月轩冥想', tier: 2, desc: '月轩中静心冥想',
+    { id: 'duo_yuexuan', weight: 0.5, maxCount: 4, name: '月轩冥想', tier: 2, desc: '月轩中静心冥想',
       minAge: 10, maxAge: 10000,
       cond: null,
       ok: function (g, U, log) {
@@ -775,7 +775,7 @@
       },
       fail: function (g, U, log) { g.lifespan -= U.irand(2, 5); return '森林深处的黑暗中，一双血红的巨眼锁定了你——那是一头万年魂兽！你甚至来不及看清它的模样便已负伤，拼死逃出，寿元受损。'; }
     },
-    { id: 'duo_canalcaravan', weight: 0.5, maxCount: 5, name: '运河商队', tier: 2, desc: '随运河商队历练',
+    { id: 'duo_canalcaravan', weight: 0.5, maxCount: 4, name: '运河商队', tier: 2, desc: '随运河商队历练',
       minAge: 12, maxAge: 10000,
       cond: null,
       ok: function (g, U, log) {
@@ -835,7 +835,7 @@
       },
       fail: null
     },
-    { id: 'duo_forge', weight: 0.85, maxCount: 5, name: '手工锻造', tier: 1, desc: '手工锻造锤炼武魂',
+    { id: 'duo_forge', weight: 0.85, maxCount: 3, name: '手工锻造', tier: 1, desc: '手工锻造锤炼武魂',
       minAge: 8, maxAge: 10000,
       cond: null,
       ok: function (g, U, log) {
@@ -857,7 +857,7 @@
       },
       fail: null
     },
-    { id: 'duo_ringabsorb', weight: 0.85, maxCount: 5, name: '魂环吸收', tier: 1, desc: '吸收猎得魂兽的魂环',
+    { id: 'duo_ringabsorb', weight: 0.85, maxCount: 3, name: '魂环吸收', tier: 1, desc: '吸收猎得魂兽的魂环',
       minAge: 10, maxAge: 10000,
       cond: function (g, U) { return g.lvl >= 10; },
       ok: function (g, U, log) {
@@ -891,7 +891,7 @@
       },
       fail: null
     },
-    { id: 'duo_outerforest', weight: 0.9, maxCount: 5, name: '魂兽森林外围', tier: 1, desc: '在魂兽森林外围狩猎',
+    { id: 'duo_outerforest', weight: 0.9, maxCount: 3, name: '魂兽森林外围', tier: 1, desc: '在魂兽森林外围狩猎',
       minAge: 10, maxAge: 10000,
       cond: null,
       ok: function (g, U, log) {
@@ -913,7 +913,7 @@
       },
       fail: function (g, U, log) { return '星罗城的比武对手出人意料地强大——你的魂技被轻描淡写地化解，三招之内便被击落擂台，在众人的议论声中黯然离去。'; }
     },
-    { id: 'duo_sunsetouter', weight: 0.85, maxCount: 4, name: '落日森林外围', tier: 1, desc: '落日森林外围采药',
+    { id: 'duo_sunsetouter', weight: 0.85, maxCount: 3, name: '落日森林外围', tier: 1, desc: '落日森林外围采药',
       minAge: 8, maxAge: 10000,
       cond: null,
       ok: function (g, U, log) {
