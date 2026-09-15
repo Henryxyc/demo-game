@@ -259,6 +259,10 @@
     };
 
     function choosePath(g, alignment, tag, reputation, faction) {
+      /* 锁定路径：一旦选择了非 neutral 的阵营，alignment 不可再变更 */
+      if (alignment && g.alignment && g.alignment !== 'neutral') {
+        alignment = null;   /* 路径已锁定，不再覆盖 */
+      }
       if (alignment) g.alignment = alignment;
       if (tag) {
         if (!g.pathTags) g.pathTags = [];
