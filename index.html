@@ -1,11 +1,11 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta name="theme-color" content="#141b26">
   <title>模拟器合集</title>
-  <link rel="stylesheet" href="style.css?v=4.0">
+  <link rel="stylesheet" href="style.css?v=4.1">
 </head>
 <body>
   <div id="ach-toast" class="ach-toast" hidden></div>
@@ -18,6 +18,10 @@
         <div class="grid-sub" id="grid-sub">共 4 款 · 文字放置 · 修仙养成</div>
       </div>
       <div class="grid-cards" id="grid-cards"></div>
+      <div class="grid-footer">
+        <button class="btn-changelog" id="btn-changelog">📋 更新日志</button>
+        <div class="grid-version">v4.1</div>
+      </div>
     </section>
 
     <!-- ============ 主题开始页（原首页） ============ -->
@@ -56,6 +60,7 @@
         <button class="btn btn-big" id="btn-about">📜 说明</button>
         <button class="btn btn-big" id="btn-highlight">✨ 高光</button>
       </div>
+      <button class="btn btn-feedback" id="btn-feedback">💬 意见反馈</button>
     </section>
 
     <!-- ============ 游戏 ============ -->
@@ -317,6 +322,45 @@
     </div>
   </div>
 
+  <!-- ============ 意见反馈弹窗 ============ -->
+  <div id="feedback-mask" class="mask" hidden>
+    <div class="mask-box feedback-box">
+      <div class="mask-head">
+        <div class="mask-title">💬 意见反馈</div>
+        <button class="btn-close" id="btn-feedback-close">✕</button>
+      </div>
+      <div class="feedback-form">
+        <div class="feedback-type-row">
+          <button class="feedback-type-btn active" data-type="suggestion">💡 建议</button>
+          <button class="feedback-type-btn" data-type="bug">🐛 Bug</button>
+          <button class="feedback-type-btn" data-type="praise">👍 好评</button>
+          <button class="feedback-type-btn" data-type="other">📝 其他</button>
+        </div>
+        <textarea class="feedback-textarea" id="feedback-input" placeholder="请描述你的意见或遇到的问题..." maxlength="500" rows="4"></textarea>
+        <div class="feedback-counter"><span id="feedback-count">0</span>/500</div>
+        <input type="text" class="feedback-contact" id="feedback-contact" placeholder="联系方式（选填，方便我们回复你）" maxlength="50" />
+        <button class="btn btn-primary btn-big" id="btn-feedback-submit">提交反馈</button>
+        <div class="feedback-hint">💡 你的每一条反馈都会被认真对待，好的建议将被纳入后续更新！</div>
+      </div>
+      <div class="feedback-list-section" id="feedback-list-section">
+        <div class="feedback-list-title">📋 我的反馈记录</div>
+        <div class="feedback-list" id="feedback-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 更新日志弹窗 ============ -->
+  <div id="changelog-mask" class="mask" hidden>
+    <div class="mask-box changelog-box">
+      <div class="mask-head">
+        <div class="mask-title">📋 更新日志</div>
+        <button class="btn-close" id="btn-changelog-close">✕</button>
+      </div>
+      <div class="changelog-list" id="changelog-list"></div>
+    </div>
+  </div>
+
+  <script src="changelog.js?v=4.1"></script>
   <script src="data.js?v=4.0"></script>
   <script src="ability.js?v=4.0"></script>
   <script src="events.js?v=4.0"></script>
@@ -327,6 +371,6 @@
   <script src="branch-events.js?v=4.0"></script>
   <script src="themes/registry.js?v=4.0"></script>
   <script src="sim.js?v=4.0"></script>
-  <script src="game.js?v=4.0"></script>
+  <script src="game.js?v=4.2"></script>
 </body>
 </html>

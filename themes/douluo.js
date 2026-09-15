@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
  * 主题包 · 斗罗大陆模拟器（douluo）
  * 修炼体系：武魂觉醒(6岁) → 魂士→魂师→大魂师→魂尊→魂宗→魂王→魂帝→魂圣→魂斗罗→封号斗罗→神祇
  * 先天魂力 1-10 级（F~EX），魂环（白黄紫黑红金），魂骨，双生武魂
@@ -315,8 +315,8 @@
       cond: function (g, U) { return g.lvl >= 75 && !g.godTest; },
       ok: function (g, U, log) {
         g.godTest = true;
-        /* 随机分配一个传承神位 */
-        var gods = ['海神', '修罗神', '天使之神', '罗刹神', '食神', '九彩神女'];
+        /* 随机分配一个传承神位（包含玩家自创的神位） */
+        var gods = theme.getGodPool();
         g.inheritGod = gods[U.irand(0, gods.length - 1)];
         var r = U.combatGain(g.aptitude, g.lvl);
         g.combat += Math.floor(r * 2);
@@ -1024,7 +1024,7 @@
     { id:'dl_t22', name:'魂环加护', rarity:'blue', desc:'魂力+100，寿元+10', apply:function(g){ g.combat += 100; g.lifespan += 10; } },
     { id:'dl_t23', name:'仙草淬体', rarity:'blue', desc:'寿元+12，魂力+80', apply:function(g){ g.lifespan += 12; g.combat += 80; } },
     /* purple (1) */
-    { id:'dl_t24', name:'神考资格', rarity:'purple', desc:'魂力+20%，开局获得神考邀请(随机)', apply:function(g){ g.combat = Math.floor(g.combat * 1.2); g.godTest = true; var gods = ['海神','修罗神','天使之神','罗刹神','食神','九彩神女']; g.inheritGod = gods[Math.floor(Math.random() * gods.length)]; } },
+    { id:'dl_t24', name:'神考资格', rarity:'purple', desc:'魂力+20%，开局获得神考邀请(随机)', apply:function(g){ g.combat = Math.floor(g.combat * 1.2); g.godTest = true; var gods = theme.getGodPool(); g.inheritGod = gods[Math.floor(Math.random() * gods.length)]; } },
     /* gold (1) */
     { id:'dl_t25', name:'修罗神血脉', rarity:'gold', desc:'天赋+2，魂力+40%，寿元+15，开局获得修罗神神考', apply:function(g){ g.innate = Math.min(10, g.innate + 2); g.aptitude = Math.max(g.aptitude, g.innate); g.combat = Math.floor(g.combat * 1.4); g.lifespan += 15; g.godTest = true; g.inheritGod = '修罗神'; } },
     { id:'dl_t26', name:'天赐神力', rarity:'gold', desc:'幸运加持，魂环品质提升，成神+6%', apply:function(g){ g.ascendBonus = (g.ascendBonus || 0) + 0.06; g.luckBonus = (g.luckBonus || 0) + 1; g.combat = Math.floor(g.combat * 1.3); } },
@@ -1181,8 +1181,24 @@
     tierName: tierName,
     selectSkill: selectSkill,
     guardInfo: guardInfo,
+    generateName: generateGodName,
 
-    initialState: {},
+    /* 自创神位池（localStorage 持久化，新创神位自动加入） */
+    GOD_POOL_KEY: 'dl_custom_gods',
+    getCustomGods: function () {
+      try { var a = JSON.parse(localStorage.getItem('dl_custom_gods') || '[]'); return Array.isArray(a) ? a : []; } catch (e) { return []; }
+    },
+    addCustomGod: function (name) {
+      try {
+        var list = this.getCustomGods();
+        if (list.indexOf(name) < 0) { list.push(name); localStorage.setItem('dl_custom_gods', JSON.stringify(list.slice(0, 50))); }
+      } catch (e) {}
+    },
+    getGodPool: function () {
+      var base = ['海神', '修罗神', '天使之神', '罗刹神', '食神', '九彩神女'];
+      var custom = this.getCustomGods();
+      return base.concat(custom);
+    },
 
     hooks: {
       /* 觉醒魂环时从魂兽池随机抽取，随机选一魂技，千年以上概率掉落魂骨 */
@@ -1304,6 +1320,8 @@
           if (Math.random() < rate2) {
             g.ascendMode = 'selfGod';
             g.godName = generateGodName(g);
+            /* 自创神位加入神位池，后续玩家可继承 */
+            if (theme.addCustomGod) theme.addCustomGod(g.godName);
             log.push({ cls: 'god', text: '第' + g.age + '岁，信仰之力推举突破百级！自创神位，成就初代神！神位：' + g.godName + '！' });
             g.ascended = true; g.lvl = 100;
             g.combat = helpers.godCombat(g.combat, 10); g.lifespan = 99999;

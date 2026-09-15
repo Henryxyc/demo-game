@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
  * 主题包 · 斗破苍穹模拟器（doupo）
  * 修炼体系：斗之气→斗者→斗师→大斗师→斗灵→斗王→斗皇→斗宗→斗尊→斗帝
  * 斗气天赋 1-10（F~EX），斗技（天地玄黄），异火收服系统，焚决
@@ -1176,6 +1176,66 @@
     { id:'dp_t31', name:'异火天降', rarity:'gold', desc:'开局随机获得一种异火，成帝+5%', apply:function(g){ var fires = typeof FIRES!=='undefined'?FIRES:[]; if(fires.length){ var f=fires[Math.floor(Math.random()*fires.length)]; if(!g.fires)g.fires=[]; g.fires.push({id:f.id,name:f.name,rank:f.rank}); g.combat+=f.boost; } g.ascendBonus = (g.ascendBonus || 0) + 0.05; } },
   ];
 
+  /* ============================================================
+   * 智能帝名生成（根据角色生平、功法、异火等特征综合生成）
+   * ============================================================ */
+  function generateName(g) {
+    var fires = g.fires ? g.fires.length : 0;
+    var alch = g.alchemist || 0;
+    var skills = g.skillNames || [];
+    var tianCount = 0, diCount = 0;
+    for (var i = 0; i < skills.length; i++) {
+      if (skills[i].rank === '天') tianCount++;
+      if (skills[i].rank === '地') diCount++;
+    }
+    var combat = g.combat || 0;
+    var innate = g.innate || 1;
+    var ability = g.ability || '';
+    var hasFenjue = g.fenjue || (ability.indexOf('焚决') >= 0);
+    var age = g.age || 100;
+    var lvl = g.lvl || 99;
+
+    /* ====== 根据角色特征智能选择帝名 ====== */
+    /* 经典路线：焚决+异火大成 */
+    if (hasFenjue && fires >= 10) return '炎帝';
+    if (hasFenjue && fires >= 6) return '吞噬古帝';
+    if (fires >= 10) return '万火之帝';
+    if (fires >= 8) return '焚天古帝';
+    /* 炼药系 */
+    if (alch >= 8 && fires >= 3) return '药帝';
+    if (alch >= 8) return '丹道至尊';
+    if (alch >= 7 && fires >= 5) return '丹帝';
+    if (alch >= 6) return '炼药古帝';
+    /* 战力系 */
+    if (combat >= 800000 && tianCount >= 4) return '破天古帝';
+    if (combat >= 500000) return '武帝';
+    if (combat >= 300000) return '斗战古帝';
+    if (tianCount >= 5) return '天机古帝';
+    if (tianCount >= 3) return '天斗帝';
+    /* 异火系 */
+    if (fires >= 5 && diCount >= 2) return '火帝';
+    if (fires >= 5) return '炎天古帝';
+    if (fires >= 3) return '焚天帝';
+    /* 功法特征 */
+    if (ability.indexOf('帝印') >= 0) return '帝印古帝';
+    if (ability.indexOf('大天造化') >= 0) return '造化古帝';
+    if (ability.indexOf('黄泉') >= 0) return '黄泉古帝';
+    if (ability.indexOf('佛怒') >= 0) return '佛怒古帝';
+    if (ability.indexOf('三千雷') >= 0) return '雷霆古帝';
+    if (ability.indexOf('净莲') >= 0) return '净莲古帝';
+    /* 特殊路线 */
+    if (hasFenjue) return '焚决古帝';
+    if (innate >= 9 && fires >= 3) return '天命古帝';
+    if (innate >= 9) return '天命斗帝';
+    if (age < 80 && fires >= 2) return '少幽古帝';
+    if (age < 80) return '少斗帝';
+    /* 通用fallback：根据综合实力赋名 */
+    var strongNames = ['太初古帝','混沌古帝','永恒古帝','豪迅古帝','万象古帝','星辰古帝','虚空古帝','破灭古帝'];
+    if (combat >= 200000) return strongNames[Math.floor(Math.random() * 3)];
+    if (innate >= 7) return strongNames[3 + Math.floor(Math.random() * 3)];
+    return strongNames[Math.floor(Math.random() * strongNames.length)];
+  }
+
   /* ---------- 主题对象 ---------- */
   var theme = {
     id: 'doupo',
@@ -1217,6 +1277,7 @@
     tierName: tierName,
     selectSkill: selectSkill,
     guardInfo: guardInfo,
+    generateName: generateName,
 
     /* 异火收服系统：初始状态含 fires 和 fenjue */
     initialState: { fires: [], fenjue: false, alchemist: 0, soulRealm: 0 },
@@ -1265,50 +1326,6 @@
       },
       /* ★ 斗破多路径成帝：陀舍古帝传承 / 本源魂气自修 */
       tryAscendPath: function (g, log, U, helpers) {
-        /* 根据角色生平生成帝名 */
-        function generateEmperorName(g) {
-          var fires = g.fires ? g.fires.length : 0;
-          var alch = g.alchemist || 0;
-          var skills = g.skillNames || [];
-          var tianCount = 0, diCount = 0, diTotal = skills.length;
-          for (var i = 0; i < skills.length; i++) {
-            if (skills[i].rank === '天') tianCount++;
-            if (skills[i].rank === '地') diCount++;
-          }
-          var combat = g.combat || 0;
-          var innate = g.innate || 1;
-          var hasFenjue = g.fenjue || (g.ability && g.ability.indexOf('焚决') >= 0);
-          /* ====== 根据角色特征智能选择帝名 ====== */
-          /* 经典路线：焚决+异火大成 */
-          if (hasFenjue && fires >= 10) return '炎帝';
-          if (hasFenjue && fires >= 6) return '吞噬古帝';
-          if (fires >= 10) return '万火之帝';
-          if (fires >= 8) return '焚天古帝';
-          /* 炼药系 */
-          if (alch >= 8 && fires >= 3) return '药帝';
-          if (alch >= 8) return '丹道至尊';
-          if (alch >= 7 && fires >= 5) return '丹帝';
-          /* 战力系 */
-          if (combat >= 800000 && tianCount >= 4) return '破天古帝';
-          if (combat >= 500000) return '武帝';
-          if (tianCount >= 5) return '天机古帝';
-          if (tianCount >= 3) return '天斗帝';
-          /* 异火系 */
-          if (fires >= 5 && diCount >= 2) return '火帝';
-          if (fires >= 5) return '炎天古帝';
-          /* 特殊路线 */
-          if (hasFenjue) return '焚决古帝';
-          if (innate >= 9 && fires >= 3) return '天命古帝';
-          if (innate >= 9) return '天命斗帝';
-          if (g.age < 80 && fires >= 2) return '少幽古帝';
-          if (g.age < 80) return '少斗帝';
-          /* 通用fallback：根据综合实力赋名 */
-          var strongNames = ['太初古帝','混沌古帝','永恒古帝','豪迅古帝','天机古帝','万象古帝'];
-          if (combat >= 200000) return strongNames[Math.floor(Math.random() * 2)];
-          if (innate >= 7) return strongNames[2 + Math.floor(Math.random() * 2)];
-          return strongNames[Math.floor(Math.random() * strongNames.length)];
-        }
-
         if ((g.pathAttempts || 0) >= 2) return false;   /* 主题路径最多尝试 2 次 */
         /* 路径1：陀舍古帝传承 - 需集齐8块陀舍古帝玉 + 修为≥90，成功率10%（递减） */
         if (g.guyu && g.guyu >= 8 && g.lvl >= 90) {
@@ -1316,7 +1333,7 @@
           var rate1 = (0.10 + (g.ascendBonus || 0)) - (g.pathAttempts - 1) * 0.02;
           if (Math.random() < rate1) {
             g.ascendMode = 'tuoshe';
-            g.emperorName = generateEmperorName(g);
+            g.emperorName = generateName(g);
             log.push({ cls: 'god', text: '第' + g.age + '岁，集齐陀舍古帝玉，开启古帝洞府！获得陀舍古帝本源传承，成功晋入斗帝阶别，飞升成帝，帝名：' + g.emperorName + '！' });
             g.ascended = true; g.lvl = 100;
             g.combat = helpers.godCombat(g.combat, 8); g.lifespan = 99999;
@@ -1332,7 +1349,7 @@
           var rate2 = (0.08 + (g.ascendBonus || 0)) - (g.pathAttempts - 1) * 0.015;
           if (Math.random() < rate2) {
             g.ascendMode = 'selfAscend';
-            g.emperorName = generateEmperorName(g);
+            g.emperorName = generateName(g);
             log.push({ cls: 'god', text: '第' + g.age + '岁，悟透本源魂气，以己身证道！成功晋入斗帝阶别，飞升成帝，帝名：' + g.emperorName + '！' });
             g.ascended = true; g.lvl = 100;
             g.combat = helpers.godCombat(g.combat, 6); g.lifespan = 99999;
@@ -1347,7 +1364,7 @@
           var rate3 = (0.10 + (g.ascendBonus || 0)) - (g.pathAttempts - 1) * 0.02;
           if (Math.random() < rate3) {
             g.ascendMode = 'diyan';
-            g.emperorName = generateEmperorName(g);
+            g.emperorName = generateName(g);
             log.push({ cls: 'god', text: '第' + g.age + '岁，焚决大成，融合诸天异火成就帝炎！成功晋入斗帝阶别，飞升成帝，帝名：' + g.emperorName + '！' });
             g.ascended = true; g.lvl = 100;
             g.combat = helpers.godCombat(g.combat, 10); g.lifespan = 99999;

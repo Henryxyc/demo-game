@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
  * 模拟器合集 · UI 逻辑（手机优先，兼容电脑）
  * 多主题架构：ThemeRegistry 管理主题，engine = Sim.createEngine(theme) 绑定当前主题。
  *   - 主题切换时重新加载该主题的存档（玩家等级/排行榜/成就/保底/高光，按 theme.id 前缀隔离）
@@ -1787,6 +1787,120 @@ function renderAttrs() {
   }
   function closeReview() { $('review-mask').hidden = true; }
 
+  /* ============ 意见反馈系统 ============ */
+  var _feedbackType = 'suggestion';
+  var FEEDBACK_TYPES = { suggestion: '建议', bug: 'Bug', praise: '好评', other: '其他' };
+  function feedbackKey() { return key('feedback'); }
+  function loadFeedbackList() {
+    try { var a = JSON.parse(localStorage.getItem(feedbackKey()) || '[]'); return Array.isArray(a) ? a : []; } catch (e) { return []; }
+  }
+  function saveFeedbackList(list) { try { localStorage.setItem(feedbackKey(), JSON.stringify(list)); } catch (e) {} }
+  function addFeedback(type, text, contact) {
+    var list = loadFeedbackList();
+    var item = { id: Date.now() + '_' + Math.floor(Math.random() * 1e4), type: type, text: text, contact: contact || '', ts: Date.now(), theme: theme.id, themeName: theme.name, status: 'pending' };
+    list.unshift(item);
+    saveFeedbackList(list);
+    /* 异步提交到服务端（失败不影响本地存储） */
+    apiSubmitFeedback(item);
+    return item;
+  }
+  function apiSubmitFeedback(item) {
+    try {
+      var xhr = new XMLHttpRequest();
+      xhr.open('POST', RANK_API + '/api/feedback', true);
+      xhr.setRequestHeader('Content-Type', 'application/json');
+      xhr.timeout = 5000;
+      xhr.onload = function () {
+        try {
+          var res = JSON.parse(xhr.responseText);
+          if (res && res.ok) markFeedbackSynced(item.id);
+        } catch (e) {}
+      };
+      xhr.onerror = xhr.ontimeout = function () {};
+      xhr.send(JSON.stringify({ id: item.id, theme: item.theme, themeName: item.themeName, type: item.type, text: item.text, contact: item.contact, ts: item.ts, pid: getPid() }));
+    } catch (e) {}
+  }
+  function markFeedbackSynced(id) {
+    var list = loadFeedbackList();
+    for (var i = 0; i < list.length; i++) { if (list[i].id === id) { list[i].synced = true; break; } }
+    saveFeedbackList(list);
+  }
+  function openFeedback() {
+    blip(500, 0.06, 'triangle', 0.08);
+    _feedbackType = 'suggestion';
+    var input = $('feedback-input'); if (input) { input.value = ''; }
+    var counter = $('feedback-count'); if (counter) counter.textContent = '0';
+    var contact = $('feedback-contact'); if (contact) contact.value = '';
+    /* 重置类型按钮 */
+    var btns = document.querySelectorAll('.feedback-type-btn');
+    for (var i = 0; i < btns.length; i++) btns[i].classList.toggle('active', btns[i].getAttribute('data-type') === 'suggestion');
+    renderFeedbackList();
+    $('feedback-mask').hidden = false;
+  }
+  function closeFeedback() { $('feedback-mask').hidden = true; }
+  function submitFeedback() {
+    var input = $('feedback-input');
+    var text = input ? input.value.trim() : '';
+    if (!text) { hlToast('请输入反馈内容', 1500); return; }
+    if (text.length < 4) { hlToast('反馈内容至少4个字', 1500); return; }
+    var contact = $('feedback-contact');
+    addFeedback(_feedbackType, text, contact ? contact.value.trim() : '');
+    blip(700, 0.12, 'triangle', 0.12);
+    hlToast('✅ 感谢你的反馈！我们会认真阅读每一条', 2500);
+    input.value = '';
+    $('feedback-count').textContent = '0';
+    renderFeedbackList();
+  }
+  function renderFeedbackList() {
+    var box = $('feedback-list'); if (!box) return;
+    box.innerHTML = '';
+    var list = loadFeedbackList();
+    var showList = list.slice(0, 20);
+    for (var i = 0; i < showList.length; i++) {
+      var item = showList[i];
+      var div = document.createElement('div');
+      div.className = 'feedback-item';
+      var typeLabel = FEEDBACK_TYPES[item.type] || item.type;
+      div.innerHTML = '<div class="feedback-item-head">' +
+        '<span class="feedback-item-type ' + item.type + '">' + esc(typeLabel) + '</span>' +
+        '<span class="feedback-item-time">' + fmtTime(item.ts) + (item.synced ? ' · 已同步' : '') + '</span>' +
+        '</div><div class="feedback-item-text">' + esc(item.text) + '</div>';
+      box.appendChild(div);
+    }
+    var sec = $('feedback-list-section');
+    if (sec) sec.hidden = list.length === 0;
+  }
+
+  /* ============ 更新日志系统 ============ */
+  function openChangelog() {
+    blip(500, 0.06, 'triangle', 0.08);
+    renderChangelog();
+    $('changelog-mask').hidden = false;
+  }
+  function closeChangelog() { $('changelog-mask').hidden = true; }
+  function renderChangelog() {
+    var box = $('changelog-list'); if (!box) return;
+    box.innerHTML = '';
+    var log = window.CHANGELOG || [];
+    if (!log.length) {
+      box.innerHTML = '<div style="text-align:center;color:#556;font-size:13px;padding:20px;">暂无更新记录</div>';
+      return;
+    }
+    for (var i = 0; i < log.length; i++) {
+      var entry = log[i];
+      var div = document.createElement('div');
+      div.className = 'cl-entry';
+      var head = '<div class="cl-head"><span class="cl-date">' + esc(entry.date) + '</span><span class="cl-ver">' + esc(entry.version) + '</span></div>';
+      var changes = '<div class="cl-changes">';
+      for (var j = 0; j < entry.changes.length; j++) {
+        changes += '<div class="cl-item">' + esc(entry.changes[j]) + '</div>';
+      }
+      changes += '</div>';
+      div.innerHTML = head + changes;
+      box.appendChild(div);
+    }
+  }
+
   /* ---------- 事件绑定 ---------- */
   function bindEvents() {
     $('btn-start').addEventListener('click', startGame);
@@ -1838,6 +1952,26 @@ function renderAttrs() {
     $('btn-hl-img-dl').addEventListener('click', function () { blip(500, 0.06, 'triangle', 0.08); hlDownload(hlCurDataUrl); });
     var hlImg = $('hl-img');
     if (hlImg) hlImg.addEventListener('dblclick', function () { blip(500, 0.06, 'triangle', 0.08); hlDownload(hlCurDataUrl); });
+    /* 意见反馈 */
+    $('btn-feedback').addEventListener('click', openFeedback);
+    $('btn-feedback-close').addEventListener('click', function () { blip(400, 0.06, 'triangle', 0.08); closeFeedback(); });
+    $('btn-feedback-submit').addEventListener('click', submitFeedback);
+    $('feedback-input').addEventListener('input', function () { var c = $('feedback-count'); if (c) c.textContent = this.value.length; });
+    var fbTypeBtns = document.querySelectorAll('.feedback-type-btn');
+    for (var fbi = 0; fbi < fbTypeBtns.length; fbi++) {
+      (function (btn) {
+        btn.addEventListener('click', function () {
+          _feedbackType = btn.getAttribute('data-type');
+          var all = document.querySelectorAll('.feedback-type-btn');
+          for (var fi2 = 0; fi2 < all.length; fi2++) all[fi2].classList.remove('active');
+          btn.classList.add('active');
+          blip(440, 0.04, 'sine', 0.06);
+        });
+      })(fbTypeBtns[fbi]);
+    }
+    /* 更新日志 */
+    $('btn-changelog').addEventListener('click', openChangelog);
+    $('btn-changelog-close').addEventListener('click', function () { blip(400, 0.06, 'triangle', 0.08); closeChangelog(); });
   }
 
   /* ---------- 启动 ---------- */
