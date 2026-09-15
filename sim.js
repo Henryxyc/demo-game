@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
  * 模拟器合集 · 引擎核心（纯逻辑，浏览器 + Node 通用，UMD）
  * 逐年修炼 · 突破概率表（连破规则）· 随机事件 · 源质/强行进化超生命体
  *
@@ -431,14 +431,28 @@
 
       if (theme.hooks && theme.hooks.tryRouteAscend) {
         var routeHandled = theme.hooks.tryRouteAscend(g, log, U, { godCombat: godCombat });
-        if (routeHandled) { if (!g._godName) g._godName = g.emperorName || g.godName || g.immortalName || (theme.terms.ascend || ''); return true; }
+        if (routeHandled) {
+          if (!g._godName) {
+            g._godName = g.emperorName || g.godName || g.immortalName;
+            if (!g._godName && theme.generateName) g._godName = theme.generateName(g);
+            if (!g._godName) g._godName = theme.terms.ascend || '';
+          }
+          return true;
+        }
       }
 
       /* ★ 主题专属突破路径（优先判定，如斗破陀舍古帝传承/本源魂气，斗罗神考/信仰）
        * 钩子返回 true 表示已处理突破（成功或失败），跳过默认 refine/forced 逻辑 */
       if (theme.hooks && theme.hooks.tryAscendPath) {
         var handled = theme.hooks.tryAscendPath(g, log, U, { forcedChance: forcedChance, godCombat: godCombat });
-        if (handled) { if (!g._godName) g._godName = g.emperorName || g.godName || g.immortalName || (theme.terms.ascend || ""); return true; }
+        if (handled) {
+          if (!g._godName) {
+            g._godName = g.emperorName || g.godName || g.immortalName;
+            if (!g._godName && theme.generateName) g._godName = theme.generateName(g);
+            if (!g._godName) g._godName = theme.terms.ascend || "";
+          }
+          return true;
+        }
       }
 
       var es = g.essence.length > 0 ? g.essence[0] : null;   /* 基因源质最多 1 种 */
@@ -452,7 +466,9 @@
           g.ascendMode = 'refine';
           /* 生成飞升名号 */
           var _lbl = theme.terms.ascend || '神';
-          var _nm = g.emperorName || g.godName || g.immortalName || _lbl;
+          var _nm = g.emperorName || g.godName || g.immortalName;
+          if (!_nm && theme.generateName) _nm = theme.generateName(g);
+          if (!_nm) _nm = _lbl;
           log.push({ cls: 'god', text: theme.terms.refineSuccess(g.age, _nm) });
           g.ascended = true; g.lvl = theme.terms.godLevel;
           g._godName = _nm;
@@ -471,7 +487,9 @@
         g.ascendMode = 'forced';
         /* 生成飞升名号 */
         var _lbl2 = theme.terms.ascend || '神';
-        var _nm2 = g.emperorName || g.godName || g.immortalName || _lbl2;
+        var _nm2 = g.emperorName || g.godName || g.immortalName;
+        if (!_nm2 && theme.generateName) _nm2 = theme.generateName(g);
+        if (!_nm2) _nm2 = _lbl2;
         log.push({ cls: 'god', text: theme.terms.forcedAscend(g.age, _nm2) });
         g.ascended = true; g.lvl = theme.terms.godLevel;
         g._godName = _nm2;
@@ -543,7 +561,9 @@
         g.ascendMode = 'origin';
         g.ascended = true; g.lvl = theme.terms.godLevel;
         var _originLabel = theme.terms.ascend || '超生命体';
-        g._godName = g.emperorName || g.godName || g.immortalName || _originLabel;
+        var _originNm = g.emperorName || g.godName || g.immortalName;
+        if (!_originNm && theme.generateName) _originNm = theme.generateName(g);
+        g._godName = _originNm || _originLabel;
         g.combat = godCombat(g.combat, theme.ORIGIN_BONUS);
         g.lifespan = 99999;
         return log;
