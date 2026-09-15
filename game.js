@@ -81,7 +81,36 @@
   function setPlayerName(n) {
     try { localStorage.setItem('sim_player_name', String(n || '').trim().slice(0, 12)); } catch (e) {}
   }
+  /* ---------- 安全签名（客户端指纹） ---------- */
+  var API_SECRET = 'sim-game-sec-2024-xK9m';
+  function makeSign(msg) {
+    /* FNV-1a 风格哈希（与服务端 _security.js 中的 verifySignSimple 匹配） */
+    var h = 0x811c9dc5;
+    for (var i = 0; i < msg.length; i++) {
+      h ^= msg.charCodeAt(i);
+      h = Math.imul(h, 0x01000193);
+    }
+    h = Math.imul(h ^ (h >>> 16), 0x85ebca6b);
+    h = Math.imul(h ^ (h >>> 13), 0xc2b2ae35);
+    h ^= h >>> 16;
+    /* 混入 secret */
+    for (var j = 0; j < API_SECRET.length; j++) {
+      h ^= API_SECRET.charCodeAt(j);
+      h = Math.imul(h, 0x01000193);
+    }
+    return ('00000000' + (h >>> 0).toString(16)).slice(-8);
+  }
+
   function apiSubmit(theme, board, name, score, cb) {
+    try {
+      var ts = Date.now();
+      var pid = getPid();
+      var payload = pid + ':' + theme + ':' + board + ':' + score + ':' + ts;
+      var sign = makeSign(payload);
+      doSubmit(theme, board, name, score, pid, ts, sign, cb);
+    } catch (e) { cb(e); }
+  }
+  function doSubmit(theme, board, name, score, pid, ts, sign, cb) {
     try {
       var xhr = new XMLHttpRequest();
       xhr.open('POST', RANK_API + '/api/submit', true);
@@ -89,7 +118,7 @@
       xhr.timeout = 5000;
       xhr.onload = function () { try { cb(null, JSON.parse(xhr.responseText)); } catch (e) { cb(e); } };
       xhr.onerror = xhr.ontimeout = function () { cb(new Error('network')); };
-      xhr.send(JSON.stringify({ theme: theme, board: board, name: name, score: score, pid: getPid() }));
+      xhr.send(JSON.stringify({ theme: theme, board: board, name: name, score: score, pid: pid, ts: ts, sign: sign }));
     } catch (e) { cb(e); }
   }
   function apiRank(theme, board, limit, cb) {
