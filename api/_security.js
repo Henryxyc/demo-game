@@ -39,10 +39,10 @@ export function verifySign(pid, theme, board, score, ts, sign) {
 
 /* ---------- 分数合理性验证 ---------- */
 const SCORE_LIMITS = {
-  doomsday: { combat: 5000000, life: 500, lvl: 100 },
-  douluo:   { combat: 5000000, life: 500, lvl: 100 },
-  doupo:    { combat: 5000000, life: 500, lvl: 100 },
-  wanmei:   { combat: 5000000, life: 500, lvl: 100 }
+  doomsday: { combat: 100000000, life: 2000, lvl: 100 },
+  douluo:   { combat: 100000000, life: 2000, lvl: 100 },
+  doupo:    { combat: 100000000, life: 2000, lvl: 100 },
+  wanmei:   { combat: 100000000, life: 2000, lvl: 100 }
 };
 
 /**
