@@ -121,10 +121,12 @@
       xhr.send(JSON.stringify({ theme: theme, board: board, name: name, score: score, pid: pid, ts: ts, sign: sign }));
     } catch (e) { cb(e); }
   }
-  function apiRank(theme, board, limit, cb) {
+  function apiRank(theme, board, limit, period, cb) {
     try {
+      var url = RANK_API + '/api/rank?theme=' + encodeURIComponent(theme) + '&board=' + encodeURIComponent(board) + '&limit=' + (limit || 50) + '&pid=' + encodeURIComponent(getPid());
+      if (period && period !== 'all') url += '&period=' + encodeURIComponent(period);
       var xhr = new XMLHttpRequest();
-      xhr.open('GET', RANK_API + '/api/rank?theme=' + encodeURIComponent(theme) + '&board=' + encodeURIComponent(board) + '&limit=' + (limit || 50) + '&pid=' + encodeURIComponent(getPid()), true);
+      xhr.open('GET', url, true);
       xhr.timeout = 5000;
       xhr.onload = function () { try { cb(null, JSON.parse(xhr.responseText)); } catch (e) { cb(e); } };
       xhr.onerror = xhr.ontimeout = function () { cb(new Error('network')); };
@@ -1608,7 +1610,8 @@ function renderAttrs() {
 
   /* ---------- 排行榜 ---------- */
   var curBoard = 'combat';
-  function openRank() { curBoard = 'combat'; setRankUI(); show('rank'); loadRank(); }
+  var curPeriod = 'all';
+  function openRank() { curBoard = 'combat'; curPeriod = 'all'; setRankUI(); show('rank'); loadRank(); }
   function makeTab(parent, active, label, cb) {
     var b = document.createElement('button');
     b.className = 'tab' + (active ? ' active' : '');
@@ -1618,8 +1621,21 @@ function renderAttrs() {
   }
   function setRankUI() {
     var board = $('rank-board'); board.innerHTML = '';
+    /* 板块 Tab */
     [['combat', theme.terms.combat], ['age', theme.terms.lifespan], ['lvl', theme.terms.level]].forEach(function (p) {
       makeTab(board, curBoard === p[0], p[1], function () { curBoard = p[0]; setRankUI(); loadRank(); blip(500, 0.06, 'triangle', 0.08); });
+    });
+    /* 时间段 Tab */
+    var periodBox = document.getElementById('rank-period-tabs');
+    if (!periodBox) {
+      periodBox = document.createElement('div');
+      periodBox.id = 'rank-period-tabs';
+      periodBox.className = 'tabs tabs-small';
+      board.parentNode.insertBefore(periodBox, board.nextSibling);
+    }
+    periodBox.innerHTML = '';
+    [['all', '总榜'], ['daily', '日榜'], ['weekly', '周榜'], ['monthly', '月榜']].forEach(function (p) {
+      makeTab(periodBox, curPeriod === p[0], p[1], function () { curPeriod = p[0]; setRankUI(); loadRank(); blip(500, 0.06, 'triangle', 0.08); });
     });
   }
   function loadRank() { loadGlobalRank(); }
@@ -1628,7 +1644,7 @@ function renderAttrs() {
     var b = LOCAL_BOARDS[curBoard];
     note.textContent = '加载中…';
     body.innerHTML = '<div class="lb-tip">正在获取全服排行…</div>';
-    apiRank(theme.id, curBoard, 50, function (err, res) {
+    apiRank(theme.id, curBoard, 50, curPeriod, function (err, res) {
       if (err || !res || !res.ok) {
         // 服务器不可用，降级到本地排行
         loadLocalRank();

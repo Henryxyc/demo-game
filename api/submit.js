@@ -1,5 +1,12 @@
 import { verifySign, validateScore, checkRateLimit, getClientIp } from "./_security.js";
 
+function getWeekKey(ts) {
+  const d = new Date(ts);
+  const jan1 = new Date(d.getFullYear(), 0, 1);
+  const weekNum = Math.ceil(((d - jan1) / 86400000 + jan1.getDay() + 1) / 7);
+  return d.getFullYear() + "-W" + String(weekNum).padStart(2, "0");
+}
+
 export default async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
@@ -72,34 +79,45 @@ export default async function handler(req, res) {
     const numScore = Math.floor(Number(score));
     const safePid = String(pid).slice(0, 50);
 
-    /* ====== 7. 读取 & 更新排行榜 ====== */
-    const r = await fetch(UP_URL + "/get/" + encodeURIComponent(key), {
-      headers: { Authorization: "Bearer " + UP_TOKEN }
-    });
-    const d = await r.json();
-    let entries = parseEntries(d);
+    /* ====== 7. 读取 & 更新排行榜（总榜 + 日榜 + 周榜 + 月榜） ====== */
+    const now = Date.now();
+    const today = new Date(now).toISOString().slice(0, 10);
+    const weekKey = getWeekKey(now);
+    const monthKey = new Date(now).toISOString().slice(0, 7);
+    const periods = [
+      { key: "board:" + theme + "_" + board, ttl: 0 },
+      { key: "board:" + theme + "_" + board + ":d:" + today, ttl: 2 * 86400 },
+      { key: "board:" + theme + "_" + board + ":w:" + weekKey, ttl: 2 * 7 * 86400 },
+      { key: "board:" + theme + "_" + board + ":m:" + monthKey, ttl: 60 * 86400 }
+    ];
 
-    const existing = entries.findIndex(e => e.pid === safePid);
-    const entry = { pid: safePid, name: trimmedName, score: numScore, ts: Date.now() };
-    if (existing >= 0) {
-      if (numScore > entries[existing].score) entries[existing] = entry;
-    } else { entries.push(entry); }
-
-    entries.sort((a, b) => b.score - a.score || a.ts - b.ts);
-    if (entries.length > 200) entries = entries.slice(0, 200);
-
-    let rank = -1;
-    for (let i = 0; i < entries.length; i++) {
-      if (entries[i].pid === safePid) { rank = i + 1; break; }
+    let mainRank = -1;
+    for (const p of periods) {
+      const r2 = await fetch(UP_URL + "/get/" + encodeURIComponent(p.key), {
+        headers: { Authorization: "Bearer " + UP_TOKEN }
+      });
+      const d2 = await r2.json();
+      let entries = parseEntries(d2);
+      const existing = entries.findIndex(e => e.pid === safePid);
+      const entry = { pid: safePid, name: trimmedName, score: numScore, ts: now };
+      if (existing >= 0) {
+        if (numScore > entries[existing].score) entries[existing] = entry;
+      } else { entries.push(entry); }
+      entries.sort((a, b) => b.score - a.score || a.ts - b.ts);
+      if (entries.length > 200) entries = entries.slice(0, 200);
+      await fetch(UP_URL + "/set/" + encodeURIComponent(p.key), {
+        method: "POST",
+        headers: { Authorization: "Bearer " + UP_TOKEN, "Content-Type": "application/json" },
+        body: JSON.stringify(entries)
+      });
+      if (p.ttl === 0) {
+        for (let i = 0; i < entries.length; i++) {
+          if (entries[i].pid === safePid) { mainRank = i + 1; break; }
+        }
+      }
     }
 
-    await fetch(UP_URL + "/set/" + encodeURIComponent(key), {
-      method: "POST",
-      headers: { Authorization: "Bearer " + UP_TOKEN, "Content-Type": "application/json" },
-      body: JSON.stringify(entries)
-    });
-
-    return res.status(200).json({ ok: true, rank, total: entries.length });
+    return res.status(200).json({ ok: true, rank: mainRank, total: periods[0] ? 0 : 0 });
   } catch (e) {
     return res.status(500).json({ ok: false, error: "服务器内部错误" });
   }

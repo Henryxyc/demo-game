@@ -122,11 +122,12 @@
               g.combat += U.evCombat(g, 0.08, 0.18, 20); U.gainLevels(g, 1);
               return '你以血为契换来禁忌力量，修为陡增，却也在体内埋下了反噬的种子。';
             } },
-          { id: 'wild', label: '成为' + c.wild, detail: '不受势力约束，事件更随机，保留最多可能性。',
+          { id: 'wild', label: '成为' + c.wild, detail: '不受势力约束，自由探索，战斗经验更丰富。',
             apply: function (g, U) {
-              U.choosePath(g, 'rogue', 'wanderer', 0, c.wild);
-              g.luckBonus = (g.luckBonus || 0) + 1; g.lifespan += 2;
-              return '你拒绝了所有旗帜，独自踏上未知道路。世界从此向你开放，也更加危险。';
+              U.choosePath(g, 'rogue', 'wanderer', 5, c.wild);
+              g.luckBonus = (g.luckBonus || 0) + 1; g.lifespan += U.irand(3, 6);
+              g.combat += U.evCombat(g, 0.05, 0.12, 15); U.gainLevels(g, 1);
+              return '你拒绝了所有旗帜，独自踏上未知道路。在自由探索中积累了丰富的战斗经验。';
             } }
         ]
       },
@@ -179,12 +180,44 @@
               g.combat += U.evCombat(g, 0.45, 0.9, 3000); U.gainLevels(g, U.irand(1, 3));
               return '你以强敌之血叩开瓶颈，力量来得迅猛而冰冷，连旧日盟友也开始畏惧你。';
             } },
-          { id: 'void', label: '踏入未知裂隙', detail: '随机获得稀有收益，也可能错过现有路线。', risk: '结果完全随机',
+          { id: 'void', label: '踏入未知裂隙', detail: '随机获得稀有收益，可能错过现有路线但一定有收获。', risk: '结果随机',
             apply: function (g, U) {
-              U.choosePath(g, 'rogue', 'voidwalker', 0, c.wild);
-              if (Math.random() < 0.55) { g.combat += U.evCombat(g, 0.25, 0.6, 2000); U.gainLevels(g, 2); return '裂隙尽头不是虚无，而是一片无人知晓的道场。你带着异界法则归来。'; }
-              g.lifespan -= U.irand(3, 9); g.luckBonus = (g.luckBonus || 0) + 2;
-              return '裂隙将你抛回现实，虽然遍体鳞伤，但你看见了未来某个可能的自己。';
+              U.choosePath(g, 'rogue', 'voidwalker', 5, c.wild);
+              g.combat += U.evCombat(g, 0.10, 0.30, 800);
+              if (Math.random() < 0.55) { U.gainLevels(g, 2); g.lifespan += U.irand(3, 8); return '裂隙尽头不是虚无，而是一片无人知晓的道场。你带着异界法则归来，修为大增。'; }
+              g.lifespan -= U.irand(1, 4); g.luckBonus = (g.luckBonus || 0) + 3;
+              return '裂隙将你抛回现实，虽然略有损伤，但异界法则在你体内留下了不可磨灭的印记。';
+            } }
+        ]
+      },
+      {
+        id: prefix + 'godpath', weight: 6, maxCount: 1, name: '成' + (theme.terms.ascend || '神') + '之路的抉择', tier: 4,
+        desc: '你站在命运的十字路口。两条成' + (theme.terms.ascend || '神') + '之路摆在面前：继承古老的神位，还是以信仰之力开创自己的神位？',
+        minAge: 55, maxAge: 10000,
+        cond: function (g) { return g.lvl >= 75 && !g.godTest && !g.faith; },
+        choices: [
+          { id: 'accept_test', label: '接受神考，继承神位', detail: '通过九重试炼继承已有神位，成功率取决于实力和运气。', risk: '第九考失败将魂飞魄散',
+            apply: function (g, U) {
+              g.godTest = true;
+              var gods = ['海神', '修罗神', '天使之神', '罗刹神', '食神', '九彩神女'];
+              g.inheritGod = gods[Math.floor(Math.random() * gods.length)];
+              g.lifespan += U.irand(5, 10);
+              return '神界的大门向你敞开！' + g.inheritGod + '降下九考召唤，通过九重试炼即可继承神位。命运的齿轮开始转动……';
+            } },
+          { id: 'create_god', label: '自创神位，以信仰成神', detail: '收集众生信仰之力，自创前所未有的神位。', risk: '需要更长时间积累信仰',
+            apply: function (g, U) {
+              g.faith = true;
+              g.lifespan += U.irand(8, 15);
+              g.routePower = (g.routePower || 0) + 0.1;
+              return '你拒绝继承任何旧神位，决定以自身的信仰之力开创全新的神位。这是一条更漫长但属于你自己的路。';
+            } },
+          { id: 'both', label: '两者兼修', detail: '同时准备神考和信仰积累，但进度更慢。', risk: '精力分散，每条路都更难',
+            apply: function (g, U) {
+              g.godTest = true; g.faith = true;
+              var gods = ['海神', '修罗神', '天使之神', '罗刹神', '食神', '九彩神女'];
+              g.inheritGod = gods[Math.floor(Math.random() * gods.length)];
+              g.lifespan += U.irand(3, 7);
+              return '你决定同时走两条路——接受' + g.inheritGod + '的神考，同时暗中积累信仰之力。双线并进，成败皆在此一举。';
             } }
         ]
       },

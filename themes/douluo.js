@@ -1308,12 +1308,9 @@
           var fMsg = fTxt[Math.floor(Math.random() * fTxt.length)];
           log.push({ cls: 'ev3', text: evt.base + '——' + fMsg });
           if (testNum === 9) {
-            /* 第九考失败：神力反噬但不致死，扣大量寿命和战力，重置进度 */
-            g.lifespan -= U.irand(20, 40);
-            g.combat = Math.floor(g.combat * 0.6);
-            g.godTestProgress = 0;   /* 重置神考进度，可重新挑战 */
-            log.push({ cls: 'ev4', text: '第九考失败，神力反噬！修为大损，神考进度重置，需重新挑战。' });
-            return false;
+            g.dead = true; g.ascendMode = 'fail';
+            log.push({ cls: 'dead', text: '第九考失败，神力反噬，灵魂彻底碎裂——再无轮回！' });
+            return true;
           }
           var penalty = testNum <= 3 ? U.irand(3, 8) : testNum <= 6 ? U.irand(8, 15) : U.irand(15, 25);
           g.lifespan -= penalty;

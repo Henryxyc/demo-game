@@ -1,4 +1,4 @@
-﻿export default async function handler(req, res) {
+export default async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "GET, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
@@ -14,24 +14,36 @@
   function parseEntries(raw) {
     if (!raw) return [];
     var val = raw.result !== undefined ? raw.result : raw;
-    if (typeof val === "string") {
-      try { val = JSON.parse(val); } catch(e) { return []; }
-    }
-    if (Array.isArray(val)) return val;
-    if (typeof val === "string") {
-      try { val = JSON.parse(val); } catch(e) { return []; }
-    }
+    if (typeof val === "string") { try { val = JSON.parse(val); } catch(e) { return []; } }
     if (Array.isArray(val)) return val;
     return [];
   }
 
+  function getWeekKey(ts) {
+    const d = new Date(ts);
+    const jan1 = new Date(d.getFullYear(), 0, 1);
+    const weekNum = Math.ceil(((d - jan1) / 86400000 + jan1.getDay() + 1) / 7);
+    return d.getFullYear() + "-W" + String(weekNum).padStart(2, "0");
+  }
+
   try {
-    const { theme, board, pid } = req.query || {};
+    const { theme, board, pid, period } = req.query || {};
     const limit = Math.min(parseInt(req.query.limit) || 50, 100);
     if (!theme || !board) {
       return res.status(400).json({ ok: false, error: "参数不完整" });
     }
-    const key = "board:" + theme + "_" + board;
+
+    /* 根据 period 参数构建 Redis key */
+    let key = "board:" + theme + "_" + board;
+    const now = Date.now();
+    if (period === "daily") {
+      key += ":d:" + new Date(now).toISOString().slice(0, 10);
+    } else if (period === "weekly") {
+      key += ":w:" + getWeekKey(now);
+    } else if (period === "monthly") {
+      key += ":m:" + new Date(now).toISOString().slice(0, 7);
+    }
+
     const r = await fetch(UP_URL + "/get/" + encodeURIComponent(key), {
       headers: { Authorization: "Bearer " + UP_TOKEN }
     });
@@ -48,6 +60,6 @@
       myRank, myScore: myScore ? myScore.score : null, total: entries.length
     });
   } catch (e) {
-    return res.status(500).json({ ok: false, error: "服务器内部错误: " + e.message });
+    return res.status(500).json({ ok: false, error: "服务器内部错误" });
   }
 };
