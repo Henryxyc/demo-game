@@ -1330,7 +1330,7 @@
         /* 路径1：陀舍古帝传承 - 需集齐8块陀舍古帝玉 + 修为≥90，成功率10%（递减） */
         if (g.guyu && g.guyu >= 8 && g.lvl >= 90) {
           g.pathAttempts = (g.pathAttempts || 0) + 1;
-          var rate1 = (0.10 + (g.ascendBonus || 0)) - (g.pathAttempts - 1) * 0.02;
+          var rate1 = (0.15 + (g.ascendBonus || 0)) - (g.pathAttempts - 1) * 0.02;
           if (Math.random() < rate1) {
             g.ascendMode = 'tuoshe';
             g.emperorName = generateName(g);
@@ -1346,7 +1346,7 @@
         var soulOriginLvlReq = g.soulOriginReady ? 90 : 95;
         if (g.soulOrigin && g.lvl >= soulOriginLvlReq) {
           g.pathAttempts = (g.pathAttempts || 0) + 1;
-          var rate2 = (0.08 + (g.ascendBonus || 0)) - (g.pathAttempts - 1) * 0.015;
+          var rate2 = (0.12 + (g.ascendBonus || 0)) - (g.pathAttempts - 1) * 0.015;
           if (Math.random() < rate2) {
             g.ascendMode = 'selfAscend';
             g.emperorName = generateName(g);
@@ -1361,7 +1361,7 @@
         /* 路径3：持有焚决+多种异火+修为≥99 → 帝炎融合成帝，成功率10%（递减） */
         if (g.fenjue && g.fires && g.fires.length >= 15 && g.lvl >= 99) {
           g.pathAttempts = (g.pathAttempts || 0) + 1;
-          var rate3 = (0.10 + (g.ascendBonus || 0)) - (g.pathAttempts - 1) * 0.02;
+          var rate3 = (0.15 + (g.ascendBonus || 0)) - (g.pathAttempts - 1) * 0.02;
           if (Math.random() < rate3) {
             g.ascendMode = 'diyan';
             g.emperorName = generateName(g);

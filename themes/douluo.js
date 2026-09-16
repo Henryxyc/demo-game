@@ -1286,7 +1286,7 @@
           var testNum = g.godTestProgress + 1;
           var godName = g.inheritGod || '神';
           var evt = godTestEventText(g, testNum, godName);
-          var successRate = testNum <= 3 ? 0.7 : testNum <= 6 ? 0.5 : testNum <= 8 ? 0.35 : 0.2;
+          var successRate = testNum <= 3 ? 0.80 : testNum <= 6 ? 0.65 : testNum <= 8 ? 0.50 : 0.35;
           successRate += (g.ascendBonus || 0);
           if (Math.random() < successRate) {
             g.godTestProgress = testNum;
@@ -1308,9 +1308,12 @@
           var fMsg = fTxt[Math.floor(Math.random() * fTxt.length)];
           log.push({ cls: 'ev3', text: evt.base + '——' + fMsg });
           if (testNum === 9) {
-            g.dead = true; g.ascendMode = 'fail';
-            log.push({ cls: 'dead', text: '第九考失败，神力反噬，灵魂彻底碎裂——再无轮回！' });
-            return true;
+            /* 第九考失败：神力反噬但不致死，扣大量寿命和战力，重置进度 */
+            g.lifespan -= U.irand(20, 40);
+            g.combat = Math.floor(g.combat * 0.6);
+            g.godTestProgress = 0;   /* 重置神考进度，可重新挑战 */
+            log.push({ cls: 'ev4', text: '第九考失败，神力反噬！修为大损，神考进度重置，需重新挑战。' });
+            return false;
           }
           var penalty = testNum <= 3 ? U.irand(3, 8) : testNum <= 6 ? U.irand(8, 15) : U.irand(15, 25);
           g.lifespan -= penalty;
@@ -1320,7 +1323,7 @@
         /* 路径2：信仰自创 - 需信仰之力 + 修为≥95，成功率6%（递减） */
         if (g.faith && g.lvl >= 95) {
           g.pathAttempts = (g.pathAttempts || 0) + 1;
-          var rate2 = (0.04 + (g.ascendBonus || 0)) - (g.pathAttempts - 1) * 0.01;
+          var rate2 = (0.10 + (g.ascendBonus || 0)) - (g.pathAttempts - 1) * 0.01;
           if (Math.random() < rate2) {
             g.ascendMode = 'selfGod';
             g.godName = generateGodName(g);
