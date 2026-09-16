@@ -7,6 +7,16 @@
  * ============================================================ */
 window.REPORTS = [
   {
+    date: '2026-09-16',
+    summary: '收到1条斗罗大陆好评，无Bug和建议，所有主题运行正常',
+    stats: { suggestion: 0, bug: 0, praise: 1, other: 0 },
+    themes: { doomsday: 0, douluo: 1, doupo: 0, wanmei: 0 },
+    bugs: [],
+    suggestions: [],
+    fixes: [],
+    tests: '通过'
+  },
+  {
     date: '2026-09-15',
     summary: '收到3条反馈，修复双生武魂魂环吸收逻辑，2条优化建议',
     stats: { suggestion: 2, bug: 1, praise: 0, other: 0 },
