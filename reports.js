@@ -7,6 +7,16 @@
  * ============================================================ */
 window.REPORTS = [
   {
+    date: '2026-09-17',
+    summary: '今日无新增反馈，所有主题运行正常',
+    stats: { suggestion: 0, bug: 0, praise: 0, other: 0 },
+    themes: { doomsday: 0, douluo: 0, doupo: 0, wanmei: 0 },
+    bugs: [],
+    suggestions: [],
+    fixes: [],
+    tests: '通过'
+  },
+  {
     date: '2026-09-16',
     summary: '收到1条斗罗大陆好评，无Bug和建议，所有主题运行正常',
     stats: { suggestion: 0, bug: 0, praise: 1, other: 0 },
